@@ -22,9 +22,13 @@ public class Aim extends Command {
     
     public void execute() {
         var result = cam1.getLatestResult();
+        if (result.hasTargets()) {
         double radiansToGoal = Units.degreesToRadians(result.getBestTarget().getYaw());
 
         var speeds = new ChassisSpeeds(0, 0, radiansToGoal); 
         s_Swerve.driveRobotRelative(speeds);
+        } else {
+            System.out.println("No Targets");
+        }
     }
 }
