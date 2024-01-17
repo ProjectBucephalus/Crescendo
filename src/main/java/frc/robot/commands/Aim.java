@@ -23,10 +23,16 @@ public class Aim extends Command {
     public void execute() {
         var result = cam1.getLatestResult();
         if (result.hasTargets()) {
-        double radiansToGoal = Units.degreesToRadians(result.getBestTarget().getYaw());
-
-        var speeds = new ChassisSpeeds(0, 0, radiansToGoal); 
-        s_Swerve.driveRobotRelative(speeds);
+            System.out.println("Seeing Targets");
+            System.out.println("Target Yaw:");
+            System.out.println(result.getBestTarget().getYaw());
+            double radiansToGoal = Units.degreesToRadians(result.getBestTarget().getYaw());
+            System.out.println("Radians To Goal:");
+            System.out.println(radiansToGoal);
+            double rotationSpeed = 20 * -radiansToGoal;
+            ChassisSpeeds speeds = new ChassisSpeeds(0, 0, rotationSpeed); 
+            s_Swerve.driveRobotRelative(speeds);
+            System.out.println("------------------------------------------");
         } else {
             System.out.println("No Targets");
         }

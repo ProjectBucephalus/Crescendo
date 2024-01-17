@@ -94,6 +94,18 @@ public class Swerve extends SubsystemBase {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
     }    
+    public void ChoreoDrive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+        var swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                        xSpeed, ySpeed, rot, gyro.getRotation2d())
+                        : new ChassisSpeeds(xSpeed, ySpeed, rot));
+        SwerveDriveKinematics.desaturateWheelSpeeds(
+                swerveModuleStates, Constants.Swerve.maxSpeed);
+
+        for(SwerveModule mod : mSwerveMods){
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], true);
+        }
+    }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
