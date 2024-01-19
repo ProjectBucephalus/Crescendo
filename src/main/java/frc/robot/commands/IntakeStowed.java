@@ -16,7 +16,7 @@ public class IntakeStowed extends Command
     @Override
     public void execute() {
     
-    Intake.setIntakeStowed();
+    //Intake.setIntakeStowed();
         
     }
     

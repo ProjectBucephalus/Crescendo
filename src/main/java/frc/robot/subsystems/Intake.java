@@ -11,10 +11,13 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 
 public class Intake extends SubsystemBase 
 {
+    //motors
     private static TalonFX intakeArmMotor = new TalonFX(Constants.intakeArmMotorID);
     private static CANSparkMax m_intake = new CANSparkMax(8, CANSparkMax.MotorType.kBrushed);
+    //limit switches
     static DigitalInput outLimitSwitch = new DigitalInput(Constants.outSwitchID);
     static DigitalInput inLimitSwitch = new DigitalInput(Constants.inSwitchID);
+    //limits as checked during calibration, to account for encoder drift
     double inLimit;
     double outLimit;
 
@@ -23,6 +26,7 @@ public class Intake extends SubsystemBase
         intakeArmMotor.setPosition(0);
     }
 
+    /* moves the arm to a set position, with safety measures */
     public void moveArm(double armAngle) 
     {
         armAngle += inLimit;
@@ -39,6 +43,7 @@ public class Intake extends SubsystemBase
         }
     }
 
+    /* calibrates the limits */
     public void calibrateLimits() 
     {    
         while (!inLimitSwitch.get()) 
@@ -57,6 +62,7 @@ public class Intake extends SubsystemBase
         System.out.println("Calibration done");
     }
 
+    /* takes in a desired angle of the intake, and outputs the motor position needed, accounting for gearing */
     public double angleToEncoderPosition(double targetAngle) 
     {
         targetAngle += Constants.shooterAngleOffset;
@@ -65,46 +71,61 @@ public class Intake extends SubsystemBase
         return targetAngle;
     }
 
+    /* drives intake arm down */
     public static void setIntakeDown()
     {
         if (inLimitSwitch.get())
         {
             intakeArmMotor.set(0);
-        } else {
+        } 
+        else 
+        {
             intakeArmMotor.set(-0.20);
         }
     }
 
+    /* drives intake arm up */
     public static void setIntakeUp()
     {
        if (outLimitSwitch.get()) 
        {
             intakeArmMotor.set(0);
-       } else {
+       } 
+       else 
+       {
             intakeArmMotor.set(0.20);
        }
     }
-// when function is triggered it will check if the limit switch is pressed
+    
+    /* stops intake arm motion */
     public static void setIntakeAngleStop()
-    {intakeArmMotor.set(0);}
+    {
+        intakeArmMotor.set(0);
+    }
 
+    /* drives the intake to suck pieces in */
     public static void IntakeIn()
     {
         m_intake.set(1);
     }
 
+    /* stops the intake */
     public static void IntakeStop()
     {
         m_intake.set(0);
     }
+    
+    /* drives the intake to spit pieces out */
     public static void intakeOut()
     {
         m_intake.set(-1);
     }
-    //sets the speed for the intake
-
+    
+    //commented out for safety's sake. same with reference to it in IntakeStowed file
+    /* 
     public static void setIntakeStowed()
     {
         intakeArmMotor.set(1);
     }
+    */
 }
