@@ -15,8 +15,8 @@ public class Intake extends SubsystemBase
     private static TalonFX intakeArmMotor = new TalonFX(Constants.intakeArmMotorID);
     private static CANSparkMax m_intake = new CANSparkMax(8, CANSparkMax.MotorType.kBrushed);
     //limit switches
-    static DigitalInput outLimitSwitch = new DigitalInput(Constants.outSwitchID);
-    static DigitalInput inLimitSwitch = new DigitalInput(Constants.inSwitchID);
+    public static DigitalInput outLimitSwitch = new DigitalInput(Constants.outSwitchID);
+    public static DigitalInput inLimitSwitch = new DigitalInput(Constants.inSwitchID);
     //limits as checked during calibration, to account for encoder drift
     double inLimit;
     double outLimit;
@@ -122,10 +122,15 @@ public class Intake extends SubsystemBase
     }
     
     //commented out for safety's sake. same with reference to it in IntakeStowed file
-    /* 
+     
     public static void setIntakeStowed()
     {
-        intakeArmMotor.set(1);
+       // intakeArmMotor.setPosition(inLimit);
     }
-    */
+
+    public static void intakeArmStop()
+    {
+        intakeArmMotor.stopMotor();
+    }
+    
 }

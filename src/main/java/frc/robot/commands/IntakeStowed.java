@@ -14,12 +14,18 @@ public class IntakeStowed extends Command
     
     // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {
-    
-    //Intake.setIntakeStowed();
-        
+    public void execute() 
+    {
+        if (Intake.inLimitSwitch.get()) 
+        {
+            Intake.IntakeArmStop();
+        }
+        else
+        {
+         Intake.setIntakeStowed();
+        }
     }
-    
+   
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
