@@ -15,9 +15,27 @@ import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
+    
+    /* Shooter Constants */
+    public static final double shooterAngleOffset = 15;
+    public static final double shooterGearRatios = 6;
+    public static final double horizontalShooterAngle = 20;
+
+    /* Image Tracking Constants */
+    public static final double cameraPitchOffset = 26;
+    public static final double speakerTagHeight = 144;
+    public static final double cameraHeightOverGround = 23;
+    public static final double targetHeightOverTag = 40;
+
+    /* CAN IDs */
+    public static final int pigeonID = 53;
+    public static final int intakeArmMotorID = 5;
+    public static final int outSwitchID = 8;
+    public static final int inSwitchID = 7;
 
     public static final class Swerve {
-        public static final int pigeonID = 53;
+        
+        public static final boolean invertGyro = false;
 
         public static final COTSTalonFXSwerveConstants chosenModule = COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
@@ -82,9 +100,9 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 8.0; //2.5 TODO 
+        public static final double maxSpeed = 8.0; //2.5 TODO it was 8
         /** Radians per Second */
-        public static final double maxAngularVelocity = 15.0; //5.0??
+        public static final double maxAngularVelocity = 15.0; //5.0?? it was 15
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
@@ -133,10 +151,10 @@ public final class Constants {
     }
 
     public static final class AutoConstants { //TODO
-        public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+        public static final double kMaxSpeedMetersPerSecond = 4;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI; // was pi?
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI; // was pi?
     
         public static final double kPXController = 1;
         public static final double kPYController = 1;
