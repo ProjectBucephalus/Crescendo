@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -10,9 +11,10 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 
 public class Intake extends SubsystemBase 
 {
-    TalonFX intakeArmMotor = new TalonFX(Constants.intakeArmMotorID);
-    DigitalInput outLimitSwitch = new DigitalInput(Constants.outSwitchID);
-    DigitalInput inLimitSwitch = new DigitalInput(Constants.inSwitchID);
+    private static TalonFX intakeArmMotor = new TalonFX(Constants.intakeArmMotorID);
+    private static CANSparkMax m_intake = new CANSparkMax(8, CANSparkLowLevel.MotorType.kBrushed);
+    static DigitalInput outLimitSwitch = new DigitalInput(Constants.outSwitchID);
+    static DigitalInput inLimitSwitch = new DigitalInput(Constants.inSwitchID);
     double inLimit;
     double outLimit;
 
@@ -61,5 +63,48 @@ public class Intake extends SubsystemBase
         targetAngle *= Constants.shooterGearRatios;
         
         return targetAngle;
+    }
+
+    public static void setIntakeDown()
+    {
+        if (inLimitSwitch.get())
+        {
+            intakeArmMotor.set(0);
+        } else {
+            intakeArmMotor.set(-0.20);
+        }
+    }
+
+    public static void setIntakeUp()
+    {
+       if (outLimitSwitch.get()) 
+       {
+            intakeArmMotor.set(0);
+       } else {
+            intakeArmMotor.set(0.20);
+       }
+    }
+// when function is triggered it will check if the limit switch is pressed
+    public static void setIntakeAngleStop()
+    {intakeArmMotor.set(0);}
+
+    public static void IntakeIn()
+    {
+        m_intake.set(1);
+    }
+
+    public static void IntakeStop()
+    {
+        m_intake.set(0);
+    }
+    public static void intakeOut()
+    {
+        m_intake.set(-1);
+    }
+    //sets the speed for the intake
+
+    public static void setIntakeStowed()
+    {
+        intakeArmMotor.set(1);
     }
 }
