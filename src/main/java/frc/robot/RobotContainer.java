@@ -51,6 +51,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
+    private final Intake s_Intake = new Intake();
 
     /* Autonomous */
     private final SendableChooser<Command> autoChooser;
@@ -101,7 +102,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        aim.whileTrue(new Aim(s_Swerve));
+        aim.whileTrue(new Aim(s_Swerve, s_Intake));
 
     }
 

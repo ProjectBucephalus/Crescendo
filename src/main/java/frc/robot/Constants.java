@@ -15,9 +15,26 @@ import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
+    
+    /* Shooter Constants */
+    public static final double shooterAngleOffset = 15;
+    public static final double shooterGearRatios = 6;
+    public static final double horizontalShooterAngle = 20;
+
+    /* Image Tracking Constants */
+    public static final double cameraPitchOffset = 26;
+    public static final double speakerTagHeight = 144;
+    public static final double cameraHeightOverGround = 23;
+    public static final double targetHeightOverTag = 40;
+
+    /* CAN IDs */
+    public static final int pigeonID = 53;
+    public static final int intakeArmMotorID = 5;
+    public static final int outSwitchID = 8;
+    public static final int inSwitchID = 7;
 
     public static final class Swerve {
-        public static final int pigeonID = 53;
+        
         public static final boolean invertGyro = false;
 
         public static final COTSTalonFXSwerveConstants chosenModule = COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
