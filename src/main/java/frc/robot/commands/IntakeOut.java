@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.CAN;
+import frc.robot.subsystems.Intake;
 
 public class IntakeOut extends Command
 {
@@ -15,7 +16,7 @@ public class IntakeOut extends Command
     @Override
     public void execute() {
     
-      
+    Intake.intakeOut();  
         
     }
     
@@ -23,6 +24,6 @@ public class IntakeOut extends Command
     @Override
     public void end(boolean interrupted) {
        
-    
+    Intake.IntakeStop();
     } 
 }
