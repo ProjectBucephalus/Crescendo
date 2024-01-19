@@ -12,7 +12,7 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 public class Intake extends SubsystemBase 
 {
     private static TalonFX intakeArmMotor = new TalonFX(Constants.intakeArmMotorID);
-    private static CANSparkMax m_intake = new CANSparkMax(8, CANSparkLowLevel.MotorType.kBrushed);
+    private static CANSparkMax m_intake = new CANSparkMax(8, CANSparkMax.MotorType.kBrushed);
     static DigitalInput outLimitSwitch = new DigitalInput(Constants.outSwitchID);
     static DigitalInput inLimitSwitch = new DigitalInput(Constants.inSwitchID);
     double inLimit;

@@ -73,6 +73,7 @@ public class Aim extends Command {
             var target = getTargetFromID(result, teamTargets[3]);
             double yaw = target.getYaw();
             double pitch = target.getPitch();
+
             //horizontalDistance = tagHeight / tan absolutePitch
             absolutePitch = Constants.cameraPitchOffset + pitch;
             horizontalDistance = speakerTagHeightOverCamera / Math.tan(Units.degreesToRadians(absolutePitch));
@@ -80,6 +81,7 @@ public class Aim extends Command {
             targetPitch = Units.radiansToDegrees(targetPitch);
             shooterAngle = targetPitch + Constants.horizontalShooterAngle;
             Transform3d distance = target.getBestCameraToTarget();
+            
             System.out.println("Target Yaw: " + yaw);
             System.out.println("Target Pitch: " + pitch);
             System.out.println("Horizontal Distance To Target: " + Math.floor(horizontalDistance));
