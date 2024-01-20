@@ -20,6 +20,7 @@ public final class Constants {
     public static final double shooterAngleOffset = 15;
     public static final double shooterGearRatios = 6;
     public static final double horizontalShooterAngle = 20;
+    public static final double mFlapMaxCurrent = 40;
 
     /* Image Tracking Constants */
     public static final double cameraPitchOffset = 26;
@@ -34,6 +35,7 @@ public final class Constants {
     public static final int inSwitchID = 7;
     public static final int mShooterID = 6;
     public static final int mIntakeID = 9;
+    public static final int mFlapID = 10;
 
     public static final class Swerve {
         
