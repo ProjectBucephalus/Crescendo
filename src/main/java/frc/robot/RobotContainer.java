@@ -24,6 +24,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.*;
+import frc.robot.commands.Intake.IntakeDown;
+import frc.robot.commands.Intake.IntakeIn;
+import frc.robot.commands.Intake.IntakeUp;
+import frc.robot.commands.Intake.IntakeOut;
+import frc.robot.commands.Intake.IntakeStowed;
 import frc.robot.subsystems.*;
 
 /**
@@ -111,7 +116,11 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         aim.whileTrue(new Aim(s_Swerve, s_Intake));
-
+        setIntakeUp.whileTrue(new IntakeUp());
+        setIntakeDown.whileTrue(new IntakeDown());
+        intakeInFeed.whileTrue(new IntakeIn());
+        intakeOutFeed.whileTrue(new IntakeOut());
+        IntakeStowed.onTrue(new IntakeStowed());
     }
 
     /**
