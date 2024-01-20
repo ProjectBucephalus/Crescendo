@@ -29,9 +29,11 @@ public final class Constants {
 
     /* CAN IDs */
     public static final int pigeonID = 53;
-    public static final int intakeArmMotorID = 5;
+    public static final int mIntakeArmID = 5;
     public static final int outSwitchID = 8;
     public static final int inSwitchID = 7;
+    public static final int mShooterID = 6;
+    public static final int mIntakeID = 9;
 
     public static final class Swerve {
         

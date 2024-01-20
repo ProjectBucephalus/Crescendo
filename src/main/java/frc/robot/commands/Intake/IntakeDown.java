@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import com.revrobotics.CANSparkLowLevel;
@@ -6,7 +6,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.CAN;
 import frc.robot.subsystems.Intake;
 
-public class IntakeOut extends Command
+public class IntakeDown extends Command
 {
     public void initialize() {
        
@@ -15,15 +15,15 @@ public class IntakeOut extends Command
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-    
-    Intake.intakeOut();  
+        Intake.setIntakeDown();
+      
         
     }
     
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-       
-    Intake.IntakeStop();
-    } 
+        Intake.setIntakeAngleStop();
+    
+    }
 }
