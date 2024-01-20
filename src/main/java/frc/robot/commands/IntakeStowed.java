@@ -18,17 +18,18 @@ public class IntakeStowed extends Command
     {
         if (Intake.inLimitSwitch.get()) 
         {
-            Intake.IntakeArmStop();
+            Intake.intakeArmStop();
         }
         else
         {
-         Intake.setIntakeStowed();
+            Intake.setIntakeStowed();
         }
     }
    
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {
+    public void end(boolean interrupted) 
+    {
     
     
     }
