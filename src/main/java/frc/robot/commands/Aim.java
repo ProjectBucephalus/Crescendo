@@ -38,7 +38,8 @@ public class Aim extends Command {
 
     private double shooterAngle;
 
-    public Aim(Swerve s_Swerve, Intake s_Intake) {
+    public Aim(Swerve s_Swerve, Intake s_Intake) 
+    {
         this.s_Swerve = s_Swerve;
         this.s_Intake = s_Intake;
         this.cam2 = new PhotonCamera("cam2");
