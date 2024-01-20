@@ -127,7 +127,11 @@ public class Intake extends SubsystemBase
      
     public static void setIntakeStowed()
     {
-       // intakeArmMotor.setPosition(inLimit);
+        while (!inLimitSwitch.get()) 
+        {  
+            mIntakeArm.set(0.2);  
+        }
+        mIntake.stopMotor();
     }
 
     public static void intakeArmStop()
