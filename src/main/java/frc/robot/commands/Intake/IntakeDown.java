@@ -15,11 +15,6 @@ public class IntakeDown extends Command
         this.s_Intake = s_Intake;
         addRequirements(s_Intake);
     }
-
-    public void initialize() 
-    {
-       
-    }
     
     // Called every time the scheduler runs while the command is scheduled.
     @Override

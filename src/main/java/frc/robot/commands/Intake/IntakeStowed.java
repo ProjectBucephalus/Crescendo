@@ -8,8 +8,12 @@ import frc.robot.subsystems.Intake;
 
 public class IntakeStowed extends Command
 {
-    public void initialize() {
-       
+    private final Intake s_Intake;
+
+    public IntakeStowed(Intake s_Intake) 
+    {
+        this.s_Intake = s_Intake;
+        addRequirements(s_Intake);
     }
     
     // Called every time the scheduler runs while the command is scheduled.
@@ -24,13 +28,5 @@ public class IntakeStowed extends Command
         {
             Intake.setIntakeStowed();
         }
-    }
-   
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) 
-    {
-    
-    
     }
 }

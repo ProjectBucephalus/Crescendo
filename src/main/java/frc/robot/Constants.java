@@ -33,7 +33,8 @@ public final class Constants {
     public static final int mIntakeArmID = 5;
     public static final int outSwitchID = 8;
     public static final int inSwitchID = 7;
-    public static final int mShooterID = 6;
+    public static final int mShooterTopID = 6;
+    public static final int mShooterBottomID = 11;
     public static final int mIntakeID = 9;
     public static final int mFlapID = 10;
 
