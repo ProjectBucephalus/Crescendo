@@ -17,7 +17,8 @@ public class Intake extends SubsystemBase
     //motors
     private static TalonFX mIntakeArm = new TalonFX(Constants.mIntakeArmID);
     private static CANSparkMax mIntake = new CANSparkMax(Constants.mIntakeID, CANSparkMax.MotorType.kBrushed);
-    private static TalonFX mShooter = new TalonFX(Constants.mShooterID);
+    private static TalonFX mShooterTop = new TalonFX(Constants.mShooterTopID);
+    private static TalonFX mShooterBottom = new TalonFX(Constants.mShooterBottomID);
     private static TalonSRX mFlap = new TalonSRX(Constants.mFlapID);
     //limit switches
     public static DigitalInput outLimitSwitch = new DigitalInput(Constants.outSwitchID);
@@ -35,7 +36,7 @@ public class Intake extends SubsystemBase
     public void moveArm(double armAngle) 
     {
         armAngle += inLimit;
-        mShooter.setPosition(armAngle);
+        mIntakeArm.setPosition(armAngle);
         if (inLimitSwitch.get()) 
         {
             mIntakeArm.stopMotor();
@@ -146,19 +147,22 @@ public class Intake extends SubsystemBase
     /* sets shooter to full speed */
     public static void spinShooter() 
     {
-        mShooter.set(1);
+        mShooterTop.set(1);
+        mShooterBottom.set(1);
     }
 
     /* stops shooter */
     public static void stopShooter() 
     {
-        mShooter.stopMotor();
+        mShooterTop.stopMotor();
+        mShooterBottom.stopMotor();
     }
     
     /* sets shooter to idle speed */
     public static void idleShooter() 
     {
-        mShooter.set(0.5);;
+        mShooterTop.set(0.5);
+        mShooterBottom.set(0.5);
     }
 
     /* opens the feed flap */
