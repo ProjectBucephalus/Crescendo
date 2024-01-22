@@ -15,16 +15,16 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 public class Intake extends SubsystemBase 
 {
     //motors
-    private static TalonFX mIntakeArm = new TalonFX(Constants.mIntakeArmID);
-    private static CANSparkMax mIntake = new CANSparkMax(Constants.mIntakeID, CANSparkMax.MotorType.kBrushed);
-    private static TalonFX mShooter = new TalonFX(Constants.mShooterID);
-    private static TalonSRX mFlap = new TalonSRX(Constants.mFlapID);
+    public TalonFX mIntakeArm = new TalonFX(Constants.mIntakeArmID);
+    public TalonFX mIntake = new TalonFX(Constants.mIntakeID);
+    public TalonFX mShooter = new TalonFX(Constants.mShooterID);
+    public TalonSRX mFlap = new TalonSRX(Constants.mFlapID);
     //limit switches
-    public static DigitalInput outLimitSwitch = new DigitalInput(Constants.outSwitchID);
-    public static DigitalInput inLimitSwitch = new DigitalInput(Constants.inSwitchID);
+    public DigitalInput outLimitSwitch = new DigitalInput(Constants.outSwitchID);
+    public DigitalInput inLimitSwitch = new DigitalInput(Constants.inSwitchID);
     //limits as checked during calibration, to account for encoder drift
-    double inLimit;
-    double outLimit;
+    public double inLimit;
+    public double outLimit;
 
     public Intake() 
     {
@@ -77,7 +77,7 @@ public class Intake extends SubsystemBase
     }
 
     /* drives intake arm down */
-    public static void setIntakeDown()
+    public void setIntakeDown()
     {
         if (inLimitSwitch.get())
         {
@@ -90,7 +90,7 @@ public class Intake extends SubsystemBase
     }
 
     /* drives intake arm up */
-    public static void setIntakeUp()
+    public void setIntakeUp()
     {
        if (outLimitSwitch.get()) 
        {
@@ -103,32 +103,32 @@ public class Intake extends SubsystemBase
     }
     
     /* stops intake arm motion */
-    public static void setIntakeAngleStop()
+    public void setIntakeAngleStop()
     {
         mIntakeArm.set(0);
     }
 
     /* drives the intake to suck pieces in */
-    public static void intakeIn()
+    public void intakeIn()
     {
         mIntake.set(1);
     }
 
     /* stops the intake */
-    public static void intakeStop()
+    public void intakeStop()
     {
         mIntake.set(0);
     }
     
     /* drives the intake to spit pieces out */
-    public static void intakeOut()
+    public void intakeOut()
     {
         mIntake.set(-1);
     }
     
     //commented out for safety's sake. same with reference to it in IntakeStowed file
      
-    public static void setIntakeStowed()
+    public void setIntakeStowed()
     {
         while (!inLimitSwitch.get()) 
         {  
@@ -138,31 +138,31 @@ public class Intake extends SubsystemBase
     }
 
     /* stops the intake arm moving */
-    public static void intakeArmStop()
+    public void intakeArmStop()
     {
         mIntakeArm.stopMotor();
     }
 
     /* sets shooter to full speed */
-    public static void spinShooter() 
+    public void spinShooter() 
     {
         mShooter.set(1);
     }
 
     /* stops shooter */
-    public static void stopShooter() 
+    public void stopShooter() 
     {
         mShooter.stopMotor();
     }
     
     /* sets shooter to idle speed */
-    public static void idleShooter() 
+    public void idleShooter() 
     {
         mShooter.set(0.5);;
     }
 
     /* opens the feed flap */
-    public static void openFlap() 
+    public void openFlap() 
     {
         while (mFlap.getStatorCurrent() <= Constants.mFlapID) 
         {
@@ -172,7 +172,7 @@ public class Intake extends SubsystemBase
     }
 
     /* closes the feed flap */
-    public static void closeFlap () 
+    public void closeFlap () 
     {
         while (mFlap.getStatorCurrent() <= Constants.mFlapID) 
         {

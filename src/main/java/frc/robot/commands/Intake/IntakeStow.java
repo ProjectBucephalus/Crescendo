@@ -1,13 +1,17 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import com.revrobotics.CANSparkLowLevel;
-import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.CAN;
 import frc.robot.subsystems.Intake;
 
-public class IntakeStowed extends Command
+public class IntakeStow extends Command
 {
+
+    Intake s_Intake;
+
+    public IntakeStow(Intake s_Intake) {
+        this.s_Intake = s_Intake;
+    }
+
     public void initialize() {
        
     }
@@ -16,13 +20,13 @@ public class IntakeStowed extends Command
     @Override
     public void execute() 
     {
-        if (Intake.inLimitSwitch.get()) 
+        if (s_Intake.inLimitSwitch.get()) 
         {
-            Intake.intakeArmStop();
+            s_Intake.intakeArmStop();
         }
         else
         {
-            Intake.setIntakeStowed();
+            s_Intake.setIntakeStowed();
         }
     }
    

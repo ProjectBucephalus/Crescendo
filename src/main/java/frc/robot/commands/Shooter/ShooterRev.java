@@ -14,11 +14,11 @@ public class ShooterRev extends Command {
 
     public void execute() 
     {
-        Intake.spinShooter();
+        s_Intake.spinShooter();
     }
 
     public void end(boolean interrupted) 
     {
-        Intake.stopShooter();
+        s_Intake.stopShooter();
     } 
 }

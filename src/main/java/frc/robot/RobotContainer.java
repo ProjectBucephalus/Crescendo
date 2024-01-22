@@ -24,6 +24,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.*;
+import frc.robot.commands.Intake.IntakeDeploy;
+import frc.robot.commands.Intake.IntakeIn;
+import frc.robot.commands.Intake.IntakeUp;
+import frc.robot.commands.Intake.IntakeStow;
+import frc.robot.commands.Shooter.ShooterRev;
 import frc.robot.subsystems.*;
 
 /**
@@ -46,15 +51,22 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
+        // Swerve
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton aim = new JoystickButton(driver, XboxController.Button.kA.value);
-    // these buttons will change
-    private final JoystickButton setIntakeUp = new JoystickButton(driver2, XboxController.Button.kY.value);
-    private final JoystickButton setIntakeDown = new JoystickButton(driver2, XboxController.Button.kA.value);
-    private final JoystickButton intakeInFeed = new JoystickButton(driver2, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton intakeOutFeed = new JoystickButton(driver2, XboxController.Button.kRightBumper.value);
-    private final JoystickButton IntakeStowed = new JoystickButton(driver2, XboxController.Button.kX.value);
+
+        // Intake + Shoot
+    private final JoystickButton dropIntake = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton aimAndShoot = new JoystickButton(driver, XboxController.Button.kX.value);
+        // TODO: Intake from driver station
+
+
+    /* Co-driver Buttons */
+    private final JoystickButton aim = new JoystickButton(driver2, XboxController.Button.kA.value);
+
+        // Intake (Safety measures if something has gone wrong with the game piece)
+    private final JoystickButton intakeIn = new JoystickButton(driver2, XboxController.Button.kA.value);
+    private final JoystickButton intakeOut = new JoystickButton(driver2, XboxController.Button.kLeftBumper.value);
 
 
     /* Subsystems */
@@ -112,6 +124,16 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         aim.whileTrue(new Aim(s_Swerve, s_Intake));
 
+        dropIntake.whileTrue(Commands.parallel(
+                new IntakeDeploy(s_Intake),
+                new IntakeIn(s_Intake)))
+                .onFalse(new IntakeStow(s_Intake));
+        
+        aimAndShoot.whileTrue(Commands.parallel(
+            new IntakeUp(s_Intake), 
+            new ShooterRev(s_Intake)))
+            .onFalse(new IntakeStow(s_Intake));
+        
     }
 
     /**

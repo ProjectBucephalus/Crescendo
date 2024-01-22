@@ -19,18 +19,18 @@ public class ShootSequence extends Command {
     public void execute() 
     {
         double mShooterSpeedDecimal = (Math.abs(mShooter.getRotorVelocity().getValueAsDouble()) / 512); // Output absolute motor speed [0..1]
-        Intake.spinShooter();
+        s_Intake.spinShooter();
         if ((mShooterSpeedDecimal > Math.abs(mShooter.get() * 0.9))) 
         {
-            Intake.openFlap();
-            Intake.intakeIn();
+            s_Intake.openFlap();
+            s_Intake.intakeIn();
         }
     }
 
     public void end(boolean interrupted) 
     {
-        Intake.closeFlap();
-        Intake.idleShooter();
-        Intake.intakeStop();
+        s_Intake.closeFlap();
+        s_Intake.idleShooter();
+        s_Intake.intakeStop();
     } 
 }
