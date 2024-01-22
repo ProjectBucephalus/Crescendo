@@ -11,6 +11,7 @@ import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Intake extends SubsystemBase 
 {
@@ -19,7 +20,7 @@ public class Intake extends SubsystemBase
     public TalonFX mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
 
     public TalonFX mIntake = new TalonFX(Constants.Intake.mIntakeID);
-    public TalonFX mFlap = new TalonFX(Constants.Intake.mFlapID);
+    public TalonFX mFlap = new TalonFX(Constants.Intake.mFlapID); //Victor SPX
 
     public TalonFX mTopShooter = new TalonFX(Constants.Shooter.mTopShooterID);
     public TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
