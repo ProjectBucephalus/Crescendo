@@ -32,7 +32,7 @@ public class Swerve extends SubsystemBase {
     public Pose2d pose;
 
     public Swerve() {
-        gyro = new Pigeon2(Constants.Swerve.pigeonID);
+        gyro = new Pigeon2(Constants.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
 
@@ -176,24 +176,26 @@ public class Swerve extends SubsystemBase {
     //     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.maxSpeed);
     //     setModuleStates(states);
     // }
-    public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+    public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) 
+    {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     
         SwerveModuleState[] targetStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(targetSpeeds);
         setModuleStates(targetStates);
-      }
+    }
 
     @Override
-    public void periodic(){
+    public void periodic()
+    {
         swerveOdometry.update(getGyroYaw(), getModulePositions());
 
-        for(SwerveModule mod : mSwerveMods){
+        for(SwerveModule mod : mSwerveMods)
+        {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
 
-        SmartDashboard.putData(pose);
     }
 
     
