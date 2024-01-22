@@ -6,24 +6,27 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.CAN;
 import frc.robot.subsystems.Intake;
 
-public class IntakeIn extends Command
+public class IntakeSpit extends Command
 {
-    public void initialize() {
-       
+    private final Intake s_Intake;
+
+    public IntakeSpit(Intake s_Intake) 
+    {
+        this.s_Intake = s_Intake;
+        addRequirements(s_Intake);
     }
     
     // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {
-    
-     Intake.intakeIn();
-        
+    public void execute() 
+    {
+        Intake.intakeOut();      
     }
     
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {
-    Intake.intakeStop();
-    
-    }
+    public void end(boolean interrupted) 
+    {
+        Intake.intakeStop();
+    } 
 }

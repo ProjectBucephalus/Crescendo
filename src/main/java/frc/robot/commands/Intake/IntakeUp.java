@@ -8,22 +8,25 @@ import frc.robot.subsystems.Intake;
 
 public class IntakeUp extends Command
 {
-    public void initialize() {
-       
+    private final Intake s_Intake;
+
+    public IntakeUp(Intake s_Intake) 
+    {
+        this.s_Intake = s_Intake;
+        addRequirements(s_Intake);
     }
     
     // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {
-        Intake.setIntakeUp();
-      
-        
+    public void execute() 
+    {
+        Intake.setIntakeUp();   
     }
     
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {
+    public void end(boolean interrupted) 
+    {
         Intake.setIntakeAngleStop();
-    
     }
 }
