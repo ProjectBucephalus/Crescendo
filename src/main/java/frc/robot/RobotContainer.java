@@ -24,9 +24,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.*;
+import frc.robot.commands.Climber.MoveClimber;
 import frc.robot.commands.Intake.IntakeDeploy;
 import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.Intake.IntakeUp;
+import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Intake.IntakeStow;
 import frc.robot.commands.Shooter.ShooterRev;
 import frc.robot.subsystems.*;
@@ -56,12 +58,14 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
         // Intake + Shoot
-    private final JoystickButton dropIntake = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton dropAndIntake = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton aimAndShoot = new JoystickButton(driver, XboxController.Button.kX.value);
         // TODO: Intake from driver station
 
 
     /* Co-driver Buttons */
+    private final int armAxis = XboxController.Axis.kRightY.value;
+    private final int climbAxis = XboxController.Axis.kLeftY.value;
     private final JoystickButton aim = new JoystickButton(driver2, XboxController.Button.kA.value);
 
         // Intake (Safety measures if something has gone wrong with the game piece)
@@ -69,9 +73,14 @@ public class RobotContainer {
     private final JoystickButton intakeOut = new JoystickButton(driver2, XboxController.Button.kLeftBumper.value);
 
 
+    private final JoystickButton spinShooter = new JoystickButton(driver2, XboxController.Button.kA.value);
+    
+
+
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private final Intake s_Intake = new Intake();
+    private final Climber s_Climber = new Climber();
 
     /* Autonomous */
     private final SendableChooser<Command> autoChooser;
@@ -90,6 +99,8 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(strafeAxis),
                         () -> -driver.getRawAxis(rotationAxis),
                         () -> robotCentric.getAsBoolean()));
+        
+        
 
         // Configure the button bindings
         configureButtonBindings();
@@ -122,17 +133,27 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        aim.whileTrue(new Aim(s_Swerve, s_Intake));
+        dropAndIntake.toggleOnTrue(new IntakeIn(s_Intake));
 
-        dropIntake.whileTrue(Commands.parallel(
-                new IntakeDeploy(s_Intake),
-                new IntakeIn(s_Intake)))
-                .onFalse(new IntakeStow(s_Intake));
+        /* Co-Driver manual Commands */
+        spinShooter.toggleOnTrue(new ShooterRev(s_Intake));
+
+        //(new MoveIntake(s_Intake, () -> -driver.getRawAxis(armAxis));
+        //s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -driver.getRawAxis(climbAxis)));
+
+
+        //aim.whileTrue(new Aim(s_Swerve, s_Intake));
+
+        // dropIntake.whileTrue(Commands.parallel(
+        //         new IntakeDeploy(s_Intake),
+        //         new IntakeIn(s_Intake)))
+        //         .onFalse(new IntakeStow(s_Intake));
         
-        aimAndShoot.whileTrue(Commands.parallel(
-            new IntakeUp(s_Intake), 
-            new ShooterRev(s_Intake)))
-            .onFalse(new IntakeStow(s_Intake));
+        // aimAndShoot.whileTrue(Commands.parallel(
+        //     new IntakeUp(s_Intake), 
+        //     new ShooterRev(s_Intake)))
+        //     .onFalse(new IntakeStow(s_Intake));
+
         
     }
 

@@ -123,7 +123,7 @@ public class Intake extends SubsystemBase
     /* drives the intake to suck pieces in */
     public void intakeIn()
     {
-        mIntake.set(1);
+        mIntake.set(-1);
     }
 
     /* stops the intake */
@@ -149,11 +149,7 @@ public class Intake extends SubsystemBase
         mIntake.stopMotor();
     }
 
-    /* stops the intake arm moving */
-    public void intakeArmStop()
-    {
-        setArmMotorSpeeds(0);
-    }
+
 
     /* sets shooter to full speed */
     public void spinShooter() 

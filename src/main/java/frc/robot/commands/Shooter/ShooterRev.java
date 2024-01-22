@@ -9,7 +9,6 @@ public class ShooterRev extends Command {
     public ShooterRev(Intake s_Intake) 
     {
         this.s_Intake = s_Intake;
-        addRequirements(s_Intake);
     }
 
     public void execute() 

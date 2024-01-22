@@ -22,7 +22,7 @@ public class IntakeStow extends Command
     {
         if (s_Intake.leftStowSwitch.get() || s_Intake.rightStowSwitch.get()) 
         {
-            s_Intake.intakeArmStop();
+            s_Intake.setArmMotorSpeeds(0);
         }
         else
         {

@@ -14,7 +14,7 @@ import frc.lib.util.SwerveModuleConstants;
 import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
 
 public final class Constants {
-    public static final double stickDeadband = 0.25;
+    public static final double stickDeadband = 0.3;
     
     /* Shooter Constants */
     public static final double shooterAngleOffset = 15;
@@ -42,7 +42,7 @@ public final class Constants {
 
         public static final int mFlapID = 14;
 
-        public static final int mIntakeID = 9;
+        public static final int mIntakeID = 12;
 
         public static final double FlapMaxCurrent = 40;
     }
