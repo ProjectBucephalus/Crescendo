@@ -15,55 +15,61 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 public class Intake extends SubsystemBase 
 {
     //motors
-    public TalonFX mIntakeArm = new TalonFX(Constants.mIntakeArmID);
-    public TalonFX mIntake = new TalonFX(Constants.mIntakeID);
-    public TalonFX mShooter = new TalonFX(Constants.mShooterID);
-    public TalonSRX mFlap = new TalonSRX(Constants.mFlapID);
-    //limit switches
-    public DigitalInput outLimitSwitch = new DigitalInput(Constants.outSwitchID);
-    public DigitalInput inLimitSwitch = new DigitalInput(Constants.inSwitchID);
-    //limits as checked during calibration, to account for encoder drift
-    public double inLimit;
-    public double outLimit;
+    public TalonFX mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
+    public TalonFX mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
 
-    public Intake() 
-    {
-        mIntakeArm.setPosition(0);
+    public TalonFX mIntake = new TalonFX(Constants.Intake.mIntakeID);
+    public TalonFX mFlap = new TalonFX(Constants.Intake.mFlapID);
+
+    public TalonFX mTopShooter = new TalonFX(Constants.Shooter.mTopShooterID);
+    public TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
+    
+    //limit switches
+    public DigitalInput leftDeploySwitch = new DigitalInput(Constants.Intake.leftOutSwitchID);
+    public DigitalInput leftStowSwitch = new DigitalInput(Constants.Intake.leftInSwitchID);
+    public DigitalInput rightDeploySwitch = new DigitalInput(Constants.Intake.rightOutSwitchID);
+    public DigitalInput rightStowSwitch = new DigitalInput(Constants.Intake.rightInSwitchID);
+    //limits as checked during calibration, to account for encoder drift
+    double intakeStowLimitPos;
+    double intakeDeployLimitPos;
+
+    public Intake() {
+        mLeftPivot.setPosition(0);
+        mRightPivot.setPosition(0);
     }
 
     /* moves the arm to a set position, with safety measures */
     public void moveArm(double armAngle) 
     {
-        armAngle += inLimit;
-        mShooter.setPosition(armAngle);
-        if (inLimitSwitch.get()) 
+        armAngle += intakeStowLimitPos;
+        if (leftStowSwitch.get() || rightStowSwitch.get()) 
         {
-            mIntakeArm.stopMotor();
-            inLimit = mIntakeArm.getPosition().getValueAsDouble();
+            setArmMotorSpeeds(0);
+            intakeStowLimitPos = mLeftPivot.getPosition().getValueAsDouble();
         } 
-        else if (outLimitSwitch.get()) 
+        else if (leftDeploySwitch.get() || rightDeploySwitch.get()) 
         {
-            mIntakeArm.stopMotor();
-            outLimit = mIntakeArm.getPosition().getValueAsDouble();
+            setArmMotorSpeeds(0);
+            intakeDeployLimitPos = mLeftPivot.getPosition().getValueAsDouble();
         }
     }
 
     /* calibrates the limits */
     public void calibrateLimits() 
     {    
-        while (!inLimitSwitch.get()) 
+        while (!leftStowSwitch.get() || !rightStowSwitch.get()) 
         {  
-            mIntakeArm.set(0.1);  
+            setArmMotorSpeeds(0.1);
         }
-        mIntakeArm.stopMotor();
-        inLimit = mIntakeArm.getPosition().getValueAsDouble();
+        setArmMotorSpeeds(0);
+        intakeStowLimitPos = mLeftPivot.getPosition().getValueAsDouble();
         
-        while (!outLimitSwitch.get()) 
+        while (!leftDeploySwitch.get() || !rightDeploySwitch.get()) 
         {  
-            mIntakeArm.set(-0.1);
+            setArmMotorSpeeds(-0.1);
         }
-        mIntakeArm.stopMotor();
-        outLimit = mIntakeArm.getPosition().getValueAsDouble();
+        setArmMotorSpeeds(0);
+        intakeDeployLimitPos = mLeftPivot.getPosition().getValueAsDouble();
         System.out.println("Calibration done");
     }
 
@@ -76,36 +82,41 @@ public class Intake extends SubsystemBase
         return targetAngle;
     }
 
+    public void setArmMotorSpeeds(double speed) {
+        mLeftPivot.set(speed);
+        mRightPivot.set(-speed);
+    }
+
     /* drives intake arm down */
     public void setIntakeDown()
     {
-        if (inLimitSwitch.get())
+        if (leftStowSwitch.get() || leftStowSwitch.get())
         {
-            mIntakeArm.set(0);
+            setArmMotorSpeeds(0);
         } 
         else 
         {
-            mIntakeArm.set(-0.20);
+            setArmMotorSpeeds(-0.20);
         }
     }
 
     /* drives intake arm up */
     public void setIntakeUp()
     {
-       if (outLimitSwitch.get()) 
+       if (leftDeploySwitch.get() || rightDeploySwitch.get()) 
        {
-            mIntakeArm.set(0);
+            setArmMotorSpeeds(0);
        } 
        else 
        {
-            mIntakeArm.set(0.20);
+            setArmMotorSpeeds(0.2);
        }
     }
     
     /* stops intake arm motion */
     public void setIntakeAngleStop()
     {
-        mIntakeArm.set(0);
+        setArmMotorSpeeds(0);
     }
 
     /* drives the intake to suck pieces in */
@@ -130,9 +141,9 @@ public class Intake extends SubsystemBase
      
     public void setIntakeStowed()
     {
-        while (!inLimitSwitch.get()) 
+        while (leftStowSwitch.get() || !rightStowSwitch.get()) 
         {  
-            mIntakeArm.set(0.2);  
+            setArmMotorSpeeds(0.2);;  
         }
         mIntake.stopMotor();
     }
@@ -140,44 +151,47 @@ public class Intake extends SubsystemBase
     /* stops the intake arm moving */
     public void intakeArmStop()
     {
-        mIntakeArm.stopMotor();
+        setArmMotorSpeeds(0);
     }
 
     /* sets shooter to full speed */
     public void spinShooter() 
     {
-        mShooter.set(1);
+        mTopShooter.set(1);
+        mBottomShooter.set(1);
     }
 
     /* stops shooter */
     public void stopShooter() 
     {
-        mShooter.stopMotor();
+        mTopShooter.set(0);
+        mBottomShooter.set(0);
     }
     
     /* sets shooter to idle speed */
     public void idleShooter() 
     {
-        mShooter.set(0.5);;
+        mTopShooter.set(0.5);
+        mBottomShooter.set(0.5);
     }
 
     /* opens the feed flap */
     public void openFlap() 
     {
-        while (mFlap.getStatorCurrent() <= Constants.mFlapID) 
+        while (mFlap.getTorqueCurrent().getValueAsDouble() <= Constants.Intake.FlapMaxCurrent) 
         {
-            mFlap.set(ControlMode.PercentOutput, 0.5);
+            mFlap.set(0.5);
         }
-        mFlap.set(ControlMode.PercentOutput, 0);
+        mFlap.set(0);
     }
 
     /* closes the feed flap */
     public void closeFlap () 
     {
-        while (mFlap.getStatorCurrent() <= Constants.mFlapID) 
+        while (mFlap.getStatorCurrent().getValueAsDouble() <= Constants.Intake.FlapMaxCurrent) 
         {
-            mFlap.set(ControlMode.PercentOutput, -0.5);
+            mFlap.set(-0.5);
         }
-        mFlap.set(ControlMode.PercentOutput, 0);
+        mFlap.set(0);
     }
 }

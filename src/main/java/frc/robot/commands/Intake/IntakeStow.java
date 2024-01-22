@@ -20,7 +20,7 @@ public class IntakeStow extends Command
     @Override
     public void execute() 
     {
-        if (s_Intake.inLimitSwitch.get()) 
+        if (s_Intake.leftStowSwitch.get() || s_Intake.rightStowSwitch.get()) 
         {
             s_Intake.intakeArmStop();
         }

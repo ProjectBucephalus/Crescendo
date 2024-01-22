@@ -8,7 +8,8 @@ import frc.robot.subsystems.Intake;
 
 public class ShootSequence extends Command {
     private final Intake s_Intake;
-    private static TalonFX mShooter = new TalonFX(Constants.mShooterID);
+    private static TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
+    private static TalonFX mTopShooter = new TalonFX(Constants.Shooter.mTopShooterID);
 
     public ShootSequence(Intake s_Intake) 
     {
@@ -18,9 +19,9 @@ public class ShootSequence extends Command {
 
     public void execute() 
     {
-        double mShooterSpeedDecimal = (Math.abs(mShooter.getRotorVelocity().getValueAsDouble()) / 512); // Output absolute motor speed [0..1]
+        double mShooterSpeedDecimal = (Math.abs(mTopShooter.getRotorVelocity().getValueAsDouble()) / 512); // Output absolute motor speed [0..1]
         s_Intake.spinShooter();
-        if ((mShooterSpeedDecimal > Math.abs(mShooter.get() * 0.9))) 
+        if ((mShooterSpeedDecimal > Math.abs(mTopShooter.get() * 0.9))) 
         {
             s_Intake.openFlap();
             s_Intake.intakeIn();
