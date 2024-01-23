@@ -2,6 +2,8 @@ package frc.robot;
 
 import java.util.ArrayList;
 
+import org.photonvision.PhotonCamera;
+
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -23,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
 import frc.robot.commands.Climber.MoveClimber;
 import frc.robot.commands.Intake.IntakeDeploy;
@@ -78,9 +81,11 @@ public class RobotContainer {
 
 
     /* Subsystems */
+    PhotonCamera camera = new PhotonCamera("FrontCam");
     private final Swerve s_Swerve = new Swerve();
     private final Intake s_Intake = new Intake();
     private final Climber s_Climber = new Climber();
+    private final Vision s_Vision = new Vision(camera);
 
     /* Autonomous */
     private final SendableChooser<Command> autoChooser;
@@ -99,7 +104,7 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(strafeAxis),
                         () -> -driver.getRawAxis(rotationAxis),
                         () -> robotCentric.getAsBoolean()));
-        
+        s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
         
 
         // Configure the button bindings
@@ -166,5 +171,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
     }
+    
 
 }
