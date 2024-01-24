@@ -20,14 +20,14 @@ public class IntakeIn extends Command
     @Override
     public void execute() {
     
-     s_Intake.intakeIn();
+     s_Intake.setIntakeSpeed(-1);
         
     }
     
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-    s_Intake.intakeStop();
+    s_Intake.setIntakeSpeed(0);
     
     }
 }

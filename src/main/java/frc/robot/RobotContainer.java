@@ -35,7 +35,6 @@ import frc.robot.commands.*;
 import frc.robot.commands.Climber.MoveClimber;
 import frc.robot.commands.Intake.IntakeDeploy;
 import frc.robot.commands.Intake.IntakeIn;
-import frc.robot.commands.Intake.IntakeUp;
 import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Intake.Flap.CloseFlap;
 import frc.robot.commands.Intake.Flap.OpenFlap;
@@ -74,14 +73,13 @@ public class RobotContainer {
     private final JoystickButton INTAKE_BUTTON         = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
     private final int            BRAKE_AXIS            = XboxController.Axis.kRightTrigger.value;
     
-
-
     /* Co-Driver Buttons */
     private final int            SHOOT_BUTTON                  = XboxController.Axis.kLeftTrigger.value;
     private final JoystickButton FLAP_TOGGLE                   = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
     private final int            INTAKE_IN_BUTTON              = XboxController.Axis.kRightTrigger.value;
     private final JoystickButton INTAKE_OUT_BUTTON             = new JoystickButton(coDriver, XboxController.Button.kRightBumper.value);
     private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kLeftY.value;
+    private final int            MANUAL_SHOTER_AXIS             = XboxController.Axis.kLeftY.value;
     private final POVButton      DEPLOY_BUDDY_CLIMBER          = new POVButton(coDriver, 270, 0);
     private final POVButton      AUTO_CLIMB_OUT                = new POVButton(coDriver, 0, 0);
     private final POVButton      RETRACT_BUDDY_CLIMBER         = new POVButton(coDriver, 90, 0);
@@ -119,9 +117,9 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(rotationAxis),
                         () -> robotCentric.getAsBoolean()));
         s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
-        
+        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));
+        s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));        
 
-        // Configure the button bindings
         configureButtonBindings();
 
         // NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
@@ -154,8 +152,8 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
         /* Co-Driver Buttons */
-        INTAKE_BUTTON.toggleOnTrue(new IntakeDeploy(s_Intake));
-        INTAKE_BUTTON.toggleOnFalse(new ParallelCommandGroup(new IntakeStow(s_Intake), new IntakeStop(s_Intake)));
+        INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake));
+        INTAKE_BUTTON.onFalse(new IntakeStow(s_Intake));
 
         
     }

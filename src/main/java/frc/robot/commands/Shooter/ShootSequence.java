@@ -24,7 +24,7 @@ public class ShootSequence extends Command {
         if ((mShooterSpeedDecimal > Math.abs(mTopShooter.get() * 0.9))) 
         {
             // s_Intake.openFlap();
-            s_Intake.intakeIn();
+            s_Intake.setIntakeSpeed(-1);
         }
     }
 
@@ -32,6 +32,6 @@ public class ShootSequence extends Command {
     {
         // s_Intake.closeFlap();
         s_Intake.idleShooter();
-        s_Intake.intakeStop();
+        s_Intake.setIntakeSpeed(0);
     } 
 }

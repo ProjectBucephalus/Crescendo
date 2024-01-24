@@ -98,6 +98,7 @@ public final class Constants {
     public static final class Climber {
         public static final int mLeftClimbID = 17;
         public static final int mRightClimbID = 14;
+        public static final double maxRevolutions = 320; //3.2 with gear ratio
     }
 
     public static final class Swerve {

@@ -20,14 +20,13 @@ public class IntakeStop extends Command
     @Override
     public void execute() {
     
-        s_Intake.intakeOut();  
+        s_Intake.setIntakeSpeed(0);  
         
     }
     
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-       
-    s_Intake.intakeStop();
+        
     } 
 }

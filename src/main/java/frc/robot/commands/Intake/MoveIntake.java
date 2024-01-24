@@ -15,9 +15,8 @@ public class MoveIntake extends Command {
 
     public MoveIntake(Intake s_Intake, DoubleSupplier speedSupplier) {
         this.s_Intake = s_Intake;
-        //addRequirements(s_Intake);
         this.speed = speedSupplier;
-        //addRequirements(s_Intake);
+        addRequirements(s_Intake);
     }
 
     

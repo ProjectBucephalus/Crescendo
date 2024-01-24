@@ -110,7 +110,7 @@ public class Aim extends Command {
 
         ChassisSpeeds speeds = new ChassisSpeeds(0, 0, rotationSpeed);
         s_Swerve.driveRobotRelative(speeds);
-        s_Intake.moveArm(s_Intake.angleToEncoderPosition(shooterAngle));
+        s_Intake.moveArmToAngle(shooterAngle);
 
         System.out.println("------------------------------------------");
     }
