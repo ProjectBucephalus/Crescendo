@@ -171,11 +171,6 @@ public class Swerve extends SubsystemBase {
         return Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
-    // public void driveRobotRelative(ChassisSpeeds speeds){
-    //     SwerveModuleState[] states = Constants.Swerve.swerveKinematics.toSwerveModuleStates(speeds);
-    //     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.maxSpeed);
-    //     setModuleStates(states);
-    // }
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) 
     {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
@@ -195,6 +190,9 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
+
+        SmartDashboard.putNumber("Pose X (Vision)", getPose().getX());
+        SmartDashboard.putNumber("Pose Y (Vision)", getPose().getY());
 
     }
 

@@ -16,7 +16,6 @@ public class multiTagPoseEstimatior extends Command {
 
     @Override
     public void execute() {
-        pos = s_Vision.getFieldRelPos();
-        System.out.println(pos);
+        s_Vision.updateSwervePose();
     }
 }

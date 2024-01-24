@@ -20,7 +20,7 @@ public class IntakeOut extends Command
     @Override
     public void execute() {
     
-    s_Intake.intakeOut();  
+    s_Intake.setIntakeSpeed(1);  
         
     }
     
@@ -28,6 +28,6 @@ public class IntakeOut extends Command
     @Override
     public void end(boolean interrupted) {
        
-    s_Intake.intakeStop();
+        s_Intake.setIntakeSpeed(0);  
     } 
 }

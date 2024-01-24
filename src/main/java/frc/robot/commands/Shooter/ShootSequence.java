@@ -23,14 +23,14 @@ public class ShootSequence extends Command {
         s_Intake.spinShooter();
         if ((mShooterSpeedDecimal > Math.abs(mTopShooter.get() * 0.9))) 
         {
-            s_Intake.openFlap();
+            // s_Intake.openFlap();
             s_Intake.intakeIn();
         }
     }
 
     public void end(boolean interrupted) 
     {
-        s_Intake.closeFlap();
+        // s_Intake.closeFlap();
         s_Intake.idleShooter();
         s_Intake.intakeStop();
     } 

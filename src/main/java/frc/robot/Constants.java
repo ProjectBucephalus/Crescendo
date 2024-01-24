@@ -1,10 +1,13 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -18,7 +21,6 @@ public final class Constants {
     
     /* Shooter Constants */
     public static final double shooterAngleOffset = 15;
-    public static final double shooterGearRatios = 6;
     public static final double horizontalShooterAngle = 20;
     public static final double mFlapMaxCurrent = 40;
 
@@ -30,6 +32,25 @@ public final class Constants {
 
     /* CAN IDs */
     public static final int pigeonID = 53;
+
+    public static final class Vision {
+        /* Names */
+        public static final String frontCamName = "FrontCam";
+        public static final String backCamName = "BackCam";
+
+        /* Offsets */
+        public static final Transform3d frontCamToRobot = new Transform3d( // Meters and Radians
+            0,0,0.525,
+            new Rotation3d(
+            0,0,Units.degreesToRadians(45)
+            ));
+        public static final Transform3d backCamToRobot = new Transform3d( // Meters and Radians
+            0,0,0,
+            new Rotation3d(
+            0,0,0
+            ));
+        
+    }
 
     public static final class Intake {
         public static final int mLeftPivotID = 13;
@@ -45,6 +66,28 @@ public final class Constants {
         public static final int mIntakeID = 12;
 
         public static final double FlapMaxCurrent = 40;
+
+        /* Arm Ratios and Limis */
+        public static final double armGearRatio = (0.357142857); 
+        public static final double armGearMaxRange = 1.76278254; // Radians from stowed to intake pos  
+        
+
+        public static final NeutralModeValue armMotorNeutralMode = NeutralModeValue.Brake;
+        public static final InvertedValue leftArmMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue rightArmMotorInvert = InvertedValue.Clockwise_Positive;
+
+        public static double angleKP;
+        public static double angleKI;
+        public static double angleKD;
+        public static final int armCurrentLimit = 38;
+        public static final int armCurrentThreshold = 65;
+        public static final double armCurrentThresholdTime = 0.1;
+        public static final boolean armEnableCurrentLimit = true;
+
+        public static double armKP = 10;
+        public static double armKI = 0;
+        public static double armKD = 0;
+        
     }
     
     public static final class Shooter {
