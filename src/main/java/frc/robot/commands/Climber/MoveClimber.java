@@ -16,7 +16,7 @@ public class MoveClimber extends Command {
     public MoveClimber(Climber climber, DoubleSupplier speed_sup) {
         this.climber = climber;
         this.speed = speed_sup;
-        //addRequirements(climber);
+        addRequirements(climber);
         
     }
 

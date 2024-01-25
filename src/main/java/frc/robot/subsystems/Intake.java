@@ -34,17 +34,21 @@ public class Intake extends SubsystemBase
     public Intake() {
         mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
         mLeftPivot.getConfigurator().apply(CTREConfigs.leftArmMotorFXConfig);
-        mLeftPivot.setPosition(0);
+        mLeftPivot.getConfigurator().setPosition(0);
 
         mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
         mRightPivot.getConfigurator().apply(CTREConfigs.rightArmMotorFXConfig);
-        mRightPivot.setPosition(0);
+        mRightPivot.getConfigurator().setPosition(0);
     }
 
     /* moves the arm to a set position, In radians */
     public void moveArmToAngle(double armAngle) { // TODO add limit switch protections
         mLeftPivot.setControl(anglePosition.withPosition(armAngle));
         mRightPivot.setControl(anglePosition.withPosition(armAngle));
+    }
+
+    public double getArmPos() {
+        return mLeftPivot.getPosition().getValueAsDouble();
     }
 
     public void setArmMotorSpeeds(double speed) {
@@ -72,8 +76,8 @@ public class Intake extends SubsystemBase
     /* sets shooter to full speed */
     public void spinShooter() 
     {
-        mTopShooter.set(1);
-        mBottomShooter.set(1);
+        mTopShooter.set(Constants.Shooter.maxTopShooterSpeed);
+        mBottomShooter.set(Constants.Shooter.maxBottomShooterSpeed);
     }
 
     /* stops shooter */
@@ -86,8 +90,8 @@ public class Intake extends SubsystemBase
     /* sets shooter to idle speed */
     public void idleShooter() 
     {
-        mTopShooter.set(0.5);
-        mBottomShooter.set(0.5);
+        mTopShooter.set(Constants.Shooter.shooterIdleSpeed);
+        mBottomShooter.set(Constants.Shooter.shooterIdleSpeed);
     }
 
     public void setFlapSpeed(double speed) {

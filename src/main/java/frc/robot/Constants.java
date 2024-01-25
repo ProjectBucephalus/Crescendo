@@ -35,17 +35,23 @@ public final class Constants {
 
     public static final class Vision {
         /* Names */
-        public static final String frontCamName = "FrontCam";
+        public static final String leftCamName = "LeftCam";
+        public static final String rightCamName = "RightCam";
         public static final String backCamName = "BackCam";
 
         /* Offsets */
-        public static final Transform3d frontCamToRobot = new Transform3d( // Meters and Radians
+        public static final Transform3d leftCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
             0,0,0.525,
             new Rotation3d(
-            0,0,Units.degreesToRadians(45)
+            0,Units.degreesToRadians(45),Units.degreesToRadians(30)
             ));
-        public static final Transform3d backCamToRobot = new Transform3d( // Meters and Radians
-            0,0,0,
+        public static final Transform3d rightCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
+            0,0,0.525,
+            new Rotation3d(
+            0,Units.degreesToRadians(45),Units.degreesToRadians(45)
+            ));
+        public static final Transform3d backCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
+            0,0,0.525,
             new Rotation3d(
             0,0,0
             ));
@@ -68,7 +74,7 @@ public final class Constants {
         public static final double FlapMaxCurrent = 40;
 
         /* Arm Ratios and Limis */
-        public static final double armGearRatio = (0.357142857); 
+        public static final double armGearRatio = (28); 
         public static final double armGearMaxRange = 1.76278254; // Radians from stowed to intake pos  
         
 
@@ -82,7 +88,7 @@ public final class Constants {
         public static final int armCurrentLimit = 38;
         public static final int armCurrentThreshold = 65;
         public static final double armCurrentThresholdTime = 0.1;
-        public static final boolean armEnableCurrentLimit = true;
+        public static final boolean armEnableCurrentLimit = false;
 
         public static double armKP = 10;
         public static double armKI = 0;
@@ -93,6 +99,11 @@ public final class Constants {
     public static final class Shooter {
         public static final int mTopShooterID = 15;
         public static final int mBottomShooterID = 23;
+
+        public static final double maxTopShooterSpeed = 0.8;
+        public static final double maxBottomShooterSpeed = 0.8;
+
+        public static final double shooterIdleSpeed = 0.5;
     }
 
     public static final class Climber {

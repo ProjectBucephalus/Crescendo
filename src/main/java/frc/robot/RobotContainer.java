@@ -35,6 +35,7 @@ import frc.robot.commands.*;
 import frc.robot.commands.Climber.MoveClimber;
 import frc.robot.commands.Intake.IntakeDeploy;
 import frc.robot.commands.Intake.IntakeIn;
+import frc.robot.commands.Intake.IntakeOut;
 import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Intake.Flap.CloseFlap;
 import frc.robot.commands.Intake.Flap.OpenFlap;
@@ -94,9 +95,9 @@ public class RobotContainer {
     private final Intake s_Intake = new Intake();
     private final Climber s_Climber = new Climber();
 
-    PhotonCamera frontCamera = new PhotonCamera(Constants.Vision.frontCamName);
-    PhotonCamera backCamera = new PhotonCamera(Constants.Vision.backCamName);
-    private final Vision s_Vision = new Vision(frontCamera, backCamera, s_Swerve);
+    PhotonCamera leftCamera = new PhotonCamera(Constants.Vision.leftCamName);
+    PhotonCamera rightCamera = new PhotonCamera(Constants.Vision.rightCamName);
+    private final Vision s_Vision = new Vision(leftCamera, rightCamera, s_Swerve);
     
 
     /* Autonomous */
@@ -118,7 +119,7 @@ public class RobotContainer {
                         () -> robotCentric.getAsBoolean()));
         s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
         s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));
-        s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));        
+        //s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));        
 
         configureButtonBindings();
 
@@ -151,9 +152,13 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
+        INTAKE_BUTTON.toggleOnTrue(new IntakeIn(s_Intake));
+        INTAKE_OUT_BUTTON.toggleOnTrue(new IntakeOut(s_Intake));
+        MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Intake));
         /* Co-Driver Buttons */
-        INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake));
-        INTAKE_BUTTON.onFalse(new IntakeStow(s_Intake));
+        // INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake));
+        // INTAKE_BUTTON.onFalse(new IntakeStow(s_Intake));
+        MANUAL_SHOOTER_TO_AMP_POS.onTrue(new IntakeDeploy(s_Intake));
 
         
     }

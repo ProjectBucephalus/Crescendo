@@ -1,5 +1,6 @@
 package frc.robot.commands.Intake;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
@@ -24,8 +25,9 @@ public class IntakeDeploy extends Command
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        s_Intake.moveArmToAngle(Constants.Intake.armGearMaxRange);
+        s_Intake.moveArmToAngle(1);
         s_Intake.setIntakeSpeed(-1);  
+        SmartDashboard.putNumber("Arm Pos", s_Intake.getArmPos());
     }
     
     // Called once the command ends or is interrupted.

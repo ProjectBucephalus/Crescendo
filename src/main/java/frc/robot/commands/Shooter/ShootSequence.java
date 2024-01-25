@@ -11,27 +11,27 @@ public class ShootSequence extends Command {
     private static TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
     private static TalonFX mTopShooter = new TalonFX(Constants.Shooter.mTopShooterID);
 
-    public ShootSequence(Intake s_Intake) 
-    {
+    public ShootSequence(Intake s_Intake) {
         this.s_Intake = s_Intake;
         addRequirements(s_Intake);
     }
 
-    public void execute() 
-    {
-        double mShooterSpeedDecimal = (Math.abs(mTopShooter.getRotorVelocity().getValueAsDouble()) / 512); // Output absolute motor speed [0..1]
+    public void execute() {
+        double mShooterSpeedDecimal = (Math.abs(mTopShooter.getRotorVelocity().getValueAsDouble()) / 512); // Output
+                                                                                                           // absolute
+                                                                                                           // motor
+                                                                                                           // speed
+                                                                                                           // [0..1]
         s_Intake.spinShooter();
-        if ((mShooterSpeedDecimal > Math.abs(mTopShooter.get() * 0.9))) 
-        {
+        if ((mShooterSpeedDecimal > Math.abs(mTopShooter.get() * 0.9))) {
             // s_Intake.openFlap();
             s_Intake.setIntakeSpeed(-1);
         }
     }
 
-    public void end(boolean interrupted) 
-    {
+    public void end(boolean interrupted) {
         // s_Intake.closeFlap();
         s_Intake.idleShooter();
         s_Intake.setIntakeSpeed(0);
-    } 
+    }
 }
