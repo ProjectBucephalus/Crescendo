@@ -75,12 +75,13 @@ public final class Constants {
 
         /* Arm Ratios and Limis */
         public static final double armGearRatio = (28); 
-        public static final double armGearMaxRange = 1.76278254; // Radians from stowed to intake pos  
+        public static final double armGearMaxRange = 1.7; // Radians from stowed to intake pos  
+        public static final double armAmpPos = 1.2;
         
 
         public static final NeutralModeValue armMotorNeutralMode = NeutralModeValue.Brake;
-        public static final InvertedValue leftArmMotorInvert = InvertedValue.CounterClockwise_Positive;
-        public static final InvertedValue rightArmMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue leftArmMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue rightArmMotorInvert = InvertedValue.CounterClockwise_Positive;
 
         public static double angleKP;
         public static double angleKI;
@@ -90,7 +91,7 @@ public final class Constants {
         public static final double armCurrentThresholdTime = 0.1;
         public static final boolean armEnableCurrentLimit = false;
 
-        public static double armKP = 10;
+        public static double armKP = 20;
         public static double armKI = 0;
         public static double armKD = 0;
         
@@ -101,7 +102,7 @@ public final class Constants {
         public static final int mBottomShooterID = 23;
 
         public static final double maxTopShooterSpeed = 0.8;
-        public static final double maxBottomShooterSpeed = 0.8;
+        public static final double maxBottomShooterSpeed = 0.8; // AMP TOP: 0.450000 bottom: 0.05
 
         public static final double shooterIdleSpeed = 0.5;
     }

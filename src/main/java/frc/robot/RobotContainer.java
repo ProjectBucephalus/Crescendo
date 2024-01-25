@@ -79,7 +79,7 @@ public class RobotContainer {
     private final JoystickButton FLAP_TOGGLE                   = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
     private final int            INTAKE_IN_BUTTON              = XboxController.Axis.kRightTrigger.value;
     private final JoystickButton INTAKE_OUT_BUTTON             = new JoystickButton(coDriver, XboxController.Button.kRightBumper.value);
-    private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kLeftY.value;
+    private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kRightY.value;
     private final int            MANUAL_SHOTER_AXIS             = XboxController.Axis.kLeftY.value;
     private final POVButton      DEPLOY_BUDDY_CLIMBER          = new POVButton(coDriver, 270, 0);
     private final POVButton      AUTO_CLIMB_OUT                = new POVButton(coDriver, 0, 0);
@@ -118,7 +118,8 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(rotationAxis),
                         () -> robotCentric.getAsBoolean()));
         s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
-        //s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));        
+        //s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));   
+        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));     
 
         configureButtonBindings();
 
@@ -151,13 +152,15 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
-        INTAKE_BUTTON.toggleOnTrue(new IntakeSuck(s_Intake));
-        INTAKE_OUT_BUTTON.toggleOnTrue(new IntakeSpit(s_Intake));
+        //INTAKE_BUTTON.toggleOnTrue(new IntakeSuck(s_Intake));
+        INTAKE_OUT_BUTTON.whileTrue(new IntakeSpit(s_Intake));
         MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Intake));
         /* Co-Driver Buttons */
         // INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake));
         // INTAKE_BUTTON.onFalse(new IntakeStow(s_Intake));
-        MANUAL_SHOOTER_TO_AMP_POS.onTrue(new IntakeDeploy(s_Intake));
+        INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
+        MANUAL_INTAKE_TO_INTAKE_POS.whileTrue(new IntakeSuck(s_Intake));
+        //MANUAL_SHOOTER_TO_AMP_POS.onTrue(new IntakeToAmp)
 
         
     }

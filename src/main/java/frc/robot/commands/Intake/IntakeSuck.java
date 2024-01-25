@@ -20,7 +20,7 @@ public class IntakeSuck extends Command
     @Override
     public void execute() {
     
-     s_Intake.setIntakeSpeed(-1);
+     s_Intake.setIntakeSpeed(-0.4);
         
     }
     
