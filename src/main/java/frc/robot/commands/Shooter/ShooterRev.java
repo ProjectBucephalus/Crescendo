@@ -6,7 +6,8 @@ import frc.robot.subsystems.Intake;
 public class ShooterRev extends Command {
     private final Intake s_Intake;
 
-    public ShooterRev(Intake s_Intake) {
+    public ShooterRev(Intake s_Intake) 
+    {
         this.s_Intake = s_Intake;
     }
 

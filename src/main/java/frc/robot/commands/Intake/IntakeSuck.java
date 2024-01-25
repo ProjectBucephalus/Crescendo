@@ -3,12 +3,12 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
-public class IntakeIn extends Command
+public class IntakeSuck extends Command
 {
 
     Intake s_Intake;
 
-    public IntakeIn(Intake s_Intake) {
+    public IntakeSuck(Intake s_Intake) {
         this.s_Intake = s_Intake;
     }
 

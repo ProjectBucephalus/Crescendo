@@ -118,7 +118,6 @@ public final class Constants {
 
         public static final COTSTalonFXSwerveConstants chosenModule = COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
-
         /* Drivetrain Constants */
         public static final double trackWidth = 0.48;
         public static final double wheelBase = 0.48;
@@ -228,6 +227,7 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
     }
+    
 
     public static final class AutoConstants { //TODO
         public static final double kMaxSpeedMetersPerSecond = 4;
