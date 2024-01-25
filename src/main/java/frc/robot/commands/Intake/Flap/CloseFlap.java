@@ -1,17 +1,15 @@
-package frc.robot.commands.Intake;
+package frc.robot.commands.Intake.Flap;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
-public class IntakeSuck extends Command
-{
+public class CloseFlap extends Command {
 
-    Intake s_Intake;
+    frc.robot.subsystems.Intake s_Intake;
 
-    public IntakeSuck(Intake s_Intake) {
+    public CloseFlap (Intake s_Intake) {
         this.s_Intake = s_Intake;
     }
-
     public void initialize() {
        
     }
@@ -20,14 +18,14 @@ public class IntakeSuck extends Command
     @Override
     public void execute() {
     
-     s_Intake.setIntakeSpeed(-1);
+        s_Intake.setFlapSpeed(1);
         
     }
     
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-    s_Intake.setIntakeSpeed(0);
+        s_Intake.setFlapSpeed(0);
     
     }
 }

@@ -1,30 +1,16 @@
 package frc.robot.subsystems;
-import frc.robot.Constants;
 
-import com.revrobotics.CANSparkLowLevel;
-import com.revrobotics.CANSparkMax;
+import com.ctre.phoenix6.hardware.TalonFX;
 
-public class Climber {
-    private static CANSparkMax m_Climber = new CANSparkMax(Constants.Climber.climbMotorID, CANSparkLowLevel.MotorType.kBrushed);
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-    private static double motorSpeed = Constants.Climber.climbMotorSpeed;
-
-    //climber go up
-    public static void climberUp() 
-    {
-        m_Climber.set(motorSpeed);
-    }
+public class Climber extends SubsystemBase{
     
-    //climber go down
-    public static void climberDown() 
-    {
-        m_Climber.set(-motorSpeed);
-    }
+    public TalonFX mLeftClimber = new TalonFX(17);
+    public TalonFX mRightClimber = new TalonFX(14);
 
-    //climber stop
-    public static void climberStop() 
-    {
-        m_Climber.stopMotor();
+    public void setSpeed(double speed) {
+        mLeftClimber.set(speed);
+        mRightClimber.set(-speed);
     }
-
 }

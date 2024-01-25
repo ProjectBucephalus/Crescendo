@@ -2,6 +2,8 @@ package frc.robot;
 
 import java.util.ArrayList;
 
+import org.photonvision.PhotonCamera;
+
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -21,9 +23,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
+import frc.robot.commands.Climber.MoveClimber;
+import frc.robot.commands.Intake.IntakeDeploy;
+import frc.robot.commands.Intake.IntakeIn;
+import frc.robot.commands.Intake.IntakeOut;
+import frc.robot.commands.Intake.MoveIntake;
+import frc.robot.commands.Intake.Flap.CloseFlap;
+import frc.robot.commands.Intake.Flap.OpenFlap;
+import frc.robot.commands.Intake.IntakeStow;
+import frc.robot.commands.Shooter.ShooterRev;
 import frc.robot.subsystems.*;
 
 /**
@@ -38,7 +55,7 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
     /* Controllers */
     private final Joystick driver = new Joystick(0);
-    private final Joystick driver2 = new Joystick(1);
+    private final Joystick coDriver = new Joystick(1);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -46,20 +63,42 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
+        // Swerve
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton aim = new JoystickButton(driver, XboxController.Button.kA.value);
-    // these buttons will change
-    private final JoystickButton setIntakeUp = new JoystickButton(driver2, XboxController.Button.kY.value);
-    private final JoystickButton setIntakeDown = new JoystickButton(driver2, XboxController.Button.kA.value);
-    private final JoystickButton intakeInFeed = new JoystickButton(driver2, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton intakeOutFeed = new JoystickButton(driver2, XboxController.Button.kRightBumper.value);
-    private final JoystickButton IntakeStowed = new JoystickButton(driver2, XboxController.Button.kX.value);
-
+    
+    private final POVButton      LOCK_CLIMBER_BUTTON   = new POVButton(driver, 0, 0); // The POV angles start at 0 in the up direction, and increase clockwise (e.g. right is 90, upper-left is 315).
+    private final POVButton      UNLOCK_CLIMBER_BUTTON = new POVButton(driver, 180, 0);
+    private final int            ALIGN_TO_SPEAKER      = XboxController.Axis.kLeftTrigger.value;
+    private final JoystickButton ALIGN_TO_AMP          = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton INTAKE_BUTTON         = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
+    private final int            BRAKE_AXIS            = XboxController.Axis.kRightTrigger.value;
+    
+    /* Co-Driver Buttons */
+    private final int            SHOOT_BUTTON                  = XboxController.Axis.kLeftTrigger.value;
+    private final JoystickButton FLAP_TOGGLE                   = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
+    private final int            INTAKE_IN_BUTTON              = XboxController.Axis.kRightTrigger.value;
+    private final JoystickButton INTAKE_OUT_BUTTON             = new JoystickButton(coDriver, XboxController.Button.kRightBumper.value);
+    private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kLeftY.value;
+    private final int            MANUAL_SHOTER_AXIS             = XboxController.Axis.kLeftY.value;
+    private final POVButton      DEPLOY_BUDDY_CLIMBER          = new POVButton(coDriver, 270, 0);
+    private final POVButton      AUTO_CLIMB_OUT                = new POVButton(coDriver, 0, 0);
+    private final POVButton      RETRACT_BUDDY_CLIMBER         = new POVButton(coDriver, 90, 0);
+    private final POVButton      AUTO_CLIMB_IN                 = new POVButton(coDriver, 180, 0);
+    private final JoystickButton MANUAL_STOW_INTAKE            = new JoystickButton(coDriver, XboxController.Button.kA.value);
+    private final JoystickButton MANUAL_SHOOTER_TO_AMP_POS     = new JoystickButton(coDriver, XboxController.Button.kB.value);
+    private final JoystickButton MANUAL_INTAKE_TO_INTAKE_POS   = new JoystickButton(coDriver, XboxController.Button.kX.value);
+    private final JoystickButton MANUAL_SHOOTER_TO_SPEAKER_POS = new JoystickButton(coDriver, XboxController.Button.kY.value);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private final Intake s_Intake = new Intake();
+    private final Climber s_Climber = new Climber();
+
+    PhotonCamera leftCamera = new PhotonCamera(Constants.Vision.leftCamName);
+    PhotonCamera rightCamera = new PhotonCamera(Constants.Vision.rightCamName);
+    private final Vision s_Vision = new Vision(leftCamera, rightCamera, s_Swerve);
+    
 
     /* Autonomous */
     private final SendableChooser<Command> autoChooser;
@@ -78,8 +117,10 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(strafeAxis),
                         () -> -driver.getRawAxis(rotationAxis),
                         () -> robotCentric.getAsBoolean()));
+        s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
+        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));
+        //s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));        
 
-        // Configure the button bindings
         configureButtonBindings();
 
         // NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
@@ -110,8 +151,16 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        aim.whileTrue(new Aim(s_Swerve, s_Intake));
 
+        INTAKE_BUTTON.toggleOnTrue(new IntakeIn(s_Intake));
+        INTAKE_OUT_BUTTON.toggleOnTrue(new IntakeOut(s_Intake));
+        MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Intake));
+        /* Co-Driver Buttons */
+        // INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake));
+        // INTAKE_BUTTON.onFalse(new IntakeStow(s_Intake));
+        MANUAL_SHOOTER_TO_AMP_POS.onTrue(new IntakeDeploy(s_Intake));
+
+        
     }
 
     /**
@@ -123,5 +172,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
     }
+    
 
 }
