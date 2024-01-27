@@ -4,6 +4,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakePosition;
 
+/**
+ * intake stow command
+ * @author 5985
+ */
 public class IntakeStow extends Command {
 
     Intake s_Intake;

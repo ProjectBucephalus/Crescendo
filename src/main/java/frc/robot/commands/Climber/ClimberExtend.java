@@ -3,6 +3,10 @@ package frc.robot.commands.Climber;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 
+/**
+ * climber extension command
+ * @author 5985
+ */
 public class ClimberExtend extends Command{
 
     public Climber s_Climber;
@@ -13,20 +17,26 @@ public class ClimberExtend extends Command{
         isFinished = false;
     }
 
-    public void initialize() {
+    public void initialize() 
+    {}
 
-    }
 
-    public void execute() {
+    public void execute() 
+    {
         s_Climber.setSpeed(1);
+        // Climbs until above max climber position
         if (s_Climber.getPosition() < 10000000) { //TODO Put the corect number in for max climb pos
             s_Climber.setSpeed(1);
-        } else {
+        }
+        else
+        {
             s_Climber.setSpeed(0);
             isFinished = true;
         }
     }
-    public boolean isFinished() {
+
+    public boolean isFinished() 
+    {
         return isFinished;
             
     }

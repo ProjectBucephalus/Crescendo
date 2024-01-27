@@ -3,6 +3,10 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
+/**
+ * intake split command
+ * @author 5985
+ */
 public class IntakeSpit extends Command {
     private final Intake s_Intake;
 
@@ -17,6 +21,10 @@ public class IntakeSpit extends Command {
         s_Intake.setIntakeSpeed(0.70);
     }
 
+    /**
+     * stops the intake
+     * @param interrupted
+     */
     public void end(boolean interrupted) {
         s_Intake.setIntakeSpeed(0);
     }
