@@ -4,6 +4,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
@@ -142,12 +143,15 @@ public class Intake extends SubsystemBase {
     public void setFlapPosition (FlapPosition pos) {
         switch (pos) {
             case OPEN:
-                
-                break;
+                SmartDashboard.putNumber("mFlapVoltage",mFlap.getMotorOutputVoltage());
+                setFlapSpeed(1);
+                System.out.println("Open");
         
             case CLOSED:
-             
-                break;
+                SmartDashboard.putNumber("mFlapVoltage",mFlap.getMotorOutputVoltage());
+                setFlapSpeed(-1);
+                System.out.println("Closed");
+
         }
     }
 }
