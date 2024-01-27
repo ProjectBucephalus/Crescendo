@@ -42,6 +42,7 @@ import frc.robot.commands.Intake.Flap.OpenFlap;
 import frc.robot.commands.Intake.IntakeStow;
 import frc.robot.commands.Shooter.ShooterRev;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Intake.FlapPosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -161,7 +162,7 @@ public class RobotContainer {
         INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
         MANUAL_INTAKE_TO_INTAKE_POS.whileTrue(new IntakeSuck(s_Intake));
         //MANUAL_SHOOTER_TO_AMP_POS.onTrue(new IntakeToAmp)
-
+        FLAP_TOGGLE.onTrue(new OpenFlap(s_Intake)).onFalse(new CloseFlap(s_Intake));
         
     }
 

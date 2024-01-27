@@ -146,7 +146,7 @@ public class Intake extends SubsystemBase {
                 break;
         
             case CLOSED:
-            
+             
                 break;
         }
     }
