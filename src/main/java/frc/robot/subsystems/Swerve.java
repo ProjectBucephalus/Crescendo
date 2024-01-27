@@ -75,7 +75,7 @@ public class Swerve extends SubsystemBase {
 
     
 
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -89,7 +89,8 @@ public class Swerve extends SubsystemBase {
                                     translation.getY(), 
                                     rotation)
                                 );
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed*(map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
+        System.out.println(Constants.Swerve.maxSpeed*(map(brakeVal, 0, 1, 0.5, 1)));
 
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
@@ -161,6 +162,15 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
         }
+    }
+
+    public static double map(double valueCoord1,
+        double startCoord1, double endCoord1,
+        double startCoord2, double endCoord2) {
+
+            double R = (endCoord2-startCoord2)/(endCoord1-startCoord1);
+            double y = startCoord2+(valueCoord1*R)+R;
+            return(y);
     }
 
     public void resetOdometry(Pose2d pose) {
