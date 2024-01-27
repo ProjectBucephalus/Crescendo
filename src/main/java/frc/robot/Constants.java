@@ -117,6 +117,8 @@ public final class Constants {
         
         public static final boolean invertGyro = false;
 
+        public static final double brakeIntensity = 0.15; // 0.25 -> Trigger fully pressed -> quarter speed.
+
         public static final COTSTalonFXSwerveConstants chosenModule = COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
         /* Drivetrain Constants */

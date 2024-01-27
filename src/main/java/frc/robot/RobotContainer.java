@@ -118,7 +118,8 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(translationAxis),
                         () -> -driver.getRawAxis(strafeAxis),
                         () -> -driver.getRawAxis(rotationAxis),
-                        () -> robotCentric.getAsBoolean()));
+                        () -> robotCentric.getAsBoolean(),
+                        () -> -driver.getRawAxis(BRAKE_AXIS)));
         s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
         //s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));   
         s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));     
@@ -157,14 +158,13 @@ public class RobotContainer {
         //INTAKE_BUTTON.toggleOnTrue(new IntakeSuck(s_Intake));
         INTAKE_OUT_BUTTON.whileTrue(new IntakeSpit(s_Intake));
         MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Intake));
-        /* Co-Driver Buttons */
-        // INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake));
-        // INTAKE_BUTTON.onFalse(new IntakeStow(s_Intake));
-        INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
-        MANUAL_INTAKE_TO_INTAKE_POS.whileTrue(new IntakeSuck(s_Intake));
-        MANUAL_SHOOTER_TO_AMP_POS.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.AMP));
-
         
+        /* Co-Driver Buttons */
+        INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
+        MANUAL_INTAKE_TO_INTAKE_POS.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.DEPLOYED));
+        MANUAL_SHOOTER_TO_AMP_POS.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.AMP));
+        MANUAL_SHOOTER_TO_SPEAKER_POS.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.SPEAKER));
+        MANUAL_STOW_INTAKE.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.STOWED));
     }
 
     /**
