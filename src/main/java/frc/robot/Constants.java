@@ -19,10 +19,9 @@ import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
 public final class Constants {
     public static final double stickDeadband = 0.3;
     
+    
     /* Shooter Constants */
-    public static final double shooterAngleOffset = 15;
-    public static final double horizontalShooterAngle = 20;
-    public static final double mFlapMaxCurrent = 40;
+    
 
     /* Image Tracking Constants */
     public static final double cameraPitchOffset = 26;
@@ -105,12 +104,18 @@ public final class Constants {
         public static final double maxBottomShooterSpeed = 0.8; // AMP TOP: 0.450000 bottom: 0.05
 
         public static final double shooterIdleSpeed = 0.5;
+
+        public static final double shooterAngleOffset = 15;
+        public static final double horizontalShooterAngle = 20;
+        public static final double mFlapMaxCurrent = 40;
     }
 
     public static final class Climber {
         public static final int mLeftClimbID = 17;
         public static final int mRightClimbID = 14;
-        public static final double maxRevolutions = 320; //3.2 with gear ratio
+        public static final double maxExtensionSpoolRotations = 3.2;
+        public static final double motorToSpoolGearRatio = 100;
+        public static final double climberDownPos = 0;
     }
 
     public static final class Swerve {

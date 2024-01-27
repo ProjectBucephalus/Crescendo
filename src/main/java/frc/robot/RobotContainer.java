@@ -32,6 +32,8 @@ import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
+import frc.robot.commands.Climber.ClimberExtend;
+import frc.robot.commands.Climber.ClimberRetract;
 import frc.robot.commands.Climber.MoveClimber;
 import frc.robot.commands.Intake.IntakeDeploy;
 import frc.robot.commands.Intake.IntakeSpit;
@@ -82,8 +84,8 @@ public class RobotContainer {
     private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kRightY.value;
     private final int            MANUAL_SHOTER_AXIS             = XboxController.Axis.kLeftY.value;
     private final POVButton      DEPLOY_BUDDY_CLIMBER          = new POVButton(coDriver, 270, 0);
-    private final POVButton      AUTO_CLIMB_OUT                = new POVButton(coDriver, 0, 0);
     private final POVButton      RETRACT_BUDDY_CLIMBER         = new POVButton(coDriver, 90, 0);
+    private final POVButton      AUTO_CLIMB_OUT                = new POVButton(coDriver, 0, 0);
     private final POVButton      AUTO_CLIMB_IN                 = new POVButton(coDriver, 180, 0);
     private final JoystickButton MANUAL_STOW_INTAKE            = new JoystickButton(coDriver, XboxController.Button.kA.value);
     private final JoystickButton MANUAL_SHOOTER_TO_AMP_POS     = new JoystickButton(coDriver, XboxController.Button.kB.value);
@@ -109,14 +111,19 @@ public class RobotContainer {
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
-    public RobotContainer() {
-        s_Swerve.setDefaultCommand(
-                new TeleopSwerve(
-                        s_Swerve,
-                        () -> -driver.getRawAxis(translationAxis),
-                        () -> -driver.getRawAxis(strafeAxis),
-                        () -> -driver.getRawAxis(rotationAxis),
-                        () -> robotCentric.getAsBoolean()));
+    public RobotContainer() 
+    {
+        s_Swerve.setDefaultCommand
+        (
+            new TeleopSwerve
+            (
+                s_Swerve,
+                () -> -driver.getRawAxis(translationAxis),
+                () -> -driver.getRawAxis(strafeAxis),
+                () -> -driver.getRawAxis(rotationAxis),
+                () -> robotCentric.getAsBoolean()
+            )
+        );
         s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
         //s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));   
         s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));     
@@ -148,7 +155,8 @@ public class RobotContainer {
      * it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
-    private void configureButtonBindings() {
+    private void configureButtonBindings() 
+    {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
@@ -157,12 +165,13 @@ public class RobotContainer {
         MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Intake));
         /* Co-Driver Buttons */
         // INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake));
-        // INTAKE_BUTTON.onFalse(new IntakeStow(s_Intake));
+        // INTAKE_BUTTON.onFalse(new IntakeStow(s_Intake));S
         INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
         MANUAL_INTAKE_TO_INTAKE_POS.whileTrue(new IntakeSuck(s_Intake));
         //MANUAL_SHOOTER_TO_AMP_POS.onTrue(new IntakeToAmp)
+        AUTO_CLIMB_OUT.whileTrue(new ClimberExtend(s_Climber));
+        AUTO_CLIMB_IN.whileTrue(new ClimberRetract(s_Climber));
 
-        
     }
 
     /**
@@ -171,7 +180,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
 
-    public Command getAutonomousCommand() {
+    public Command getAutonomousCommand() 
+    {
         return autoChooser.getSelected();
     }
     
