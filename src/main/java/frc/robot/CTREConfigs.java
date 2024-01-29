@@ -6,6 +6,9 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 public final class CTREConfigs {
     public TalonFXConfiguration swerveAngleFXConfig = new TalonFXConfiguration();
     public TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
+    public static TalonFXConfiguration leftArmMotorFXConfig = new TalonFXConfiguration();
+    public static TalonFXConfiguration rightArmMotorFXConfig = new TalonFXConfiguration();
+
     public CANcoderConfiguration swerveCANcoderConfig = new CANcoderConfiguration();
 
     public CTREConfigs(){
@@ -57,5 +60,50 @@ public final class CTREConfigs {
 
         swerveDriveFXConfig.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = Constants.Swerve.closedLoopRamp;
         swerveDriveFXConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = Constants.Swerve.closedLoopRamp;
+
+
+
+
+        /** Left Arm Motor Config **/
+        leftArmMotorFXConfig.MotorOutput.Inverted = Constants.Intake.leftPivotMotorInvert;
+        leftArmMotorFXConfig.MotorOutput.NeutralMode = Constants.Intake.pivotMotorNeutralMode;
+
+        /* Gear Ratio and Wrapping Config */
+        leftArmMotorFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.pivotGearRatio;
+        leftArmMotorFXConfig.ClosedLoopGeneral.ContinuousWrap = true;
+        
+        /* Current Limiting */
+        leftArmMotorFXConfig.CurrentLimits.SupplyCurrentLimitEnable = Constants.Intake.pivotEnableCurrentLimit;
+        leftArmMotorFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.Intake.pivotCurrentLimit;
+        leftArmMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Intake.pivotCurrentThreshold;
+        leftArmMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Intake.pivotCurrentThresholdTime;
+
+        /* PID Config */
+        leftArmMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
+        leftArmMotorFXConfig.Slot0.kI = Constants.Intake.pivotKI;
+        leftArmMotorFXConfig.Slot0.kD = Constants.Intake.pivotKD;
+
+        /** Right Arm Motor Config **/
+        rightArmMotorFXConfig.MotorOutput.Inverted = Constants.Intake.rightPivotMotorInvert;
+        rightArmMotorFXConfig.MotorOutput.NeutralMode = Constants.Intake.pivotMotorNeutralMode;
+
+        /* Gear Ratio and Wrapping Config */
+        rightArmMotorFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.pivotGearRatio;
+        rightArmMotorFXConfig.ClosedLoopGeneral.ContinuousWrap = true;
+        
+        /* Current Limiting */
+        rightArmMotorFXConfig.CurrentLimits.SupplyCurrentLimitEnable = Constants.Intake.pivotEnableCurrentLimit;       
+        rightArmMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Intake.pivotCurrentThreshold;
+        rightArmMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Intake.pivotCurrentThresholdTime;
+        rightArmMotorFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.Intake.pivotCurrentLimit;
+ 
+
+        /* PID Config */
+        rightArmMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
+        rightArmMotorFXConfig.Slot0.kD = Constants.Intake.pivotKI;
+        rightArmMotorFXConfig.Slot0.kI = Constants.Intake.pivotKD;
+        
+
+        
     }
 }
