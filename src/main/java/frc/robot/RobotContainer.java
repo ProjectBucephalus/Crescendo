@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.sql.Driver;
 import java.util.ArrayList;
 
 import org.photonvision.PhotonCamera;
@@ -17,6 +18,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.VisionCommands.aimToSpeaker;
 import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
 import frc.robot.commands.Climber.MoveClimber;
@@ -72,7 +75,7 @@ public class RobotContainer {
     private final POVButton      LOCK_CLIMBER_BUTTON   = new POVButton(driver, 0, 0); // The POV angles start at 0 in the up direction, and increase clockwise (e.g. right is 90, upper-left is 315).
     private final POVButton      UNLOCK_CLIMBER_BUTTON = new POVButton(driver, 180, 0);
     private final int            ALIGN_TO_SPEAKER      = XboxController.Axis.kLeftTrigger.value;
-    private final JoystickButton ALIGN_TO_AMP          = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton ALIGN_TO_AMP          = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton INTAKE_BUTTON         = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
     private final int            BRAKE_AXIS            = XboxController.Axis.kRightTrigger.value;
     
@@ -99,7 +102,8 @@ public class RobotContainer {
 
     PhotonCamera leftCamera = new PhotonCamera(Constants.Vision.leftCamName);
     PhotonCamera rightCamera = new PhotonCamera(Constants.Vision.rightCamName);
-    private final Vision s_Vision = new Vision(leftCamera, rightCamera, s_Swerve);
+    PhotonCamera frontCamera = new PhotonCamera(Constants.Vision.frontCamName);
+    private final Vision s_Vision = new Vision(leftCamera, rightCamera, frontCamera, s_Swerve);
     
 
     /* Autonomous */
@@ -140,6 +144,7 @@ public class RobotContainer {
         m_Field.getObject("trajPoses").setPoses(traj.getInitialPose(), traj.getFinalPose());
 
         SmartDashboard.putData(m_Field);
+        final var visionTab = Shuffleboard.getTab("Vision");
 
     }
 
@@ -165,6 +170,8 @@ public class RobotContainer {
         MANUAL_SHOOTER_TO_AMP_POS.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.AMP));
         MANUAL_SHOOTER_TO_SPEAKER_POS.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.SPEAKER));
         MANUAL_STOW_INTAKE.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.STOWED));
+
+        ALIGN_TO_AMP.whileTrue(new aimToSpeaker(s_Swerve));
     }
 
     /**

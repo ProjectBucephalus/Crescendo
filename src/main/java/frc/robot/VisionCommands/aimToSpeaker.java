@@ -12,6 +12,7 @@ public class aimToSpeaker extends Command {
 
     public aimToSpeaker(Swerve s_Swerve) {
         this.s_Swerve = s_Swerve;
+        SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading());
     }
 
     @Override
@@ -27,8 +28,8 @@ public class aimToSpeaker extends Command {
     }
 
     public double calculateRequiredHeading() {
-        var X = s_Swerve.getPose().getX();
-        var Y = s_Swerve.getPose().getX();
+        var X = s_Swerve.getEstimatedPose().getX();
+        var Y = s_Swerve.getEstimatedPose().getX();
         var theta = Math.atan(Y/(5.54-X));
         return theta;
     }
