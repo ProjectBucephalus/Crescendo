@@ -34,6 +34,8 @@ import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
 import frc.robot.commands.Climber.BuddyClimberDeploy;
 import frc.robot.commands.Climber.BuddyClimberRetract;
+import frc.robot.commands.Climber.ClimberExtend;
+import frc.robot.commands.Climber.ClimberRetract;
 import frc.robot.commands.Climber.LockClimber;
 import frc.robot.commands.Climber.MoveClimber;
 import frc.robot.commands.Climber.UnlockClimber;
@@ -82,7 +84,7 @@ public class RobotContainer {
     
     /* Co-Driver Buttons */
     private final int            SHOOT_BUTTON                  = XboxController.Axis.kLeftTrigger.value;
-    private final JoystickButton FLAP_TOGGLE                   = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
+    //private final JoystickButton FLAP_TOGGLE                   = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton INTAKE_IN_BUTTON              = new JoystickButton(coDriver, XboxController.Axis.kRightTrigger.value); // Was set up as int. Not sure if this will work yet
     private final JoystickButton INTAKE_OUT_BUTTON             = new JoystickButton(coDriver, XboxController.Button.kRightBumper.value);
     private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kRightY.value;
@@ -163,8 +165,8 @@ public class RobotContainer {
         INTAKE_OUT_BUTTON.whileTrue(new IntakeSpit(s_Intake));
         INTAKE_IN_BUTTON.whileTrue(new IntakeSuck(s_Intake));
         MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Intake));
-        LOCK_CLIMBER_BUTTON.onTrue(new LockClimber());
-        UNLOCK_CLIMBER_BUTTON.onTrue(new UnlockClimber());
+       
+        
 
         
         /* Co-Driver Buttons */
@@ -175,9 +177,10 @@ public class RobotContainer {
         MANUAL_STOW_INTAKE.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.STOWED));
         DEPLOY_BUDDY_CLIMBER.onTrue(new BuddyClimberDeploy());
         RETRACT_BUDDY_CLIMBER.onTrue(new BuddyClimberRetract());
-
-
-
+        LOCK_CLIMBER_BUTTON.whileTrue(new LockClimber());
+        UNLOCK_CLIMBER_BUTTON.whileTrue(new UnlockClimber());
+        AUTO_CLIMB_OUT.onTrue(new ClimberExtend(s_Climber));
+        AUTO_CLIMB_IN.onTrue(new ClimberRetract(s_Climber));
     }
 
     /**
