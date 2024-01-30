@@ -4,8 +4,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 
 public class LockClimber extends Command {
-
+    /**
+     * !!EMPTY COMMAND!!
+     */
     
+     public LockClimber()
+     {}
     public boolean isFinished;
 
   

@@ -7,8 +7,12 @@ public class UnlockClimber extends Command {
 
 
     public boolean isFinished;
-
-  
+    /**
+     * !!EMPTY COMMAND!!
+     */
+    
+    public UnlockClimber()
+    {}
     public void initialize() {
 
     }
