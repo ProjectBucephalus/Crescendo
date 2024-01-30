@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -37,9 +36,6 @@ public class SwerveModule {
         
         /* Angle Encoder Config */
         angleEncoder = new CANcoder(moduleConstants.cancoderID);
-        CANcoderConfiguration xyz = new CANcoderConfiguration();
-        angleEncoder.getConfigurator().refresh(xyz);
-        Robot.ctreConfigs.swerveCANcoderConfig.MagnetSensor.MagnetOffset = xyz.MagnetSensor.MagnetOffset;
         angleEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCANcoderConfig);
 
         /* Angle Motor Config */
