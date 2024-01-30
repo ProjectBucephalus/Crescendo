@@ -34,7 +34,9 @@ import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
 import frc.robot.commands.Climber.BuddyClimberDeploy;
 import frc.robot.commands.Climber.BuddyClimberRetract;
+import frc.robot.commands.Climber.LockClimber;
 import frc.robot.commands.Climber.MoveClimber;
+import frc.robot.commands.Climber.UnlockClimber;
 import frc.robot.commands.Intake.IntakeDeploy;
 import frc.robot.commands.Intake.IntakeSpit;
 import frc.robot.commands.Intake.IntakeSuck;
@@ -161,6 +163,9 @@ public class RobotContainer {
         INTAKE_OUT_BUTTON.whileTrue(new IntakeSpit(s_Intake));
         INTAKE_IN_BUTTON.whileTrue(new IntakeSuck(s_Intake));
         MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Intake));
+        LOCK_CLIMBER_BUTTON.onTrue(new LockClimber());
+        UNLOCK_CLIMBER_BUTTON.onTrue(new UnlockClimber());
+
         
         /* Co-Driver Buttons */
         INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
