@@ -39,11 +39,13 @@ import frc.robot.commands.Intake.IntakeDeploy;
 import frc.robot.commands.Intake.IntakeSpit;
 import frc.robot.commands.Intake.IntakeSuck;
 import frc.robot.commands.Intake.MoveIntake;
+import frc.robot.commands.Intake.MoveIntakeToPosition;
 import frc.robot.commands.Intake.Flap.CloseFlap;
 import frc.robot.commands.Intake.Flap.OpenFlap;
 import frc.robot.commands.Intake.IntakeStow;
 import frc.robot.commands.Shooter.ShooterRev;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Intake.IntakePosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -163,15 +165,15 @@ public class RobotContainer {
         //INTAKE_BUTTON.toggleOnTrue(new IntakeSuck(s_Intake));
         INTAKE_OUT_BUTTON.whileTrue(new IntakeSpit(s_Intake));
         MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Intake));
+        
         /* Co-Driver Buttons */
         // INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake));
-        // INTAKE_BUTTON.onFalse(new IntakeStow(s_Intake));S
+        // INTAKE_BUTTON.onFalse(new IntakeStow(s_Intake));
         INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
         MANUAL_INTAKE_TO_INTAKE_POS.whileTrue(new IntakeSuck(s_Intake));
         //MANUAL_SHOOTER_TO_AMP_POS.onTrue(new IntakeToAmp)
-        AUTO_CLIMB_OUT.whileTrue(new ClimberExtend(s_Climber));
-        AUTO_CLIMB_IN.whileTrue(new ClimberRetract(s_Climber));
 
+        
     }
 
     /**

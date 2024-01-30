@@ -46,6 +46,9 @@ public class Intake extends SubsystemBase {
     public enum IntakePosition {
         STOWED,
         DEPLOYED,
+        AMP,
+        TRAP,
+        SPEAKER,
     };
 
     public enum FlapPosition {
@@ -66,15 +69,24 @@ public class Intake extends SubsystemBase {
         mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
         mRightPivot.getConfigurator().apply(CTREConfigs.rightArmMotorFXConfig);
         mRightPivot.getConfigurator().setPosition(0);
+        
     }
 
     public void setPosition(IntakePosition position) {
-        switch (position) {
+        switch (position) { 
             case STOWED:
                 moveArmToAngle(0);
                 break;
             case DEPLOYED:
                 moveArmToAngle(SmartDashboard.getNumber("pivotPosition", 1.2));
+                break;
+            case AMP:
+                moveArmToAngle(Constants.Intake.pivotAmpPos);
+            case TRAP:
+                moveArmToAngle(0);
+                break;
+            case SPEAKER:
+                //TODO April tag stuff
                 break;
         }
     }
@@ -147,11 +159,14 @@ public class Intake extends SubsystemBase {
     public void setFlapPosition (FlapPosition pos) {
         switch (pos) {
             case OPEN:
-                
+                mFlap.set(ControlMode.PercentOutput, 1);
                 break;
         
             case CLOSED:
-            
+                mFlap.set(ControlMode.PercentOutput, 1);
+                System.out.println("Output Voltage: " + mFlap.getMotorOutputVoltage());
+                System.out.println("Percent Output: " + mFlap.getMotorOutputPercent()); // prints the percent output of the motor (0.5)
+                System.out.println("Bus voltage: " + mFlap.getBusVoltage()); // prints the bus voltage seen by the motor controller
                 break;
         }
     }
