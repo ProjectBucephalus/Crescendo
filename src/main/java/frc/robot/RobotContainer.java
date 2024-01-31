@@ -35,6 +35,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.VisionCommands.aimToSpeaker;
 import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
+import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
+import frc.robot.commands.BuddyClimb.StopBuddyClimber;
 import frc.robot.commands.Climber.MoveClimber;
 import frc.robot.commands.Intake.IntakeDeploy;
 import frc.robot.commands.Intake.IntakeSpit;
@@ -85,10 +87,10 @@ public class RobotContainer {
     private final int            INTAKE_IN_BUTTON              = XboxController.Axis.kRightTrigger.value;
     private final JoystickButton INTAKE_OUT_BUTTON             = new JoystickButton(coDriver, XboxController.Button.kRightBumper.value);
     private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kRightY.value;
-    private final int            MANUAL_SHOTER_AXIS             = XboxController.Axis.kLeftY.value;
+    private final int            MANUAL_SHOTER_AXIS            = XboxController.Axis.kLeftY.value;
     private final POVButton      DEPLOY_BUDDY_CLIMBER          = new POVButton(coDriver, 270, 0);
     private final POVButton      AUTO_CLIMB_OUT                = new POVButton(coDriver, 0, 0);
-    private final POVButton      RETRACT_BUDDY_CLIMBER         = new POVButton(coDriver, 90, 0);
+    private final POVButton      STOP_BUDDY_CLIMBER         = new POVButton(coDriver, 90, 0);
     private final POVButton      AUTO_CLIMB_IN                 = new POVButton(coDriver, 180, 0);
     private final JoystickButton MANUAL_STOW_INTAKE            = new JoystickButton(coDriver, XboxController.Button.kA.value);
     private final JoystickButton MANUAL_SHOOTER_TO_AMP_POS     = new JoystickButton(coDriver, XboxController.Button.kB.value);
@@ -161,7 +163,7 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
         //INTAKE_BUTTON.toggleOnTrue(new IntakeSuck(s_Intake));
-        INTAKE_OUT_BUTTON.whileTrue(new IntakeSpit(s_Intake));
+        INTAKE_OUT_BUTTON.whileTrue(new IntakeSuck(s_Intake));
         MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Intake));
         
         /* Co-Driver Buttons */
@@ -172,6 +174,8 @@ public class RobotContainer {
         MANUAL_STOW_INTAKE.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.STOWED));
 
         ALIGN_TO_AMP.whileTrue(new aimToSpeaker(s_Swerve));
+
+        DEPLOY_BUDDY_CLIMBER.whileTrue(new DeployBuddyClimber(s_Intake)).whileFalse(new StopBuddyClimber(s_Intake));
     }
 
     /**

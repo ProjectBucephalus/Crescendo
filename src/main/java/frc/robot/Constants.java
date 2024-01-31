@@ -105,6 +105,8 @@ public final class Constants {
 
         public static final int mIntakeID = 12;
 
+        public static final int mBuddyClimbID = 16;
+
         public static final double FlapMaxCurrent = 40;
 
         /* Arm Ratios and Limis */

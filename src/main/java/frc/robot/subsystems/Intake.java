@@ -34,6 +34,8 @@ public class Intake extends SubsystemBase {
     public TalonFX mTopShooter = new TalonFX(Constants.Shooter.mTopShooterID);
     public TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
 
+    public TalonFX mBuddyClimb = new TalonFX(Constants.Intake.mBuddyClimbID);
+
     // limit switches
     public DigitalInput leftDeploySwitch = new DigitalInput(Constants.Intake.leftOutSwitchID);
     public DigitalInput leftStowSwitch = new DigitalInput(Constants.Intake.leftInSwitchID);
@@ -54,6 +56,11 @@ public class Intake extends SubsystemBase {
     public enum FlapPosition {
         OPEN,
         CLOSED,
+    };
+
+    public enum BuddyClimbPosition {
+        RUNNING,
+        STOPPED,
     };
 
     public Intake() {
@@ -78,7 +85,7 @@ public class Intake extends SubsystemBase {
                 moveArmToAngle(0);
                 break;
             case DEPLOYED:
-                moveArmToAngle(SmartDashboard.getNumber("pivotPosition", 1.2));
+                moveArmToAngle(SmartDashboard.getNumber("pivotPosition", 1.162300));
                 break;
             case AMP:
                 moveArmToAngle(Constants.Intake.pivotAmpPos);
@@ -87,7 +94,6 @@ public class Intake extends SubsystemBase {
                 break;
             case SPEAKER:
                 //TODO April tag stuff
-                break;
         }
     }
 
@@ -158,10 +164,24 @@ public class Intake extends SubsystemBase {
                 break;
         
             case CLOSED:
-                mFlap.set(ControlMode.PercentOutput, 1);
-                System.out.println("Output Voltage: " + mFlap.getMotorOutputVoltage());
-                System.out.println("Percent Output: " + mFlap.getMotorOutputPercent()); // prints the percent output of the motor (0.5)
-                System.out.println("Bus voltage: " + mFlap.getBusVoltage()); // prints the bus voltage seen by the motor controller
+                mFlap.set(ControlMode.PercentOutput, -1);
+                SmartDashboard.putNumber("Output Voltage", mFlap.getMotorOutputVoltage());
+                SmartDashboard.putNumber("Percent Output", mFlap.getMotorOutputPercent()); // prints the percent output of the motor (0.5)
+                SmartDashboard.putNumber("Bus voltage", mFlap.getBusVoltage()); // prints the bus voltage seen by the motor controller
+                break;
+        }
+    }
+
+    public void setBuddyClimb(BuddyClimbPosition status) {
+        switch (status) {
+            case RUNNING:
+                mBuddyClimb.set(-1);
+                break;
+            case STOPPED:
+                mBuddyClimb.set(0);
+                break;
+        
+            default:
                 break;
         }
     }
