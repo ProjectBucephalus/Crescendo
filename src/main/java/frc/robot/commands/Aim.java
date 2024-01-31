@@ -18,7 +18,6 @@ public class Aim extends Command {
     private final PhotonCamera cam2;
 
     private static final double ROTATION_SPEED_FACTOR = 10.0;
-    private static final double MIN_ROTATION_SPEED = 0.1; // Adjust as needed
     private static final double ANGLE_TOLERANCE = 2.0; // Adjust as needed
 
     public boolean teamRed = false;
@@ -80,7 +79,7 @@ public class Aim extends Command {
             horizontalDistance = speakerTagHeightOverCamera / Math.tan(Units.degreesToRadians(absolutePitch));
             targetPitch = Math.atan(targetHeightOverCamera / Math.max(1,horizontalDistance));
             targetPitch = Units.radiansToDegrees(targetPitch);
-            shooterAngle = targetPitch + Constants.horizontalShooterAngle;
+            shooterAngle = targetPitch + Constants.Shooter.horizontalShooterAngle;
             Transform3d distance = target.getBestCameraToTarget();
             
             System.out.println("Target Yaw: " + yaw);
@@ -111,23 +110,10 @@ public class Aim extends Command {
 
         ChassisSpeeds speeds = new ChassisSpeeds(0, 0, rotationSpeed);
         s_Swerve.driveRobotRelative(speeds);
-        s_Intake.moveArm(s_Intake.angleToEncoderPosition(shooterAngle));
+        s_Intake.moveArmToAngle(shooterAngle);
 
         System.out.println("------------------------------------------");
     }
-
-
-    private double calculateRotationSpeed(double radiansToGoal) 
-    {
-        double remainingAngle = Math.abs(radiansToGoal);
-        
-        // Proportional control to gradually reduce rotation speed
-        double proportionalSpeed = ROTATION_SPEED_FACTOR * remainingAngle;
-
-        // Ensure rotation speed is not below the minimum speed
-        return -Math.max(proportionalSpeed, MIN_ROTATION_SPEED) * Math.signum(radiansToGoal);
-    }
-
 
     private boolean isWithinTolerance(double radiansToGoal) 
     {

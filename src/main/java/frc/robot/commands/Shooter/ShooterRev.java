@@ -5,23 +5,17 @@ import frc.robot.subsystems.Intake;
 
 public class ShooterRev extends Command {
     private final Intake s_Intake;
-    
 
-    /* sets subsystem requirements */
     public ShooterRev(Intake s_Intake) 
     {
         this.s_Intake = s_Intake;
-        addRequirements(s_Intake);
     }
 
-    /* spins up the shooter to idle speed */
-    public void execute() 
-    {
-        Intake.idleShooter();
+    public void execute() {
+        s_Intake.spinShooter();
     }
 
-    public void end(boolean interrupted) 
-    {
-        Intake.stopShooter();
-    } 
+    public void end(boolean interrupted) {
+        s_Intake.stopShooter();
+    }
 }

@@ -8,33 +8,30 @@ import frc.robot.subsystems.Intake;
 
 public class ShootSequence extends Command {
     private final Intake s_Intake;
-    // motors
-    private static TalonFX mShooter = new TalonFX(Constants.mShooterID);
+    private static TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
+    private static TalonFX mTopShooter = new TalonFX(Constants.Shooter.mTopShooterID);
 
-    /* sets subsystem requirements */
-    public ShootSequence(Intake s_Intake) 
-    {
+    public ShootSequence(Intake s_Intake) {
         this.s_Intake = s_Intake;
         addRequirements(s_Intake);
     }
 
-    /* spins up the shooter, then opens the flap and fires once it's up to speed */
-    public void execute() 
-    {
-        double mShooterSpeedDecimal = (Math.abs(mShooter.getRotorVelocity().getValueAsDouble()) / 512); // Output absolute motor speed [0..1]
-        Intake.spinShooter();
-        if ((mShooterSpeedDecimal > Math.abs(mShooter.get() * 0.9))) 
-        {
-            Intake.openFlap();
-            Intake.intakeIn();
+    public void execute() {
+        double mShooterSpeedDecimal = (Math.abs(mTopShooter.getRotorVelocity().getValueAsDouble()) / 512); // Output
+                                                                                                           // absolute
+                                                                                                           // motor
+                                                                                                           // speed
+                                                                                                           // [0..1]
+        s_Intake.spinShooter();
+        if ((mShooterSpeedDecimal > Math.abs(mTopShooter.get() * 0.9))) {
+            // s_Intake.openFlap();
+            s_Intake.setIntakeSpeed(-1);
         }
     }
 
-    /* idles shooter, and closes flap */
-    public void end(boolean interrupted) 
-    {
-        Intake.closeFlap();
-        Intake.idleShooter();
-        Intake.intakeStop();
-    } 
+    public void end(boolean interrupted) {
+        // s_Intake.closeFlap();
+        s_Intake.idleShooter();
+        s_Intake.setIntakeSpeed(0);
+    }
 }
