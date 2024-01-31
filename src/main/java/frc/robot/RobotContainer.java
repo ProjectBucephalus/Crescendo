@@ -159,6 +159,10 @@ public class RobotContainer {
     {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        aim.whileTrue(new Aim(s_Swerve, s_Intake));
+        //other buttons
+
+
 
         //INTAKE_BUTTON.toggleOnTrue(new IntakeSuck(s_Intake));
         INTAKE_OUT_BUTTON.whileTrue(new IntakeSpit(s_Intake));
