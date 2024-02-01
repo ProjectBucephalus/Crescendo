@@ -3,6 +3,10 @@ package frc.robot.commands.Intake.Flap;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
+/**
+ * intake open flap command
+ * @author 5985
+ */
 public class OpenFlap extends Command {
 
     frc.robot.subsystems.Intake s_Intake;

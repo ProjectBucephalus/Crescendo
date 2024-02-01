@@ -5,14 +5,22 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 
 
+/**
+ * move intake command
+ * @author 5985
+ */
 public class MoveIntake extends Command {
     Intake s_Intake;
     private DoubleSupplier speed;
 
+    /**
+     * 
+     * @param s_Intake a reference to the intake subsystem
+     * @param speedSupplier double supplier speed 
+     */
     public MoveIntake(Intake s_Intake, DoubleSupplier speedSupplier) {
         this.s_Intake = s_Intake;
         this.speed = speedSupplier;

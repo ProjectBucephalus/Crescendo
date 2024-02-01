@@ -12,6 +12,10 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 
+/**
+ * aim command
+ * @author 5985
+ */
 public class Aim extends Command {
     private final Swerve s_Swerve;
     private final Intake s_Intake;
