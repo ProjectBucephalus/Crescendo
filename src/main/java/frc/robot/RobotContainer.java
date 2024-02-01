@@ -101,6 +101,7 @@ public class RobotContainer {
     private final Swerve s_Swerve = new Swerve();
     private final Intake s_Intake = new Intake();
     private final Climber s_Climber = new Climber();
+    private final Shooter s_Shooter = new Shooter();
 
     PhotonCamera leftCamera = new PhotonCamera(Constants.Vision.leftCamName);
     PhotonCamera rightCamera = new PhotonCamera(Constants.Vision.rightCamName);
@@ -128,7 +129,8 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(BRAKE_AXIS)));
         s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
         //s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));   
-        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));     
+        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> coDriver.getRawAxis(MANUAL_CLIMB_AXIS))); 
+         
 
         configureButtonBindings();
 
@@ -164,7 +166,7 @@ public class RobotContainer {
 
         //INTAKE_BUTTON.toggleOnTrue(new IntakeSuck(s_Intake));
         INTAKE_OUT_BUTTON.whileTrue(new IntakeSuck(s_Intake));
-        MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Intake));
+        MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Shooter));
         
         /* Co-Driver Buttons */
         INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
