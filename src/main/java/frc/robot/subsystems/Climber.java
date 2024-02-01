@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 /**
  * the climber subsystem
@@ -12,17 +13,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Climber extends SubsystemBase 
 {
 
-    public TalonFX mLeftClimber = new TalonFX(17);
-    public TalonFX mRightClimber = new TalonFX(14);
-
-    public Climber() 
-    {}
+    public TalonFX mLeftClimber = new TalonFX(Constants.Climber.mLeftClimbID);
+    public TalonFX mRightClimber = new TalonFX(Constants.Climber.mRightClimbID);
 
     /**
      * Set Speed: sets the speed of the left and right climber
      * @authour 5985
      * @param speed the speed that the climber goes at
      */
+    public enum ClimberPosition {STOWED, DEPLOYED};
+
+    public Climber() 
+    {}
+
     public void setSpeed(double speed) 
     {
         mLeftClimber.set(speed);
@@ -38,4 +41,6 @@ public class Climber extends SubsystemBase
         SmartDashboard.putNumber("ClimberPosition", mLeftClimber.getPosition().getValueAsDouble());
         return (mLeftClimber.getPosition().getValueAsDouble());
     }
+
+    
 }

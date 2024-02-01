@@ -130,11 +130,16 @@ public class Intake extends SubsystemBase {
     // commented out for safety's sake. same with reference to it in IntakeStowed
     // file
 
-    public void setIntakeStowed() {
-        while (leftStowSwitch.get() || !rightStowSwitch.get()) {
+    public void setIntakeStowed() 
+    {
+        if (leftStowSwitch.get() || !rightStowSwitch.get()) 
+        {
             setArmMotorSpeeds(0.2);
         }
-        mIntake.stopMotor();
+        else
+        {
+            mIntake.stopMotor();
+        }
     }
 
     /**
