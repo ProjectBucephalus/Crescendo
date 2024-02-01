@@ -21,6 +21,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+/**
+ * intake subsystem 
+ * @author 5985
+*/
 public class Intake extends SubsystemBase {
     // motors
     public TalonFX mLeftPivot;
@@ -44,11 +48,17 @@ public class Intake extends SubsystemBase {
     double intakeStowLimitPos;
     double intakeDeployLimitPos;
 
+    /**
+     * enum intake position with the states: STOWED, DEPLOYED
+     */
     public enum IntakePosition {
         STOWED,
         DEPLOYED,
     };
 
+    /**
+     * enum intake position with the states: OPEN, CLOSED
+     */
     public enum FlapPosition {
         OPEN,
         CLOSED,
@@ -69,6 +79,10 @@ public class Intake extends SubsystemBase {
         mRightPivot.getConfigurator().setPosition(0);
     }
 
+    /**
+     * Sets the position of the intake
+     * @param position Sets the arm angle based on the value of this
+     */
     public void setPosition(IntakePosition position) {
         switch (position) {
             case STOWED:
@@ -80,21 +94,36 @@ public class Intake extends SubsystemBase {
         }
     }
 
-    /* moves the arm to a set position, In radians */
+    /**
+     * moves the arm to a set position, In radians
+     * @param armAngle arm andge, in radians
+     */
     public void moveArmToAngle(double armAngle) { // TODO add limit switch protections
         mLeftPivot.setControl(anglePosition.withPosition(armAngle));
         mRightPivot.setControl(anglePosition.withPosition(armAngle));
     }
 
+    /**
+     * Gets the arm position
+     * @return the arm position in radians
+     */
     public double getArmPos() {
         return mRightPivot.getPosition().getValueAsDouble();
     }
 
+    /**
+     * sets the speed of the motor
+     * @param speed the speed that the arm rotates at
+     */
     public void setArmMotorSpeeds(double speed) {
         mLeftPivot.set(speed);
         mRightPivot.set(-speed);
     }
 
+    /**
+     * sets the speed that the intake motors rotate to suck in notes
+     * @param speed the motor speed of the intake motors
+     */
     public void setIntakeSpeed(double speed) {
         mIntake.set(speed);
     }
@@ -114,7 +143,9 @@ public class Intake extends SubsystemBase {
         }
     }
 
-    /* sets shooter to full speed */
+    /**
+     * sets shooter to full speed
+     */
     public void spinShooter() {
         // mTopShooter.set(0.3);
         // mBottomShooter.set(0.07);
@@ -129,22 +160,34 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("topShooterSpeed", topSpeed);
     }
 
-    /* stops shooter */
+    /**
+     * stops shooter
+     */
     public void stopShooter() {
         mTopShooter.set(0);
         mBottomShooter.set(0);
     }
 
-    /* sets shooter to idle speed */
+    /**
+     * sets shooter to idle speed
+     */
     public void idleShooter() {
         mTopShooter.set(Constants.Shooter.shooterIdleSpeed);
         mBottomShooter.set(Constants.Shooter.shooterIdleSpeed);
     }
 
+    /**
+     * sets the speed that the flap deploys at
+     * @param speed the speed that the flap deploys at
+     */
     public void setFlapSpeed(double speed) {
         mFlap.set(VictorSPXControlMode.PercentOutput, speed);
     }
 
+    /**
+     * sets the position of the flap
+     * @param pos can be open or closed
+     */
     public void setFlapPosition (FlapPosition pos) {
         switch (pos) {
             case OPEN:

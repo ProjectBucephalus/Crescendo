@@ -4,6 +4,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
+/**
+ * climber retraction command
+ * @author 5985
+ */
 public class ClimberRetract extends Command {
 
     public Climber s_Climber;

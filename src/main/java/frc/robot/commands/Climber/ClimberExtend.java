@@ -4,6 +4,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
+/**
+ * climber extension command
+ * @author 5985
+ */
 public class ClimberExtend extends Command{
 
     public Climber s_Climber;
@@ -16,20 +20,18 @@ public class ClimberExtend extends Command{
         isFinished = false;
     }
 
-    public void initialize() {
+    public void initialize() 
+    {}
 
-    }
 
     public void execute() 
     {
+        s_Climber.setSpeed(1);
+        // Climbs until above max climber position
         if (s_Climber.getPosition() < (360 * (Constants.Climber.maxExtensionSpoolRotations * Constants.Climber.motorToSpoolGearRatio))) // Climber spool rotation * climber motor gear ratio, converted to degrees
         { 
             s_Climber.setSpeed(1);
-            System.out.println(s_Climber.getPosition());
-            System.out.println("Running");
-        } 
-        else 
-        {
+        } else {
             s_Climber.setSpeed(0);
             isFinished = true;
         }

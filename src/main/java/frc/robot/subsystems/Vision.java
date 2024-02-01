@@ -15,6 +15,10 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+/**
+ * vision subsystem
+ * @authour 5985
+ */
 public class Vision extends SubsystemBase {
 
     public PhotonCamera leftCam;
