@@ -19,10 +19,9 @@ import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
 public final class Constants {
     public static final double stickDeadband = 0.3;
     
+    
     /* Shooter Constants */
-    public static final double shooterAngleOffset = 15;
-    public static final double horizontalShooterAngle = 20;
-    public static final double mFlapMaxCurrent = 40;
+    
 
     /* Image Tracking Constants */
     public static final double cameraPitchOffset = 26;
@@ -74,26 +73,26 @@ public final class Constants {
         public static final double FlapMaxCurrent = 40;
 
         /* Arm Ratios and Limis */
-        public static final double pivotGearRatio = (28); 
-        public static final double pivotGearMaxRange = 1.7; // Radians from stowed to intake pos  
-        public static final double pivotAmpPos = 1.2;
+        public static final double armGearRatio = (28); 
+        public static final double armGearMaxRange = 1.7; // Radians from stowed to intake pos  
+        public static final double armAmpPos = 1.2;
         
 
-        public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
-        public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final InvertedValue rightPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue armMotorNeutralMode = NeutralModeValue.Brake;
+        public static final InvertedValue leftArmMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue rightArmMotorInvert = InvertedValue.CounterClockwise_Positive;
 
         public static double angleKP;
         public static double angleKI;
         public static double angleKD;
-        public static final int pivotCurrentLimit = 38;
-        public static final int pivotCurrentThreshold = 65;
-        public static final double pivotCurrentThresholdTime = 0.1;
-        public static final boolean pivotEnableCurrentLimit = false;
+        public static final int armCurrentLimit = 38;
+        public static final int armCurrentThreshold = 65;
+        public static final double armCurrentThresholdTime = 0.1;
+        public static final boolean armEnableCurrentLimit = false;
 
-        public static double pivotKP = 20;
-        public static double pivotKI = 0;
-        public static double pivotKD = 0;
+        public static double armKP = 20;
+        public static double armKI = 0;
+        public static double armKD = 0;
         
     }
     
@@ -105,19 +104,23 @@ public final class Constants {
         public static final double maxBottomShooterSpeed = 0.8; // AMP TOP: 0.450000 bottom: 0.05
 
         public static final double shooterIdleSpeed = 0.5;
+
+        public static final double shooterAngleOffset = 15;
+        public static final double horizontalShooterAngle = 20;
+        public static final double mFlapMaxCurrent = 40;
     }
 
     public static final class Climber {
         public static final int mLeftClimbID = 17;
         public static final int mRightClimbID = 14;
-        public static final double maxRevolutions = 320; //3.2 with gear ratio
+        public static final double maxExtensionSpoolRotations = 3.2;
+        public static final double motorToSpoolGearRatio = 100;
+        public static final double climberDownPos = 0;
     }
 
     public static final class Swerve {
         
         public static final boolean invertGyro = false;
-
-        public static final double brakeIntensity = 0.15; // 0.25 -> Trigger fully pressed -> quarter speed.
 
         public static final COTSTalonFXSwerveConstants chosenModule = COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 

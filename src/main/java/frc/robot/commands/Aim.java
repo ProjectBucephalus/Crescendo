@@ -79,7 +79,7 @@ public class Aim extends Command {
             horizontalDistance = speakerTagHeightOverCamera / Math.tan(Units.degreesToRadians(absolutePitch));
             targetPitch = Math.atan(targetHeightOverCamera / Math.max(1,horizontalDistance));
             targetPitch = Units.radiansToDegrees(targetPitch);
-            shooterAngle = targetPitch + Constants.horizontalShooterAngle;
+            shooterAngle = targetPitch + Constants.Shooter.horizontalShooterAngle;
             Transform3d distance = target.getBestCameraToTarget();
             
             System.out.println("Target Yaw: " + yaw);

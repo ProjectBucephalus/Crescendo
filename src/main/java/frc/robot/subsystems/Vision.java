@@ -64,7 +64,7 @@ public class Vision extends SubsystemBase {
 
             s_Swerve.resetOdometry(pose);
             
-            //System.out.println(fieldToCamera); 
+            System.out.println(fieldToCamera); 
 
             return true;
         }  else {
