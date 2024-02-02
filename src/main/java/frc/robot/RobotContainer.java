@@ -52,6 +52,7 @@ import frc.robot.commands.Intake.IntakeStow;
 import frc.robot.commands.Shooter.ShootSequence;
 import frc.robot.commands.Shooter.ShooterRev;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Intake.FlapPosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -80,8 +81,8 @@ public class RobotContainer {
     private final POVButton      LOCK_CLIMBER_BUTTON   = new POVButton(driver, 0, 0); // The POV angles start at 0 in the up direction, and increase clockwise (e.g. right is 90, upper-left is 315).
     private final POVButton      UNLOCK_CLIMBER_BUTTON = new POVButton(driver, 180, 0);
     private final int            ALIGN_TO_SPEAKER      = XboxController.Axis.kLeftTrigger.value;
-    private final JoystickButton ALIGN_TO_AMP          = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton INTAKE_BUTTON         = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton ALIGN_TO_AMP          = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton INTAKE_BUTTON         = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final int            BRAKE_AXIS            = XboxController.Axis.kRightTrigger.value;
     
     /* Co-Driver Buttons */
@@ -186,6 +187,8 @@ public class RobotContainer {
         INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
         MANUAL_INTAKE_TO_INTAKE_POS.whileTrue(new IntakeSuck(s_Intake));
         //MANUAL_SHOOTER_TO_AMP_POS.onTrue(new IntakeToAmp)
+        FLAP_TOGGLE.onTrue(new InstantCommand(() -> s_Intake.setFlapPosition(FlapPosition.OPEN))).onFalse(new CloseFlap(s_Intake));
+        
         AUTO_CLIMB_OUT.whileTrue(new ClimberExtend(s_Climber));
         AUTO_CLIMB_IN.whileTrue(new ClimberRetract(s_Climber));
 
