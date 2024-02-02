@@ -113,6 +113,7 @@ public final class Constants {
         public static final double pivotGearRatio = (28);
         public static final double pivotGearMaxRange = 1.7; // Radians from stowed to intake pos
         public static final double pivotAmpPos = 1.2;
+        public static final double trapPos = 0;
 
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
         public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
