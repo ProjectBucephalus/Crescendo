@@ -35,8 +35,8 @@ import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
 import frc.robot.commands.Climber.ClimberExtend;
 import frc.robot.commands.Climber.ClimberRetract;
-import frc.robot.commands.Climber.BuddyClimberDeploy;
-import frc.robot.commands.Climber.BuddyClimberRetract;
+//import frc.robot.commands.Climber.BuddyClimberDeploy;
+//import frc.robot.commands.Climber.BuddyClimberRetract;
 import frc.robot.commands.Climber.ClimberExtend;
 import frc.robot.commands.Climber.ClimberRetract;
 import frc.robot.commands.Climber.LockClimber;
@@ -172,7 +172,7 @@ public class RobotContainer {
     {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        aim.whileTrue(new Aim(s_Swerve, s_Intake));
+        //aim.whileTrue(new Aim(s_Swerve, s_Intake));
         //other buttons
 
 
@@ -188,15 +188,15 @@ public class RobotContainer {
         INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
         MANUAL_INTAKE_TO_INTAKE_POS.whileTrue(new IntakeSuck(s_Intake));
         //MANUAL_SHOOTER_TO_AMP_POS.onTrue(new IntakeToAmp)
-        FLAP_TOGGLE.onTrue(new InstantCommand(() -> s_Intake.setFlapPosition(FlapPosition.OPEN))).onFalse(new CloseFlap(s_Intake));
+        //FLAP_TOGGLE.onTrue(new InstantCommand(() -> s_Intake.setFlapPosition(FlapPosition.OPEN))).onFalse(new CloseFlap(s_Intake));
         
         AUTO_CLIMB_OUT.whileTrue(new ClimberExtend(s_Climber));
         AUTO_CLIMB_IN.whileTrue(new ClimberRetract(s_Climber));
 
-        DEPLOY_BUDDY_CLIMBER.onTrue(new BuddyClimberDeploy());
-        RETRACT_BUDDY_CLIMBER.onTrue(new BuddyClimberRetract());
-        LOCK_CLIMBER_BUTTON.whileTrue(new LockClimber());
-        UNLOCK_CLIMBER_BUTTON.whileTrue(new UnlockClimber());
+        //DEPLOY_BUDDY_CLIMBER.onTrue(new BuddyClimberDeploy());
+        //RETRACT_BUDDY_CLIMBER.onTrue(new BuddyClimberRetract());
+        //LOCK_CLIMBER_BUTTON.whileTrue(new LockClimber());
+        //UNLOCK_CLIMBER_BUTTON.whileTrue(new UnlockClimber());
         AUTO_CLIMB_OUT.onTrue(new ClimberExtend(s_Climber));
         AUTO_CLIMB_IN.onTrue(new ClimberRetract(s_Climber));
         SHOOT_BUTTON_REV.whileTrue(new ShooterRev(s_Intake));

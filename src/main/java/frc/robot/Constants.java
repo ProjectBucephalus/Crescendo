@@ -75,7 +75,7 @@ public final class Constants {
         /* Arm Ratios and Limis */
         public static final double armGearRatio = (28); 
         public static final double armGearMaxRange = 1.7; // Radians from stowed to intake pos  
-        public static final double armAmpPos = 1.2;
+        public static final double pivotAmpPos = 1.2;
         
 
         public static final NeutralModeValue armMotorNeutralMode = NeutralModeValue.Brake;

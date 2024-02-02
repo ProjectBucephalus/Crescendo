@@ -21,9 +21,9 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private BooleanSupplier robotCentricSup;
-    private DoubleSupplier breakAxis;
+    private DoubleSupplier brakeAxis;
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, DoubleSupplier breakAxis) {
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, DoubleSupplier brakeAxis) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -31,7 +31,7 @@ public class TeleopSwerve extends Command {
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
-        this.breakAxis = breakAxis;
+        this.brakeAxis = brakeAxis;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class TeleopSwerve extends Command {
             rotationVal * Constants.Swerve.maxAngularVelocity, 
             !robotCentricSup.getAsBoolean(), 
             true,
-            breakVal
+            brakeVal
         );
     }
 }
