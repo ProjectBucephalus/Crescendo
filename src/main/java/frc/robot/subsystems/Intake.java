@@ -54,6 +54,9 @@ public class Intake extends SubsystemBase {
     public enum IntakePosition {
         STOWED,
         DEPLOYED,
+        AMP,
+        TRAP,
+        SPEAKER
     };
 
     /**
@@ -90,6 +93,15 @@ public class Intake extends SubsystemBase {
                 break;
             case DEPLOYED:
                 moveArmToAngle(SmartDashboard.getNumber("pivotPosition", 1.2));
+                break;
+            case AMP:
+                moveArmToAngle(Constants.Intake.pivotAmpPos);
+                break;
+            case TRAP:
+                moveArmToAngle(0);
+                break;
+            case SPEAKER:
+                //TODO April tag stuff
                 break;
         }
     }
