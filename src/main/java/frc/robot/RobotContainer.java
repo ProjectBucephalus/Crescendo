@@ -133,7 +133,8 @@ public class RobotContainer {
                 () -> -driver.getRawAxis(translationAxis),
                 () -> -driver.getRawAxis(strafeAxis),
                 () -> -driver.getRawAxis(rotationAxis),
-                () -> robotCentric.getAsBoolean()
+                () -> robotCentric.getAsBoolean(),
+                () -> driver.getRawAxis(BRAKE_AXIS)
             )
         );
         s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
