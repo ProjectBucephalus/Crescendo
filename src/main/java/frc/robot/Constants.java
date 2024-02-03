@@ -110,14 +110,26 @@ public final class Constants {
         public static final double FlapMaxCurrent = 40;
 
         /* Arm Ratios and Limis */
-        public static final double pivotGearRatio = (28);
-        public static final double pivotGearMaxRange = 1.7; // Radians from stowed to intake pos
-        public static final double pivotAmpPos = 1.2;
+        public static final double planetaryRingTeeth = 72;
+        public static final double planetarySunTeeth = 36;
+        public static final double planetaryPlanetTeeth = 18;
+        public static final double planetaryRatio = (planetaryRingTeeth/planetarySunTeeth) + 1;
+        public static final double gear1In = 20;
+        public static final double gear1Out = 76;
+        public static final double pivotGearIn = 10;
+        public static final double pivotGearOut = 40;
+        public static final double pivotGearRatio = planetaryRatio * (gear1Out/gear1In) * (pivotGearOut/pivotGearIn);
+
+
+        public static final double pivotGearMaxRange = -90; // degrees
+
+        public static final double offsetForZero = -45;
+        public static final double pivotAmpPos = -30;
         public static final double trapPos = 0;
 
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
-        public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final InvertedValue rightPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue leftPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue rightPivotMotorInvert = InvertedValue.Clockwise_Positive;
 
         public static double angleKP;
         public static double angleKI;
@@ -127,7 +139,7 @@ public final class Constants {
         public static final double pivotCurrentThresholdTime = 0.1;
         public static final boolean pivotEnableCurrentLimit = false;
 
-        public static double pivotKP = 20;
+        public static double pivotKP = 25;
         public static double pivotKI = 0;
         public static double pivotKD = 0;
 

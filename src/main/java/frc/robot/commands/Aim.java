@@ -10,12 +10,14 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Swerve;
 
 public class Aim extends Command {
     private final Swerve s_Swerve;
     private final Intake s_Intake;
     private final PhotonCamera cam2;
+    private final Pivot s_Pivot;
 
     private static final double ROTATION_SPEED_FACTOR = 10.0;
     private static final double ANGLE_TOLERANCE = 2.0; // Adjust as needed
@@ -37,10 +39,11 @@ public class Aim extends Command {
 
     private double shooterAngle;
 
-    public Aim(Swerve s_Swerve, Intake s_Intake) 
+    public Aim(Swerve s_Swerve, Intake s_Intake, Pivot s_Pivot) 
     {
         this.s_Swerve = s_Swerve;
         this.s_Intake = s_Intake;
+        this.s_Pivot = s_Pivot;
         this.cam2 = new PhotonCamera("cam2");
         addRequirements(s_Swerve, s_Intake);
     }
@@ -110,7 +113,7 @@ public class Aim extends Command {
 
         ChassisSpeeds speeds = new ChassisSpeeds(0, 0, rotationSpeed);
         s_Swerve.driveRobotRelative(speeds);
-        s_Intake.moveArmToAngle(shooterAngle);
+        s_Pivot.moveArmToAngle(shooterAngle);
 
         System.out.println("------------------------------------------");
     }

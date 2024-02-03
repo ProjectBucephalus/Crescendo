@@ -9,7 +9,9 @@ import frc.robot.Constants;
 public class Climber extends SubsystemBase {
 
     public TalonFX mLeftClimber = new TalonFX(Constants.Climber.mLeftClimbID);
-    public TalonFX mRightClimber = new TalonFX(Constants.Climber.mRightClimbID);
+    public TalonFX mRightClimber = new TalonFX(Constants.Climber.mRightClimbID);   
+
+    public TalonFX mBuddyClimb = new TalonFX(Constants.Intake.mBuddyClimbID);
 
     public enum ClimerStatus {
         LOCKED,
@@ -20,6 +22,10 @@ public class Climber extends SubsystemBase {
         UP,
         DOWN,
     }
+    public enum BuddyClimbPosition {
+        RUNNING,
+        STOPPED,
+    };
 
     private ClimerStatus climberStatus;
     private ClimberPosition climberPosition;
@@ -45,6 +51,7 @@ public class Climber extends SubsystemBase {
                 break;
         }
     }
+    
     public void setStatus(ClimerStatus status) {
         switch (status) {
             case LOCKED:
@@ -52,6 +59,20 @@ public class Climber extends SubsystemBase {
                 break;
             case UNLOCKED:
                 
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+    public void setBuddyClimb(BuddyClimbPosition status) {
+        switch (status) {
+            case RUNNING:
+                mBuddyClimb.set(-1);
+                break;
+            case STOPPED:
+                mBuddyClimb.set(0);
                 break;
         
             default:

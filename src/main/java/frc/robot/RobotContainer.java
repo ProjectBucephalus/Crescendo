@@ -39,7 +39,7 @@ import frc.robot.commands.*;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
 import frc.robot.commands.BuddyClimb.StopBuddyClimber;
 import frc.robot.commands.Climber.MoveClimber;
-import frc.robot.commands.Intake.IntakeDeploy;
+import frc.robot.commands.Intake.IntakeAndDeployPivot;
 import frc.robot.commands.Intake.IntakeSpit;
 import frc.robot.commands.Intake.IntakeStop;
 import frc.robot.commands.Intake.IntakeSuck;
@@ -47,11 +47,12 @@ import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Intake.MoveIntakeToPosition;
 import frc.robot.commands.Intake.Flap.CloseFlap;
 import frc.robot.commands.Intake.Flap.OpenFlap;
-import frc.robot.commands.Intake.IntakeStow;
+import frc.robot.commands.Intake.StopIntakeAndStow;
 import frc.robot.commands.Shooter.ShooterIdle;
 import frc.robot.commands.Shooter.ShooterRev;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.IntakePosition;
+import frc.robot.subsystems.Pivot.PivotPosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -89,6 +90,7 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private final Intake s_Intake = new Intake();
+    private final Pivot s_Pivot  = new Pivot();
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
 
@@ -154,24 +156,26 @@ public class RobotContainer {
         /* Driver Buttons */
         driver.y()             .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         driver.leftTrigger()   .whileTrue(new aimToSpeaker(s_Swerve));
-        driver.rightBumper()   .whileTrue(new IntakeSuck(s_Intake));
+        //driver.rightBumper()   .whileTrue(new IntakeSuck(s_Intake));
+        //driver.rightBumper() .onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
+        driver.rightBumper()  .onTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake)).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
         // driver.povUp().onTrue(new unlockClimber(s_Climber));
         // driver.povDown().onTrue(new lockClimber(s_Climber));
         
         
         /* Co-Driver Buttons */
 
-        coDriver.leftTrigger() .onTrue(new ShooterRev(s_Shooter)).onFalse(new ShooterIdle(s_Shooter));
-        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake));
-        coDriver.rightBumper() .onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
+        coDriver.leftTrigger() .whileTrue(new ShooterRev(s_Shooter)).whileFalse(new ShooterIdle(s_Shooter));
+        coDriver.rightTrigger().whileTrue(new IntakeSuck(s_Intake)).whileFalse(new IntakeStop(s_Intake));
+        
 
-        coDriver.leftBumper()  .onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
-        coDriver.x()           .onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.DEPLOYED));
-        coDriver.b()           .onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.AMP));
-        coDriver.y()           .onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.SPEAKER));
-        coDriver.a()           .onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.STOWED));
-        coDriver.povRight()    .whileTrue(new DeployBuddyClimber(s_Intake));
-        coDriver.povLeft()     .whileTrue(new DeployBuddyClimber(s_Intake));
+        
+        coDriver.x()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.DEPLOYED));
+        coDriver.b()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.AMP));
+        coDriver.y()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.SPEAKER));
+        coDriver.a()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.STOWED));
+        coDriver.povRight()    .onTrue(new DeployBuddyClimber(s_Climber));
+        coDriver.povLeft()     .onTrue(new StopBuddyClimber(s_Climber));
 
     }
 
