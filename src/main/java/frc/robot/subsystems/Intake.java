@@ -204,12 +204,12 @@ public class Intake extends SubsystemBase {
         switch (pos) {
             case OPEN:
                 SmartDashboard.putNumber("mFlapVoltage",mFlap.getMotorOutputVoltage());
-                setFlapSpeed(1);
+                setFlapSpeed(0.5);
                 System.out.println("Open");
         
             case CLOSED:
                 SmartDashboard.putNumber("mFlapVoltage",mFlap.getMotorOutputVoltage());
-                setFlapSpeed(-1);
+                setFlapSpeed(-0.5);
                 System.out.println("Closed");
 
         }
