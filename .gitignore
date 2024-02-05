@@ -176,3 +176,8 @@ logs/
 
 # Folder that has CTRE Phoenix Sim device config storage
 ctre_sim/
+bin/main/frc/robot/subsystems/Intake.class
+bin/main/frc/robot/RobotContainer.class
+.gradle/8.5/checksums/sha1-checksums.bin
+.gradle/8.5/checksums/md5-checksums.bin
+.gradle/8.5/checksums/checksums.lock
