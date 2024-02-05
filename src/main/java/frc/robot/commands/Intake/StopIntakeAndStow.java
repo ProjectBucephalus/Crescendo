@@ -5,6 +5,10 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
 
+/**
+ * intake stow command
+ * @author 5985
+ */
 public class StopIntakeAndStow extends Command {
 
     Pivot s_Pivot;

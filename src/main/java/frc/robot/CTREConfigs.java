@@ -65,43 +65,43 @@ public final class CTREConfigs {
 
 
         /** Left Arm Motor Config **/
-        leftArmMotorFXConfig.MotorOutput.Inverted = Constants.Intake.leftPivotMotorInvert;
-        leftArmMotorFXConfig.MotorOutput.NeutralMode = Constants.Intake.pivotMotorNeutralMode;
+        leftArmMotorFXConfig.MotorOutput.Inverted = Constants.Intake.leftArmMotorInvert;
+        leftArmMotorFXConfig.MotorOutput.NeutralMode = Constants.Intake.armMotorNeutralMode;
 
         /* Gear Ratio and Wrapping Config */
-        leftArmMotorFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.pivotGearRatio;
+        leftArmMotorFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.armGearRatio;
         leftArmMotorFXConfig.ClosedLoopGeneral.ContinuousWrap = true;
         
         /* Current Limiting */
-        leftArmMotorFXConfig.CurrentLimits.SupplyCurrentLimitEnable = Constants.Intake.pivotEnableCurrentLimit;
-        leftArmMotorFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.Intake.pivotCurrentLimit;
-        leftArmMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Intake.pivotCurrentThreshold;
-        leftArmMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Intake.pivotCurrentThresholdTime;
+        leftArmMotorFXConfig.CurrentLimits.SupplyCurrentLimitEnable = Constants.Intake.armEnableCurrentLimit;
+        leftArmMotorFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.Intake.armCurrentLimit;
+        leftArmMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Intake.armCurrentThreshold;
+        leftArmMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Intake.armCurrentThresholdTime;
 
         /* PID Config */
-        leftArmMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
-        leftArmMotorFXConfig.Slot0.kI = Constants.Intake.pivotKI;
-        leftArmMotorFXConfig.Slot0.kD = Constants.Intake.pivotKD;
+        leftArmMotorFXConfig.Slot0.kP = Constants.Intake.armKP;
+        leftArmMotorFXConfig.Slot0.kI = Constants.Intake.armKI;
+        leftArmMotorFXConfig.Slot0.kD = Constants.Intake.armKD;
 
         /** Right Arm Motor Config **/
-        rightArmMotorFXConfig.MotorOutput.Inverted = Constants.Intake.rightPivotMotorInvert;
-        rightArmMotorFXConfig.MotorOutput.NeutralMode = Constants.Intake.pivotMotorNeutralMode;
+        rightArmMotorFXConfig.MotorOutput.Inverted = Constants.Intake.rightArmMotorInvert;
+        rightArmMotorFXConfig.MotorOutput.NeutralMode = Constants.Intake.armMotorNeutralMode;
 
         /* Gear Ratio and Wrapping Config */
-        rightArmMotorFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.pivotGearRatio;
+        rightArmMotorFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.armGearRatio;
         rightArmMotorFXConfig.ClosedLoopGeneral.ContinuousWrap = true;
         
         /* Current Limiting */
-        rightArmMotorFXConfig.CurrentLimits.SupplyCurrentLimitEnable = Constants.Intake.pivotEnableCurrentLimit;       
-        rightArmMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Intake.pivotCurrentThreshold;
-        rightArmMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Intake.pivotCurrentThresholdTime;
-        rightArmMotorFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.Intake.pivotCurrentLimit;
+        rightArmMotorFXConfig.CurrentLimits.SupplyCurrentLimitEnable = Constants.Intake.armEnableCurrentLimit;       
+        rightArmMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Intake.armCurrentThreshold;
+        rightArmMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Intake.armCurrentThresholdTime;
+        rightArmMotorFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.Intake.armCurrentLimit;
  
 
         /* PID Config */
-        rightArmMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
-        rightArmMotorFXConfig.Slot0.kD = Constants.Intake.pivotKI;
-        rightArmMotorFXConfig.Slot0.kI = Constants.Intake.pivotKD;
+        rightArmMotorFXConfig.Slot0.kP = Constants.Intake.armKP;
+        rightArmMotorFXConfig.Slot0.kD = Constants.Intake.armKI;
+        rightArmMotorFXConfig.Slot0.kI = Constants.Intake.armKD;
         
 
         

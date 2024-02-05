@@ -6,16 +6,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Climber extends SubsystemBase {
+/**
+ * the climber subsystem
+ * @author 5985
+ */
+public class Climber extends SubsystemBase 
+{
 
     public TalonFX mLeftClimber = new TalonFX(Constants.Climber.mLeftClimbID);
-    public TalonFX mRightClimber = new TalonFX(Constants.Climber.mRightClimbID);   
-
+    public TalonFX mRightClimber = new TalonFX(Constants.Climber.mRightClimbID);
     public TalonFX mBuddyClimb = new TalonFX(Constants.Intake.mBuddyClimbID);
 
-    public enum ClimerStatus {
-        LOCKED,
-        UNLOCKED,
+    public Climber() { 
+        
     }
 
     public enum ClimberPosition {
@@ -27,13 +30,16 @@ public class Climber extends SubsystemBase {
         STOPPED,
     };
 
-    private ClimerStatus climberStatus;
-    private ClimberPosition climberPosition;
-
-    public Climber() { 
+    public enum ClimberStatus {
+        LOCKED,
+        UNLOCKED
     }
 
-    public void setSpeed(double speed) {
+    private ClimberStatus climberStatus;
+    private ClimberPosition climberPosition;
+
+    public void setSpeed(double speed) 
+    {
         mLeftClimber.set(speed);
         mRightClimber.set(-speed);
     }
@@ -52,7 +58,7 @@ public class Climber extends SubsystemBase {
         }
     }
     
-    public void setStatus(ClimerStatus status) {
+    public void setStatus(ClimberStatus status) {
         switch (status) {
             case LOCKED:
                 
@@ -80,8 +86,15 @@ public class Climber extends SubsystemBase {
         }
     }
 
-    public double getPosition() {
+    /**
+     * gets the position of the climber in radians
+     * @return the position of the climber in radians
+     */
+    public double getPosition() 
+    {
         SmartDashboard.putNumber("ClimberPosition", mLeftClimber.getPosition().getValueAsDouble());
         return (mLeftClimber.getPosition().getValueAsDouble());
     }
+
+    
 }

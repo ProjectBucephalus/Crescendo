@@ -4,6 +4,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterState;
 
+/**
+ * shooter rev command
+ * @author 5985
+ */
 public class ShooterRev extends Command {
     private final Shooter s_Shooter;
 

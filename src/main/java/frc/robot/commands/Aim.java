@@ -13,6 +13,10 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Swerve;
 
+/**
+ * aim command
+ * @author 5985
+ */
 public class Aim extends Command {
     private final Swerve s_Swerve;
     private final Intake s_Intake;
@@ -82,7 +86,7 @@ public class Aim extends Command {
             horizontalDistance = speakerTagHeightOverCamera / Math.tan(Units.degreesToRadians(absolutePitch));
             targetPitch = Math.atan(targetHeightOverCamera / Math.max(1,horizontalDistance));
             targetPitch = Units.radiansToDegrees(targetPitch);
-            shooterAngle = targetPitch + Constants.horizontalShooterAngle;
+            shooterAngle = targetPitch + Constants.Shooter.horizontalShooterAngle;
             Transform3d distance = target.getBestCameraToTarget();
             
             System.out.println("Target Yaw: " + yaw);

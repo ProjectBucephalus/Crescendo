@@ -117,27 +117,43 @@ public class Swerve extends SubsystemBase {
 
     }
 
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop,
-            double brakeVal) {
-        SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                        translation.getX(),
-                        translation.getY(),
-                        rotation,
-                        getHeading())
-                        : new ChassisSpeeds(
-                                translation.getX(),
-                                translation.getY(),
-                                rotation));
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
-                Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
-        System.out.println(Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, 0.5, 1)));
+    
 
-        for (SwerveModule mod : mSwerveMods) {
+    /**
+     * TODO i dont know how the swerve works, todo docs
+     * @param translation
+     * @param rotation
+     * @param fieldRelative
+     * @param isOpenLoop
+     */
+    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) {
+        SwerveModuleState[] swerveModuleStates =
+            Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                                    translation.getX(), 
+                                    translation.getY(), 
+                                    rotation, 
+                                    getHeading()
+                                )
+                                : new ChassisSpeeds(
+                                    translation.getX(), 
+                                    translation.getY(), 
+                                    rotation)
+                                );
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed*(map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
+        System.out.println(Constants.Swerve.maxSpeed*(map(brakeVal, 0, 1, 0.5, 1)));
+        for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
-    }
-
+    }    
+    
+    /**
+     * TODO i dont know how the swerve works, todo docs
+     * @param xSpeed
+     * @param ySpeed
+     * @param rot 
+     * @param fieldRelative
+     */
     public void ChoreoDrive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         var swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -151,7 +167,10 @@ public class Swerve extends SubsystemBase {
         }
     }
 
-    /* Used by SwerveControllerCommand in Auto */
+    /**
+     * Used by SwerveControllerCommand in Auto
+     * @param desiredStates
+     */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
 
@@ -180,6 +199,10 @@ public class Swerve extends SubsystemBase {
         return swerveOdometry.getPoseMeters();
     }
 
+    /**
+     * TODO i dont know how the swerve works, todo docs
+     * @param pose
+     */
     public void setPose(Pose2d pose) {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
@@ -212,6 +235,9 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * TODO docs
+     */
     public static double map(double valueCoord1,
             double startCoord1, double endCoord1,
             double startCoord2, double endCoord2) {
@@ -221,6 +247,10 @@ public class Swerve extends SubsystemBase {
         return (y);
     }
 
+    /**
+     * TODO i dont know how the swerve works, todo docs
+     * @param pose
+     */
     public void resetOdometry(Pose2d pose) {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
@@ -237,7 +267,12 @@ public class Swerve extends SubsystemBase {
         return Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
-    public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+    /**
+     * TODO i dont know how the swerve works, todo docs
+     * @param robotRelativeSpeeds
+     */
+    public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) 
+    {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
         SwerveModuleState[] targetStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(targetSpeeds);
@@ -273,6 +308,9 @@ public class Swerve extends SubsystemBase {
   }
 
     @Override
+    /**
+     * TODO i dont know how the swerve works, todo docs
+     */
     public void periodic()
     {
 

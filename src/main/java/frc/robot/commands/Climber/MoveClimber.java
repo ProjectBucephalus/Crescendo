@@ -8,12 +8,22 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
 
+/**
+ * climber movement command
+ * @author 5985
+ */
 public class MoveClimber extends Command {
 
     private Climber climber;
     private DoubleSupplier speed;
 
-    public MoveClimber(Climber climber, DoubleSupplier speed_sup) {
+    /**
+     * Moves the climber
+     * @param climber reference to the climber subsystem
+     * @param speed_sup double supplier for the climber speed
+     */
+    public MoveClimber(Climber climber, DoubleSupplier speed_sup) 
+    {
         this.climber = climber;
         this.speed = speed_sup;
         addRequirements(climber);
@@ -21,7 +31,8 @@ public class MoveClimber extends Command {
     }
 
     @Override
-    public void execute() {
+    public void execute() 
+    {
         System.out.println(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
         climber.setSpeed(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
     }

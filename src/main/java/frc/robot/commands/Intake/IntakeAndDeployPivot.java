@@ -7,6 +7,10 @@ import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Intake.FlapPosition;
 import frc.robot.subsystems.Pivot.PivotPosition;
 
+/**
+ * intake deploy command
+ * @author 5985
+ */
 public class IntakeAndDeployPivot extends Command {
     public boolean isFinished = false;
     Pivot s_Pivot;
