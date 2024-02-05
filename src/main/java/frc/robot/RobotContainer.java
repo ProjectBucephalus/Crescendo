@@ -1,65 +1,34 @@
 package frc.robot;
 
-import java.sql.Driver;
-import java.util.ArrayList;
-
 import org.photonvision.PhotonCamera;
 
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.VisionCommands.aimToSpeaker;
 import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
 import frc.robot.commands.BuddyClimb.StopBuddyClimber;
-import frc.robot.commands.Climber.ClimberExtend;
-import frc.robot.commands.Climber.ClimberRetract;
-//import frc.robot.commands.Climber.BuddyClimberDeploy;
-//import frc.robot.commands.Climber.BuddyClimberRetract;
-import frc.robot.commands.Climber.ClimberExtend;
-import frc.robot.commands.Climber.ClimberRetract;
-import frc.robot.commands.Climber.LockClimber;
 import frc.robot.commands.Climber.MoveClimber;
 import frc.robot.commands.Intake.IntakeAndDeployPivot;
-import frc.robot.commands.Intake.IntakeSpit;
 import frc.robot.commands.Intake.IntakeStop;
 import frc.robot.commands.Intake.IntakeSuck;
-import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Intake.MoveIntakeToPosition;
-import frc.robot.commands.Intake.Flap.CloseFlap;
-import frc.robot.commands.Intake.Flap.OpenFlap;
 import frc.robot.commands.Intake.StopIntakeAndStow;
 import frc.robot.commands.Shooter.ShooterIdle;
 import frc.robot.commands.Shooter.ShooterRev;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Intake.IntakePosition;
 import frc.robot.subsystems.Pivot.PivotPosition;
 
 /**

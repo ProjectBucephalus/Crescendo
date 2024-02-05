@@ -18,7 +18,6 @@ import frc.lib.math.Conversions;
 import frc.robot.CTREConfigs;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
@@ -66,11 +65,11 @@ public class Pivot extends SubsystemBase {
         SmartDashboard.putNumber("ampPosition", -45);
 
         mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
-        mLeftPivot.getConfigurator().apply(CTREConfigs.leftArmMotorFXConfig);
+        mLeftPivot.getConfigurator().apply(CTREConfigs.leftPivotMotorFXConfig);
         mLeftPivot.getConfigurator().setPosition(0);
 
         mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
-        mRightPivot.getConfigurator().apply(CTREConfigs.rightArmMotorFXConfig);
+        mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
         mRightPivot.getConfigurator().setPosition(0);
     }
 

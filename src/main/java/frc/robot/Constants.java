@@ -134,10 +134,10 @@ public final class Constants {
         public static double angleKP;
         public static double angleKI;
         public static double angleKD;
-        public static final int armCurrentLimit = 38;
-        public static final int armCurrentThreshold = 65;
-        public static final double armCurrentThresholdTime = 0.1;
-        public static final boolean armEnableCurrentLimit = false;
+        public static final int pivotCurrentLimit = 38;
+        public static final int pivotCurrentThreshold = 65;
+        public static final double pivotCurrentThresholdTime = 0.1;
+        public static final boolean pivotEnableCurrentLimit = false;
 
         public static double pivotKP = 25;
         public static double pivotKI = 0;
@@ -163,6 +163,11 @@ public final class Constants {
         public static final int mLeftClimbID = 17;
         public static final int mRightClimbID = 14;
         public static final double maxRevolutions = 320; // 3.2 with gear ratio
+
+        public static final double maxExtensionSpoolRotations = 3.2;
+        public static final double motorToSpoolGearRatio = 100;
+        public static final double climberDownPos = 0;
+        
     }
 
     public static final class Swerve {

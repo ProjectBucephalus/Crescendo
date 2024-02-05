@@ -76,11 +76,11 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("pivotPosition", 1.2);
 
         mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
-        mLeftPivot.getConfigurator().apply(CTREConfigs.leftArmMotorFXConfig);
+        mLeftPivot.getConfigurator().apply(CTREConfigs.leftPivotMotorFXConfig);
         mLeftPivot.getConfigurator().setPosition(0);
 
         mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
-        mRightPivot.getConfigurator().apply(CTREConfigs.rightArmMotorFXConfig);
+        mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
         mRightPivot.getConfigurator().setPosition(0);
     }
 
