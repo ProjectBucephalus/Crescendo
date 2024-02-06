@@ -31,6 +31,6 @@ public class MoveIntake extends Command {
     @Override
     public void execute() {
         System.out.println(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
-        s_Intake.setArmMotorSpeeds(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
+        //s_Intake.setArmMotorSpeeds(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
     }
 }

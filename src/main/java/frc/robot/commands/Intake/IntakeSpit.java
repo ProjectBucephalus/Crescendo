@@ -18,7 +18,7 @@ public class IntakeSpit extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        s_Intake.setIntakeSpeed(0.70);
+        s_Intake.setIntakeSpeed(1);
     }
 
     /**

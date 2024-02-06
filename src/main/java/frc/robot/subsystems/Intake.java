@@ -40,13 +40,13 @@ public class Intake extends SubsystemBase {
     public TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
 
     // limit switches
-    public DigitalInput leftDeploySwitch = new DigitalInput(Constants.Intake.leftOutSwitchID);
-    public DigitalInput leftStowSwitch = new DigitalInput(Constants.Intake.leftInSwitchID);
-    public DigitalInput rightDeploySwitch = new DigitalInput(Constants.Intake.rightOutSwitchID);
-    public DigitalInput rightStowSwitch = new DigitalInput(Constants.Intake.rightInSwitchID);
+    // public DigitalInput leftDeploySwitch = new DigitalInput(Constants.Intake.leftOutSwitchID);
+    // public DigitalInput leftStowSwitch = new DigitalInput(Constants.Intake.leftInSwitchID);
+    // public DigitalInput rightDeploySwitch = new DigitalInput(Constants.Intake.rightOutSwitchID);
+    // public DigitalInput rightStowSwitch = new DigitalInput(Constants.Intake.rightInSwitchID);
     // limits as checked during calibration, to account for encoder drift
-    double intakeStowLimitPos;
-    double intakeDeployLimitPos;
+    // double intakeStowLimitPos;
+    // double intakeDeployLimitPos;
 
     /**
      * enum intake position with the states: STOWED, DEPLOYED
@@ -67,6 +67,8 @@ public class Intake extends SubsystemBase {
         CLOSED,
     };
 
+    
+
     public Intake() {
 
         SmartDashboard.putNumber("topShooterSpeed", 0.1);
@@ -74,11 +76,11 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("pivotPosition", 1.2);
 
         mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
-        mLeftPivot.getConfigurator().apply(CTREConfigs.leftArmMotorFXConfig);
+        mLeftPivot.getConfigurator().apply(CTREConfigs.leftPivotMotorFXConfig);
         mLeftPivot.getConfigurator().setPosition(0);
 
         mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
-        mRightPivot.getConfigurator().apply(CTREConfigs.rightArmMotorFXConfig);
+        mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
         mRightPivot.getConfigurator().setPosition(0);
     }
 
@@ -143,17 +145,12 @@ public class Intake extends SubsystemBase {
     // commented out for safety's sake. same with reference to it in IntakeStowed
     // file
 
-    public void setIntakeStowed() 
-    {
-        if (leftStowSwitch.get() || !rightStowSwitch.get()) 
-        {
-            setArmMotorSpeeds(0.2);
-        }
-        else
-        {
-            mIntake.stopMotor();
-        }
-    }
+    // public void setIntakeStowed() {
+    //     while (leftStowSwitch.get() || !rightStowSwitch.get()) {
+    //         //setArmMotorSpeeds(0.2);
+    //     }
+    //     mIntake.stopMotor();
+    // }
 
     /**
      * sets shooter to full speed
@@ -203,15 +200,17 @@ public class Intake extends SubsystemBase {
     public void setFlapPosition (FlapPosition pos) {
         switch (pos) {
             case OPEN:
-                SmartDashboard.putNumber("mFlapVoltage",mFlap.getMotorOutputVoltage());
-                setFlapSpeed(0.5);
-                System.out.println("Open");
+                mFlap.set(ControlMode.PercentOutput, 0.5);
+                break;
         
             case CLOSED:
-                SmartDashboard.putNumber("mFlapVoltage",mFlap.getMotorOutputVoltage());
-                setFlapSpeed(-0.5);
-                System.out.println("Closed");
-
+                mFlap.set(ControlMode.PercentOutput, -0.5);
+                SmartDashboard.putNumber("Output Voltage", mFlap.getMotorOutputVoltage());
+                SmartDashboard.putNumber("Percent Output", mFlap.getMotorOutputPercent()); // prints the percent output of the motor (0.5)
+                SmartDashboard.putNumber("Bus voltage", mFlap.getBusVoltage()); // prints the bus voltage seen by the motor controller
+                break;
         }
     }
+
+    
 }

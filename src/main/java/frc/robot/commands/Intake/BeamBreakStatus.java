@@ -10,7 +10,7 @@ public class BeamBreakStatus extends Command
     @Override
     public void execute() 
     {
-        Intake.getBeamBreak();
+        //Intake.getBeamBreak();
     }
     
 }
