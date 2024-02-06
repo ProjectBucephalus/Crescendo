@@ -6,7 +6,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.Units;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve;
@@ -28,7 +28,7 @@ public class aimToSpeaker extends Command {
 
     @Override
     public void execute() {
-        ChassisSpeeds speeds = new ChassisSpeeds(0, 0, edu.wpi.first.math.util.Units.degreesToRadians(calculateRequiredHeading().getDegrees()/10));
+        ChassisSpeeds speeds = new ChassisSpeeds(0, 0, calculateRequiredHeading().getRadians()*20);
         s_Swerve.driveRobotRelative(speeds);
         SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
     }
