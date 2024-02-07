@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -16,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.lib.math.Conversions;
 import frc.robot.CTREConfigs;
+
+import javax.print.attribute.standard.Destination;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
@@ -38,6 +41,8 @@ public class Pivot extends SubsystemBase {
 
     public TalonFX mBuddyClimb = new TalonFX(Constants.Intake.mBuddyClimbID);
 
+    public ArmFeedforward feedforward = new ArmFeedforward(0.9, 0.45, 0.82, 0);
+
     // limit switches
     public DigitalInput leftDeploySwitch = new DigitalInput(Constants.Intake.leftOutSwitchID);
     public DigitalInput leftStowSwitch = new DigitalInput(Constants.Intake.leftInSwitchID);
@@ -46,6 +51,8 @@ public class Pivot extends SubsystemBase {
     // limits as checked during calibration, to account for encoder drift
     double intakeStowLimitPos;
     double intakeDeployLimitPos;
+
+    double desiredAngle = 0;
 
     public enum PivotPosition {
         STOWED,
@@ -88,14 +95,15 @@ public class Pivot extends SubsystemBase {
                 moveArmToAngle(Constants.Intake.trapPos);
                 break;
             case SPEAKER:
-                //TODO April tag stuff
+                moveArmToAngle(desiredAngle);
+                break;
         }
     }
 
     /** moves the arm to a set position, In radians
      * @param armAngle The angle to move the arm to in degrees. Negative numbers to intake pos. Positive to stow pos.
      */
-    public void moveArmToAngle(double armAngle) { // TODO add limit switch protections
+    private void moveArmToAngle(double armAngle) { // TODO add limit switch protections
         mLeftPivot.setControl(anglePosition.withPosition((armAngle/360))
                 .withLimitReverseMotion(leftDeploySwitch.get())
                 .withLimitReverseMotion(rightDeploySwitch.get())
@@ -110,6 +118,18 @@ public class Pivot extends SubsystemBase {
                 .withLimitForwardMotion(rightStowSwitch.get())
                 .withLimitForwardMotion(leftStowSwitch.get()));
         SmartDashboard.putBoolean("moving", true);
+    }
+
+
+    /**
+     * 
+     * @param angle the desired angle to move the arm to when the setPosition() method is called with the correct enum.
+     * 
+     * for example, if we want to align to the speaker, we would call this metod and pass in the desired angle and call setPosition() with 
+     * PivotPosition.SPEAKER.
+     */
+    public void setDesiredPostion(Double angle) {
+        this.desiredAngle = angle;
     }
 
     public double getArmPos() {

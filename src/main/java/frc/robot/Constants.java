@@ -63,17 +63,18 @@ public final class Constants {
         public static final Transform3d backCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
                 0, 0, 0.525,
                 new Rotation3d(
-                        0, 0, 0));
+                        0,Units.degreesToRadians(31), Units.degreesToRadians(180)));
         public static final Transform3d frontCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
                 0, 0, 0.525,
                 new Rotation3d(
-                        0, Units.degreesToRadians(31), 0));
+                        0, Units.degreesToRadians(31), Units.degreesToRadians(0)));
         public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
         public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
         public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
         public static final double NOISY_DISTANCE_METERS = 2.5;
         public static final double DISTANCE_WEIGHT = 7;
         public static final int TAG_PRESENCE_WEIGHT = 10;
+
 
         public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),
                         // if these numbers are less than one, multiplying will do bad things
@@ -139,7 +140,7 @@ public final class Constants {
         public static final double pivotCurrentThresholdTime = 0.1;
         public static final boolean pivotEnableCurrentLimit = false;
 
-        public static double pivotKP = 25;
+        public static double pivotKP = 40;
         public static double pivotKI = 0;
         public static double pivotKD = 0;
 
@@ -246,9 +247,9 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 8.0; // 2.5 TODO it was 8
+        public static final double maxSpeed = 80.0; // 2.5 TODO it was 8
         /** Radians per Second */
-        public static final double maxAngularVelocity = 15.0; // 5.0?? it was 15
+        public static final double maxAngularVelocity = 150.0; // 5.0?? it was 15
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;

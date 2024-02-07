@@ -80,8 +80,6 @@ public class RobotContainer {
     /* Autonomous */
     private final SendableChooser<Command> autoChooser;
     Field2d m_Field = new Field2d();
-    ChoreoTrajectory traj;
-    PathPlannerPath exampleChoreoTraj = PathPlannerPath.fromChoreoTrajectory("Trajectory");
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -95,7 +93,7 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(rotationAxis),
                         () -> driver.leftBumper().getAsBoolean(),
                         () -> -driver.getRawAxis(BRAKE_AXIS)));
-        s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
+        //s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
         //s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));   
         s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS))); 
          
@@ -108,13 +106,6 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
-
-        traj = Choreo.getTrajectory("Trajectory");
-
-        
-
-        m_Field.getObject("traj").setPoses(traj.getInitialPose(), traj.getFinalPose());
-        m_Field.getObject("trajPoses").setPoses(traj.getInitialPose(), traj.getFinalPose());
 
         SmartDashboard.putData(m_Field);
         final var visionTab = Shuffleboard.getTab("Vision");
@@ -133,7 +124,7 @@ public class RobotContainer {
     {
         /* Driver Buttons */
         driver.y()             .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        driver.leftTrigger()   .whileTrue(new aimToSpeaker(s_Swerve));
+        driver.leftTrigger()   .whileTrue(new aimToSpeaker(s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_Pivot));
         //driver.rightBumper()   .whileTrue(new IntakeSuck(s_Intake));
         //driver.rightBumper() .onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
         driver.rightBumper()  .onTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake)).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
