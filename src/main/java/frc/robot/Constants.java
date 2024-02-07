@@ -75,7 +75,7 @@ public final class Constants {
         public static final double DISTANCE_WEIGHT = 7;
         public static final int TAG_PRESENCE_WEIGHT = 10;
 
-        
+
         public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),
                         // if these numbers are less than one, multiplying will do bad things
                         1, // x
@@ -140,7 +140,7 @@ public final class Constants {
         public static final double pivotCurrentThresholdTime = 0.1;
         public static final boolean pivotEnableCurrentLimit = false;
 
-        public static double pivotKP = 25;
+        public static double pivotKP = 35;
         public static double pivotKI = 0;
         public static double pivotKD = 0;
 

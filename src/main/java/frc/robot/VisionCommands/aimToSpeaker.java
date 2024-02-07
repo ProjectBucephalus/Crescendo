@@ -50,10 +50,9 @@ public class aimToSpeaker extends Command {
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double brakeVal = MathUtil.applyDeadband(brakeSup.getAsDouble(), Constants.stickDeadband);
         Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed);
-
-        s_Swerve.visionDrive(translation, (calculateRequiredHeading().getRadians()) * 60, true, brakeVal);
+        s_Swerve.visionDrive(translation, (calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getRadians()) * 70, true, brakeVal);
         s_Pivot.setPosition(PivotPosition.SPEAKER);
-        s_Pivot.moveArmToAngle(-calculatedRequiredShooterAngle() - 28);
+        s_Pivot.setDesiredPostion(-calculatedRequiredShooterAngle() - 28);
         SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
         SmartDashboard.putNumber("calculated shooter angle", calculatedRequiredShooterAngle());
     }
@@ -73,6 +72,6 @@ public class aimToSpeaker extends Command {
     public double calculatedRequiredShooterAngle() {
         var pose = s_Swerve.getEstimatedPose();
         SmartDashboard.putNumber("distance to target", PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0))));
-        return Units.radiansToDegrees(Math.atan(2.03/ (PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0))))));
+        return Units.radiansToDegrees(Math.atan((2.03-0.425)/ (PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0))))));
     }
 }
