@@ -61,7 +61,7 @@ public class aimToSpeaker extends Command {
     @Override
     public void end(boolean end) {
         s_Swerve.setVisionAlignmentBool(false);
-        s_Pivot.setPosition(PivotPosition.STOWED);
+        //s_Pivot.setPosition(PivotPosition.STOWED);
     }
 
     public Rotation2d calculateRequiredHeading() {
