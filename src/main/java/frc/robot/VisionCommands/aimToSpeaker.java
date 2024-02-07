@@ -53,7 +53,7 @@ public class aimToSpeaker extends Command {
 
         s_Swerve.visionDrive(translation, (calculateRequiredHeading().getRadians()) * 60, true, brakeVal);
         s_Pivot.setPosition(PivotPosition.SPEAKER);
-        s_Pivot.moveArmToAngle(calculatedRequiredShooterAngle() + 28);
+        s_Pivot.moveArmToAngle(-calculatedRequiredShooterAngle() - 28);
         SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
         SmartDashboard.putNumber("calculated shooter angle", calculatedRequiredShooterAngle());
     }
