@@ -89,6 +89,7 @@ public class Pivot extends SubsystemBase {
                 break;
             case SPEAKER:
                 //TODO April tag stuff
+                break;
         }
     }
 
