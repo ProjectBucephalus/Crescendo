@@ -47,7 +47,7 @@ public class aimToSpeaker extends Command {
         double brakeVal = MathUtil.applyDeadband(brakeSup.getAsDouble(), Constants.stickDeadband);
         Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed);
 
-        s_Swerve.visionDrive(translation, calculateRequiredHeading().getRadians() * 60, true, brakeVal);
+        s_Swerve.visionDrive(translation, (calculateRequiredHeading().getRadians()-180) * 60, true, brakeVal);
         SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
         SmartDashboard.putNumber("calculated shooter angle", calculatedRequiredShooterAngle());
     }
@@ -59,6 +59,7 @@ public class aimToSpeaker extends Command {
 
     public Rotation2d calculateRequiredHeading() {
         var pose = s_Swerve.getEstimatedPose();
+        //TODO Change with alliances
         return PhotonUtils.getYawToPose(pose, new Pose2d(0, 5.6, new Rotation2d(0, 0)));
     }
 
