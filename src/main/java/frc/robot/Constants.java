@@ -140,7 +140,7 @@ public final class Constants {
         public static final double pivotCurrentThresholdTime = 0.1;
         public static final boolean pivotEnableCurrentLimit = false;
 
-        public static double pivotKP = 35;
+        public static double pivotKP = 40;
         public static double pivotKI = 0;
         public static double pivotKD = 0;
 
