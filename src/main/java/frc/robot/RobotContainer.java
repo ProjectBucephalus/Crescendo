@@ -15,8 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.VisionCommands.aimToSpeaker;
-import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
 import frc.robot.commands.BuddyClimb.StopBuddyClimber;
@@ -28,6 +26,8 @@ import frc.robot.commands.Intake.MoveIntakeToPosition;
 import frc.robot.commands.Intake.StopIntakeAndStow;
 import frc.robot.commands.Shooter.ShooterIdle;
 import frc.robot.commands.Shooter.ShooterRev;
+import frc.robot.commands.visioncommands.aimToSpeaker;
+import frc.robot.commands.visioncommands.multiTagPoseEstimatior;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Pivot.PivotPosition;
 

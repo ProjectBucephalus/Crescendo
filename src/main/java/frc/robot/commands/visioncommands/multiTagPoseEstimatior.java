@@ -1,4 +1,4 @@
-package frc.robot.VisionCommands;
+package frc.robot.commands.visioncommands;
 
 import org.photonvision.PhotonPoseEstimator;
 
