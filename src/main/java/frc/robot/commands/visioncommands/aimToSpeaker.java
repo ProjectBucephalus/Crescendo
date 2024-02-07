@@ -14,11 +14,14 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Pivot.PivotPosition;
 
 public class aimToSpeaker extends Command {
 
     public Swerve s_Swerve;
+    public Pivot s_Pivot;
     private AprilTagFieldLayout fieldLayout;
 
     private DoubleSupplier translationSup;
@@ -26,8 +29,9 @@ public class aimToSpeaker extends Command {
     private DoubleSupplier brakeSup;
 
     public aimToSpeaker(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup,
-            DoubleSupplier brakeSup) {
+            DoubleSupplier brakeSup, Pivot s_Pivot) {
         this.s_Swerve = s_Swerve;
+        this.s_Pivot = s_Pivot;
         SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
 
         this.translationSup = translationSup;
@@ -48,6 +52,7 @@ public class aimToSpeaker extends Command {
         Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed);
 
         s_Swerve.visionDrive(translation, (calculateRequiredHeading().getRadians()-180) * 60, true, brakeVal);
+        s_Pivot.moveArmToAngle(calculatedRequiredShooterAngle() + 28);
         SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
         SmartDashboard.putNumber("calculated shooter angle", calculatedRequiredShooterAngle());
     }
@@ -55,6 +60,7 @@ public class aimToSpeaker extends Command {
     @Override
     public void end(boolean end) {
         s_Swerve.setVisionAlignmentBool(false);
+        s_Pivot.setPosition(PivotPosition.STOWED);
     }
 
     public Rotation2d calculateRequiredHeading() {
