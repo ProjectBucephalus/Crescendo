@@ -124,7 +124,8 @@ public class RobotContainer {
     {
         /* Driver Buttons */
         driver.y()             .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        driver.leftTrigger()   .whileTrue(new aimToSpeaker(s_Swerve));
+        driver.leftTrigger()   .whileTrue(new aimToSpeaker(s_Swerve, () -> -driver.getRawAxis(translationAxis),
+                        () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
         //driver.rightBumper()   .whileTrue(new IntakeSuck(s_Intake));
         //driver.rightBumper() .onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
         driver.rightBumper()  .onTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake)).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
