@@ -50,7 +50,12 @@ public class Swerve extends SubsystemBase {
     public PhotonCamera frontCam = new PhotonCamera(Constants.Vision.backCamName);
     public PhotonCamera backCam = new PhotonCamera(Constants.Vision.frontCamName);
 
-    final AprilTagFieldLayout layout =  AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); // see docs for how to do this better and set origin for red alliance
+    public boolean usingVisionAlignment = false;
+
+    final AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); // see docs for how to
+                                                                                                // do this better and
+                                                                                                // set origin for red
+                                                                                                // alliance
 
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
@@ -79,10 +84,11 @@ public class Swerve extends SubsystemBase {
                 new Pose2d(),
                 Constants.Vision.STATE_STANDARD_DEVIATIONS,
                 Constants.Vision.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
-        
 
-        photonPoseEstimatorFront = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCam, Constants.Vision.frontCamToRobot);
-        photonPoseEstimatorBack = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, backCam, Constants.Vision.backCamToRobot);
+        photonPoseEstimatorFront = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCam,
+                Constants.Vision.frontCamToRobot);
+        photonPoseEstimatorBack = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, backCam,
+                Constants.Vision.backCamToRobot);
 
         photonPoseEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         photonPoseEstimatorBack.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
@@ -117,41 +123,55 @@ public class Swerve extends SubsystemBase {
 
     }
 
-    
-
     /**
      * TODO i dont know how the swerve works, todo docs
+     * 
      * @param translation
      * @param rotation
      * @param fieldRelative
      * @param isOpenLoop
      */
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) {
-        SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                                    translation.getX(), 
-                                    translation.getY(), 
-                                    rotation, 
-                                    getHeading()
-                                )
-                                : new ChassisSpeeds(
-                                    translation.getX(), 
-                                    translation.getY(), 
-                                    rotation)
-                                );
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed*(map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
-        System.out.println(Constants.Swerve.maxSpeed*(map(brakeVal, 0, 1, 0.5, 1)));
-        for(SwerveModule mod : mSwerveMods){
+    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop,
+            double brakeVal) {
+        if (!usingVisionAlignment) {
+            SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+                    fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                            translation.getX(),
+                            translation.getY(),
+                            rotation,
+                            getHeading())
+                            : new ChassisSpeeds(
+                                    translation.getX(),
+                                    translation.getY(),
+                                    rotation));
+            SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
+                    Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
+            for (SwerveModule mod : mSwerveMods) {
+                mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
+            }
+        }
+    }
+
+    public void visionDrive(Translation2d translation, double rotation, boolean isOpenLoop, double brakeVal) {
+        SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+                ChassisSpeeds.fromFieldRelativeSpeeds(
+                        translation.getX(),
+                        translation.getY(),
+                        rotation,
+                        getHeading()));
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
+                Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
+        for (SwerveModule mod : mSwerveMods) {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
-    }    
-    
+    }
+
     /**
      * TODO i dont know how the swerve works, todo docs
+     * 
      * @param xSpeed
      * @param ySpeed
-     * @param rot 
+     * @param rot
      * @param fieldRelative
      */
     public void ChoreoDrive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -169,6 +189,7 @@ public class Swerve extends SubsystemBase {
 
     /**
      * Used by SwerveControllerCommand in Auto
+     * 
      * @param desiredStates
      */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -201,6 +222,7 @@ public class Swerve extends SubsystemBase {
 
     /**
      * TODO i dont know how the swerve works, todo docs
+     * 
      * @param pose
      */
     public void setPose(Pose2d pose) {
@@ -249,6 +271,7 @@ public class Swerve extends SubsystemBase {
 
     /**
      * TODO i dont know how the swerve works, todo docs
+     * 
      * @param pose
      */
     public void resetOdometry(Pose2d pose) {
@@ -263,16 +286,27 @@ public class Swerve extends SubsystemBase {
         return poseEstimator.getEstimatedPosition();
     }
 
+    /**
+     * Set to true to ignore roatational values from the controller and use values
+     * from vision
+     * 
+     * @param newVal Set to true to ignore rotational inputs and use roation from
+     *               driveRobotRelative(). Set to false to revert.
+     */
+    public void setVisionAlignmentBool(boolean newVal) {
+        usingVisionAlignment = newVal;
+    }
+
     public ChassisSpeeds getRobotRelativeSpeeds() {
         return Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
     /**
      * TODO i dont know how the swerve works, todo docs
+     * 
      * @param robotRelativeSpeeds
      */
-    public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) 
-    {
+    public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
         SwerveModuleState[] targetStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(targetSpeeds);
@@ -280,63 +314,68 @@ public class Swerve extends SubsystemBase {
     }
 
     private Matrix<N3, N1> confidenceCalculator(EstimatedRobotPose estimation) {
-    double smallestDistance = Double.POSITIVE_INFINITY;
-    for (var target : estimation.targetsUsed) {
-      var t3d = target.getBestCameraToTarget();
-      var distance = Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
-      if (distance < smallestDistance)
-        smallestDistance = distance;
-    }
-    double poseAmbiguityFactor = estimation.targetsUsed.size() != 1
-        ? 1
-        : Math.max(
-            1,
-            (estimation.targetsUsed.get(0).getPoseAmbiguity()
-                + Constants.Vision.POSE_AMBIGUITY_SHIFTER)
-                * Constants.Vision.POSE_AMBIGUITY_MULTIPLIER);
-    double confidenceMultiplier = Math.max(
-        1,
-        (Math.max(
-            1,
-            Math.max(0, smallestDistance - Constants.Vision.NOISY_DISTANCE_METERS)
-                * Constants.Vision.DISTANCE_WEIGHT)
-            * poseAmbiguityFactor)
-            / (1
-                + ((estimation.targetsUsed.size() - 1) * Constants.Vision.TAG_PRESENCE_WEIGHT)));
+        double smallestDistance = Double.POSITIVE_INFINITY;
+        for (var target : estimation.targetsUsed) {
+            var t3d = target.getBestCameraToTarget();
+            var distance = Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
+            if (distance < smallestDistance)
+                smallestDistance = distance;
+        }
+        double poseAmbiguityFactor = estimation.targetsUsed.size() != 1
+                ? 1
+                : Math.max(
+                        1,
+                        (estimation.targetsUsed.get(0).getPoseAmbiguity()
+                                + Constants.Vision.POSE_AMBIGUITY_SHIFTER)
+                                * Constants.Vision.POSE_AMBIGUITY_MULTIPLIER);
+        double confidenceMultiplier = Math.max(
+                1,
+                (Math.max(
+                        1,
+                        Math.max(0, smallestDistance - Constants.Vision.NOISY_DISTANCE_METERS)
+                                * Constants.Vision.DISTANCE_WEIGHT)
+                        * poseAmbiguityFactor)
+                        / (1
+                                + ((estimation.targetsUsed.size() - 1) * Constants.Vision.TAG_PRESENCE_WEIGHT)));
 
-    return Constants.Vision.VISION_MEASUREMENT_STANDARD_DEVIATIONS.times(confidenceMultiplier);
-  }
+        return Constants.Vision.VISION_MEASUREMENT_STANDARD_DEVIATIONS.times(confidenceMultiplier);
+    }
 
     @Override
     /**
      * TODO i dont know how the swerve works, todo docs
      */
-    public void periodic()
-    {
-
+    public void periodic() {
 
         swerveOdometry.update(getGyroYaw(), getModulePositions());
         swerveOdometryEstimated.update(getGyroYaw(), getModulePositions());
 
         final Optional<EstimatedRobotPose> optionalEstimatedPoseFront = photonPoseEstimatorFront.update();
         if (optionalEstimatedPoseFront.isPresent()) {
-            final EstimatedRobotPose estimatedPose = optionalEstimatedPoseFront.get();          
-            poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds, confidenceCalculator(estimatedPose));
+            SmartDashboard.putBoolean("Using Vision", true);
+            final EstimatedRobotPose estimatedPose = optionalEstimatedPoseFront.get();
+            poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds,
+                    confidenceCalculator(estimatedPose));
+        } else {
+            SmartDashboard.putBoolean("Using Vision", false);
         }
 
         final Optional<EstimatedRobotPose> optionalEstimatedPoseBack = photonPoseEstimatorBack.update();
         if (optionalEstimatedPoseBack.isPresent()) {
-            final EstimatedRobotPose estimatedPose = optionalEstimatedPoseBack.get();          
-            poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds, confidenceCalculator(estimatedPose));
+            SmartDashboard.putBoolean("Using Vision", true);
+            final EstimatedRobotPose estimatedPose = optionalEstimatedPoseBack.get();
+            poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds,
+                    confidenceCalculator(estimatedPose));
+        } else {
+            SmartDashboard.putBoolean("Using Vision", false);
         }
 
         poseEstimator.update(getGyro(), getModulePositions());
 
-        for(SwerveModule mod : mSwerveMods)
-        {
+        for (SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
         }
 
         SmartDashboard.putNumber("Pose X ", getPose().getX());
@@ -346,7 +385,8 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Rotaton (Estimated)", getEstimatedPose().getRotation().getDegrees());
         SmartDashboard.putNumber("Pose X (PhotonPoseEstimator)", poseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Pose Y (PhotonPoseEstimator)", poseEstimator.getEstimatedPosition().getY());
-        SmartDashboard.putNumber("Rotaton (PhotonPoseEstimator)", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+        SmartDashboard.putNumber("Rotaton (PhotonPoseEstimator)",
+                poseEstimator.getEstimatedPosition().getRotation().getDegrees());
 
     }
 
