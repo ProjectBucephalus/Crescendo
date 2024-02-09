@@ -8,6 +8,7 @@ import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
@@ -143,9 +144,10 @@ public class RobotContainer {
 
         configureButtonBindings();
 
-        // NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
-        // NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
-        // NamedCommands.registerCommand("print hello", Commands.print("hello"));
+        NamedCommands.registerCommand("IntakeDeploy", Commands.print("Passed IntakeDeploy"));
+        NamedCommands.registerCommand("IntakeSuck", Commands.print("Passed IntakeSuck"));
+        NamedCommands.registerCommand("IntakeStop", Commands.print("Passed IntakeStop"));
+        NamedCommands.registerCommand("IntakeStow", Commands.print("Passed IntakeStow"));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -211,7 +213,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() 
     {
-        return autoChooser.getSelected();
+        return new PathPlannerAuto("Auto1");
     }
     
 

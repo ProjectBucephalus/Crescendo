@@ -134,7 +134,7 @@ public class Aim extends Command {
     private PhotonTrackedTarget getTargetFromID(PhotonPipelineResult result, int goal_ID) 
     {
         var targets = result.getTargets();
-            for(int i = 0; i< targets.size(); i++)
+            for(int i = 0; i < targets.size() && i < 32; i++)
             {
                 var target = targets.get(i);
                 if(target.getFiducialId() == goal_ID)
