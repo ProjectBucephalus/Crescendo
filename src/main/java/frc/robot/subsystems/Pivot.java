@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -75,7 +76,7 @@ public class Pivot extends SubsystemBase {
     public void setPosition(PivotPosition position) {
         switch (position) { 
             case STOWED:
-                moveArmToAngle(0);
+                moveArmToAngle(-4);
                 break;
             case DEPLOYED:
                 moveArmToAngle(SmartDashboard.getNumber("pivotPosition", -90));
@@ -96,16 +97,19 @@ public class Pivot extends SubsystemBase {
      * @param armAngle The angle to move the arm to in degrees. Negative numbers to intake pos. Positive to stow pos.
      */
     private void moveArmToAngle(double armAngle) { // TODO add limit switch protections
+        desiredAngle = armAngle;
+        SmartDashboard.putNumber("desiredAngle", armAngle);
         mLeftPivot.setControl(anglePosition.withPosition((armAngle/360))
-                // .withLimitReverseMotion(leftDeploySwitch.get())
-                // .withLimitReverseMotion(rightDeploySwitch.get())
+                .withLimitReverseMotion(leftDeploySwitch.get())
+                .withLimitReverseMotion(rightDeploySwitch.get())
 
-                // .withLimitForwardMotion(leftStowSwitch.get())
-                // .withLimitForwardMotion(rightStowSwitch.get())
+                .withLimitForwardMotion(leftStowSwitch.get())
+                .withLimitForwardMotion(rightStowSwitch.get())
                 )
                 ;
 
-        mRightPivot.setControl(anglePosition.withPosition((armAngle/360))
+        mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true)
+        
                 // .withLimitForwardMotion(rightDeploySwitch.get())
                 // .withLimitForwardMotion(leftDeploySwitch.get())
 
@@ -145,6 +149,20 @@ public class Pivot extends SubsystemBase {
         SmartDashboard.putBoolean("leftStowSwitch", leftStowSwitch.get());
         SmartDashboard.putBoolean("rightDeploySwitch", rightDeploySwitch.get());
         SmartDashboard.putBoolean("rightStowSwitch", rightStowSwitch.get());
+
+        SmartDashboard.putNumber("PivotError", desiredAngle-getArmPos());
+        if (leftStowSwitch.get()) {
+            mLeftPivot.getConfigurator().setPosition(0);
+        }
+        if (rightStowSwitch.get()) {
+            mRightPivot.getConfigurator().setPosition(0);
+        }
+        if (leftDeploySwitch.get()) {
+            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(-100));
+        }
+        if (rightDeploySwitch.get()) {
+            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(-100));
+        }
     }
 
 }
