@@ -20,8 +20,13 @@ import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
 import frc.robot.commands.BuddyClimb.StopBuddyClimber;
+import frc.robot.commands.Climber.ClimberExtend;
+import frc.robot.commands.Climber.ClimberRetract;
+import frc.robot.commands.Climber.LockClimber;
 import frc.robot.commands.Climber.MoveClimber;
+import frc.robot.commands.Climber.UnlockClimber;
 import frc.robot.commands.Intake.IntakeAndDeployPivot;
+import frc.robot.commands.Intake.IntakeSpit;
 import frc.robot.commands.Intake.IntakeStop;
 import frc.robot.commands.Intake.IntakeSuck;
 import frc.robot.commands.Intake.MoveIntakeToPosition;
@@ -118,17 +123,16 @@ public class RobotContainer {
         /* Driver Buttons */
         driver.y()             .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         driver.leftTrigger()   .whileTrue(new aimToSpeaker(s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_Pivot));
-        //driver.rightBumper()   .whileTrue(new IntakeSuck(s_Intake));
-        //driver.rightBumper() .onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
         driver.rightBumper()  .onTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake)).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
-        // driver.povUp().onTrue(new unlockClimber(s_Climber));
-        // driver.povDown().onTrue(new lockClimber(s_Climber));
+        driver.povUp().onTrue(new UnlockClimber());
+        driver.povDown().onTrue(new LockClimber(s_Climber));
         
         
         /* Co-Driver Buttons */
 
         coDriver.leftTrigger() .whileTrue(new ShooterRev(s_Shooter)).whileFalse(new ShooterIdle(s_Shooter));
         coDriver.rightTrigger().whileTrue(new IntakeSuck(s_Intake));
+        coDriver.rightBumper() .whileTrue(new IntakeSpit(s_Intake));
         
 
         
@@ -136,9 +140,10 @@ public class RobotContainer {
         coDriver.b()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.AMP));
         coDriver.y()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.SPEAKER));
         coDriver.a()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.STOWED));
-        coDriver.povRight()    .onTrue(new DeployBuddyClimber(s_Climber));
-        coDriver.povLeft()     .onTrue(new StopBuddyClimber(s_Climber));
-
+        coDriver.povLeft()     .onTrue(new DeployBuddyClimber(s_Climber));
+        coDriver.povRight()    .onTrue(new StopBuddyClimber(s_Climber));
+        coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
+        coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
     }
 
     /**
