@@ -19,6 +19,8 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathHolonomic;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -38,6 +40,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Swerve extends SubsystemBase {
@@ -56,6 +59,11 @@ public class Swerve extends SubsystemBase {
                                                                                                 // do this better and
                                                                                                 // set origin for red
                                                                                                 // alliance
+
+    private final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
+            new PIDConstants(Constants.AutoConstants.kPXController),
+            new PIDConstants(Constants.AutoConstants.kPYController), Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+            Constants.Swerve.trackWidth, new ReplanningConfig());
 
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
@@ -339,6 +347,24 @@ public class Swerve extends SubsystemBase {
                                 + ((estimation.targetsUsed.size() - 1) * Constants.Vision.TAG_PRESENCE_WEIGHT)));
 
         return Constants.Vision.VISION_MEASUREMENT_STANDARD_DEVIATIONS.times(confidenceMultiplier);
+    }
+
+    public Command makePathFollowingCommand(PathPlannerPath path) {
+
+        return new FollowPathHolonomic(path, this::getEstimatedPose, this::getRobotRelativeSpeeds, this::driveRobotRelative,
+                PATH_FOLLOWER_CONFIG,
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red
+                    // alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                }, this);
     }
 
     @Override

@@ -18,6 +18,7 @@ import frc.robot.Constants;
 
 /**
  * vision subsystem
+ * 
  * @authour 5985
  */
 public class Vision extends SubsystemBase {
@@ -46,13 +47,10 @@ public class Vision extends SubsystemBase {
         var rightResult = rightCam.getLatestResult();
         var frontResult = frontCam.getLatestResult();
         if (Constants.useVision == true) {
-            if (!checkAndUpdateResult(leftResult, Constants.Vision.leftCamToRobot)) {
-                if (!checkAndUpdateResult(rightResult, Constants.Vision.rightCamToRobot)) {
-                    if (!checkAndUpdateResult(frontResult, Constants.Vision.frontCamToRobot)) {
-                        SmartDashboard.putBoolean("Using Vision", false);
-                    }
-                }
+            if (!checkAndUpdateResult(frontResult, Constants.Vision.frontCamToRobot)) {
+                SmartDashboard.putBoolean("Using Vision", false);
             }
+
         }
 
     }

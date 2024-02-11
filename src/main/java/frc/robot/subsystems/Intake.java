@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.Intake.BeamBreakStatus;
 import frc.lib.math.Conversions;
 import frc.robot.CTREConfigs;
 
@@ -26,42 +27,24 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
  * @author 5985
 */
 public class Intake extends SubsystemBase {
-    // motors
-    public TalonFX mLeftPivot;
-    public TalonFX mRightPivot;
-    private final PositionVoltage anglePosition = new PositionVoltage(0);
-    private final VelocityVoltage driveVelocity = new VelocityVoltage(0);
-    private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
-
     public TalonFX mIntake = new TalonFX(Constants.Intake.mIntakeID);
     public VictorSPX mFlap = new VictorSPX(Constants.Intake.mFlapID);
 
-    public TalonFX mTopShooter = new TalonFX(Constants.Shooter.mTopShooterID);
-    public TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
+    public DigitalInput BeamBreak = new DigitalInput(9);
 
-    // limit switches
-    // public DigitalInput leftDeploySwitch = new DigitalInput(Constants.Intake.leftOutSwitchID);
-    // public DigitalInput leftStowSwitch = new DigitalInput(Constants.Intake.leftInSwitchID);
-    // public DigitalInput rightDeploySwitch = new DigitalInput(Constants.Intake.rightOutSwitchID);
-    // public DigitalInput rightStowSwitch = new DigitalInput(Constants.Intake.rightInSwitchID);
-    // limits as checked during calibration, to account for encoder drift
-    // double intakeStowLimitPos;
-    // double intakeDeployLimitPos;
+    private boolean beamBreakBool = false;
+    private boolean useBeamBreak = false;
+    
 
-    /**
-     * enum intake position with the states: STOWED, DEPLOYED
-     */
-    public enum IntakePosition {
-        STOWED,
-        DEPLOYED,
-        AMP,
-        TRAP,
-        SPEAKER
+
+    public enum IntakeStatus{
+        IN,
+        OUT,
+        IN_WITH_BEAM_BREAK,
+        STOPPED,
     };
 
-    /**
-     * enum intake position with the states: OPEN, CLOSED
-     */
+
     public enum FlapPosition {
         OPEN,
         CLOSED,
@@ -74,115 +57,42 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("topShooterSpeed", 0.1);
         SmartDashboard.putNumber("bottomShooterSpeed", 0.1);
         SmartDashboard.putNumber("pivotPosition", 1.2);
-
-        mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
-        mLeftPivot.getConfigurator().apply(CTREConfigs.leftPivotMotorFXConfig);
-        mLeftPivot.getConfigurator().setPosition(0);
-
-        mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
-        mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
-        mRightPivot.getConfigurator().setPosition(0);
-    }
-
-    /**
-     * Sets the position of the intake
-     * @param position Sets the arm angle based on the value of this
-     */
-    public void setPosition(IntakePosition position) {
-        switch (position) {
-            case STOWED:
-                moveArmToAngle(0);
-                break;
-            case DEPLOYED:
-                moveArmToAngle(SmartDashboard.getNumber("pivotPosition", 1.2));
-                break;
-            case AMP:
-                moveArmToAngle(Constants.Intake.pivotAmpPos);
-                break;
-            case TRAP:
-                moveArmToAngle(0);
-                break;
-            case SPEAKER:
-                //TODO April tag stuff
-                break;
-        }
-    }
-
-    /**
-     * moves the arm to a set position, In radians
-     * @param armAngle arm andge, in radians
-     */
-    public void moveArmToAngle(double armAngle) { // TODO add limit switch protections
-        mLeftPivot.setControl(anglePosition.withPosition(armAngle));
-        mRightPivot.setControl(anglePosition.withPosition(armAngle));
-    }
-
-    /**
-     * Gets the arm position
-     * @return the arm position in radians
-     */
-    public double getArmPos() {
-        return mRightPivot.getPosition().getValueAsDouble();
     }
 
     /**
      * sets the speed of the motor
      * @param speed the speed that the arm rotates at
      */
-    public void setArmMotorSpeeds(double speed) {
-        mLeftPivot.set(speed);
-        mRightPivot.set(-speed);
+    public void setIntakeSpeed(double speed, boolean useBeamBreak) {
+            mIntake.set(-speed);   
     }
 
     /**
      * sets the speed that the intake motors rotate to suck in notes
      * @param speed the motor speed of the intake motors
      */
-    public void setIntakeSpeed(double speed) {
-        mIntake.set(speed);
-    }
-
-    // commented out for safety's sake. same with reference to it in IntakeStowed
-    // file
-
-    // public void setIntakeStowed() {
-    //     while (leftStowSwitch.get() || !rightStowSwitch.get()) {
-    //         //setArmMotorSpeeds(0.2);
-    //     }
-    //     mIntake.stopMotor();
-    // }
-
-    /**
-     * sets shooter to full speed
-     */
-    public void spinShooter() {
-        // mTopShooter.set(0.3);
-        // mBottomShooter.set(0.07);
-        double bottomSpeed = SmartDashboard.getNumber("bottomShooterSpeed", 0);
-        double topSpeed = SmartDashboard.getNumber("topShooterSpeed", 0);
-
-        driveDutyCycle.Output = bottomSpeed;
-        mBottomShooter.setControl(driveDutyCycle);
-        driveDutyCycle.Output = topSpeed;
-        mTopShooter.setControl(driveDutyCycle);
-        SmartDashboard.putNumber("bottomShooterSpeed", bottomSpeed);
-        SmartDashboard.putNumber("topShooterSpeed", topSpeed);
-    }
-
-    /**
-     * stops shooter
-     */
-    public void stopShooter() {
-        mTopShooter.set(0);
-        mBottomShooter.set(0);
-    }
-
-    /**
-     * sets shooter to idle speed
-     */
-    public void idleShooter() {
-        mTopShooter.set(Constants.Shooter.shooterIdleSpeed);
-        mBottomShooter.set(Constants.Shooter.shooterIdleSpeed);
+    public void setIntakeStatus(IntakeStatus status) {
+        switch (status) {
+            case IN:
+                setIntakeSpeed(1, false);
+                useBeamBreak = false;
+                break;
+            case OUT:
+                setIntakeSpeed(-1, false);
+                useBeamBreak = false;
+                break;
+            case IN_WITH_BEAM_BREAK:
+                setIntakeSpeed(1, true);
+                useBeamBreak = true;
+                break;
+            case STOPPED:
+                setIntakeSpeed(0, false);
+                useBeamBreak = false;
+                break;
+        
+            default:
+                break;
+        }
     }
 
     /**
@@ -212,5 +122,15 @@ public class Intake extends SubsystemBase {
         }
     }
 
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("BeamBreak", beamBreakBool);
+        beamBreakBool = BeamBreak.get();
+        if (useBeamBreak) {
+            if(!beamBreakBool) {
+                setIntakeStatus(IntakeStatus.STOPPED);
+            }
+        }
+    }
     
 }

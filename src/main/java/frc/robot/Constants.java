@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -47,27 +48,25 @@ public final class Constants {
     public static final class Vision {
         /* Names */
         public static final String frontCamName = "FrontCam";
-        public static final String leftCamName = "LeftCam";
-        public static final String rightCamName = "RightCam";
         public static final String backCamName = "BackCam";
+        public static final String noteCameraName = "NoteCam";
 
         /* Offsets */
-        public static final Transform3d leftCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                0, 0, 0.525,
-                new Rotation3d(
-                        0, Units.degreesToRadians(45), Units.degreesToRadians(30)));
-        public static final Transform3d rightCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                0, 0, 0.525,
-                new Rotation3d(
-                        0, Units.degreesToRadians(45), Units.degreesToRadians(45)));
         public static final Transform3d backCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                0, 0, 0.525,
-                new Rotation3d(
-                        0,Units.degreesToRadians(31), Units.degreesToRadians(180)));
-        public static final Transform3d frontCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                0, 0, 0.525,
+                0, 0, 0.187,
                 new Rotation3d(
                         0, Units.degreesToRadians(31), Units.degreesToRadians(0)));
+        public static final Transform3d frontCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
+                
+                0.225, -0.125, 0.6,
+                new Rotation3d(
+                        0,Units.degreesToRadians(31), Units.degreesToRadians(180)));
+
+        public static final Transform3d noteCamToRobot = new Transform3d(
+            0, 0, 0.525,
+                new Rotation3d(
+                        0, Units.degreesToRadians(45), Units.degreesToRadians(45)));
+
         public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
         public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
         public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
@@ -75,6 +74,7 @@ public final class Constants {
         public static final double DISTANCE_WEIGHT = 7;
         public static final int TAG_PRESENCE_WEIGHT = 10;
 
+        public static final boolean simulationSupport = false;
 
         public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),
                         // if these numbers are less than one, multiplying will do bad things
@@ -97,10 +97,10 @@ public final class Constants {
         public static final int mLeftPivotID = 13;
         public static final int mRightPivotID = 11;
 
-        public static final int leftOutSwitchID = 1;
+        public static final int leftOutSwitchID = 3;
         public static final int leftInSwitchID = 0;
         public static final int rightInSwitchID = 2;
-        public static final int rightOutSwitchID = 3;
+        public static final int rightOutSwitchID = 1;
 
         public static final int mFlapID = 14;
 
@@ -112,7 +112,7 @@ public final class Constants {
 
         /* Arm Ratios and Limis */
         public static final double planetaryRingTeeth = 72;
-        public static final double planetarySunTeeth = 36;
+        public static final double planetarySunTeeth = 18;
         public static final double planetaryPlanetTeeth = 18;
         public static final double planetaryRatio = (planetaryRingTeeth/planetarySunTeeth) + 1;
         public static final double gear1In = 20;
@@ -141,7 +141,7 @@ public final class Constants {
         public static final boolean pivotEnableCurrentLimit = false;
 
         public static double pivotKP = 40;
-        public static double pivotKI = 0;
+        public static double pivotKI = 7;
         public static double pivotKD = 0;
 
     }
@@ -155,7 +155,6 @@ public final class Constants {
 
         public static final double shooterIdleSpeed = 0.5;
 
-        public static final double shooterAngleOffset = 15;
         public static final double horizontalShooterAngle = 20;
         public static final double mFlapMaxCurrent = 40;
     }

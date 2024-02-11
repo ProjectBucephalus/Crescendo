@@ -55,12 +55,8 @@ public class RobotContainer {
     //private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     //private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     
-    private final int            ALIGN_TO_SPEAKER      = XboxController.Axis.kLeftTrigger.value;
     private final int            BRAKE_AXIS            = XboxController.Axis.kRightTrigger.value;
     
-    /* Co-Driver Buttons */
-    private final int            SHOOT_BUTTON                  = XboxController.Axis.kLeftTrigger.value;
-    private final int            INTAKE_IN_BUTTON              = XboxController.Axis.kRightTrigger.value;
     private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kLeftY.value;
     private final int            MANUAL_SHOTER_AXIS            = XboxController.Axis.kRightY.value;
 
@@ -70,11 +66,8 @@ public class RobotContainer {
     private final Pivot s_Pivot  = new Pivot();
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
-
-    PhotonCamera leftCamera = new PhotonCamera(Constants.Vision.leftCamName);
-    PhotonCamera rightCamera = new PhotonCamera(Constants.Vision.rightCamName);
-    PhotonCamera frontCamera = new PhotonCamera(Constants.Vision.frontCamName);
-    private final Vision s_Vision = new Vision(leftCamera, rightCamera, frontCamera, s_Swerve);
+    
+    private final NoteVision m_noteVision = new NoteVision();
     
 
     /* Autonomous */
@@ -135,7 +128,7 @@ public class RobotContainer {
         /* Co-Driver Buttons */
 
         coDriver.leftTrigger() .whileTrue(new ShooterRev(s_Shooter)).whileFalse(new ShooterIdle(s_Shooter));
-        coDriver.rightTrigger().whileTrue(new IntakeSuck(s_Intake)).whileFalse(new IntakeStop(s_Intake));
+        coDriver.rightTrigger().whileTrue(new IntakeSuck(s_Intake));
         
 
         

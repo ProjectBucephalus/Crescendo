@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Intake.FlapPosition;
+import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Pivot.PivotPosition;
 
 /**
@@ -29,8 +30,8 @@ public class IntakeAndDeployPivot extends Command {
     @Override
     public void execute() {
         s_Pivot.setPosition(PivotPosition.DEPLOYED);
-        s_Intake.setIntakeSpeed(-1);
-        s_Intake.setFlapPosition(FlapPosition.CLOSED);
+        s_Intake.setIntakeStatus(IntakeStatus.IN_WITH_BEAM_BREAK);
+        //s_Intake.setFlapPosition(FlapPosition.CLOSED);
     }
 
     public boolean isFinished() {

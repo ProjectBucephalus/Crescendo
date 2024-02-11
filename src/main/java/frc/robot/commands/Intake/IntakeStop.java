@@ -24,7 +24,7 @@ public class IntakeStop extends Command
     @Override
     public void execute() {
     
-        s_Intake.setIntakeSpeed(0);  
+        s_Intake.setIntakeSpeed(0,false);  
         
     }
     
