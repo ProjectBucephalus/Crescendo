@@ -108,8 +108,6 @@ public final class Constants {
 
         public static final int mBuddyClimbID = 16;
 
-        public static final double FlapMaxCurrent = 40;
-
         /* Arm Ratios and Limis */
         public static final double planetaryRingTeeth = 72;
         public static final double planetarySunTeeth = 18;
@@ -123,14 +121,20 @@ public final class Constants {
 
 
         public static final double pivotGearMaxRange = -90; // degrees
+        /**The angle measurement in real-world degrees of the pivot at the deploy angle.
+         * With 0 at horizontal. */ 
+        public static final double pivotGearDeployAngle = 63; // degrees
+        /**The angle measurement in real-world degrees of the pivot at the stow angle.
+         * With 0 at horizontal. */ 
+        public static final double pivotGearStowAngle = -41; // degrees 
 
         public static final double offsetForZero = -45;
         public static final double pivotAmpPos = -30;
         public static final double trapPos = 0;
 
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
-        public static final InvertedValue leftPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
-        public static final InvertedValue rightPivotMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue rightPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
 
         public static double angleKP;
         public static double angleKI;
@@ -140,8 +144,8 @@ public final class Constants {
         public static final double pivotCurrentThresholdTime = 0.1;
         public static final boolean pivotEnableCurrentLimit = false;
 
-        public static double pivotKP = 60;
-        public static double pivotKI = 50;
+        public static double pivotKP = 50;
+        public static double pivotKI = 30;
         public static double pivotKD = 0;
 
     }

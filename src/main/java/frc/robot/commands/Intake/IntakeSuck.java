@@ -32,8 +32,7 @@ public class IntakeSuck extends Command {
 
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {
-        s_Intake.setIntakeStatus(IntakeStatus.STOPPED);
-
+    public boolean isFinished() {
+        return true;
     }
 }
