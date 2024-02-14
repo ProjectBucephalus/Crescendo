@@ -32,8 +32,13 @@ import frc.robot.VisionCommands.multiTagPoseEstimatior;
 import frc.robot.commands.*;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
 import frc.robot.commands.BuddyClimb.StopBuddyClimber;
+import frc.robot.commands.Climber.ClimberExtend;
+import frc.robot.commands.Climber.ClimberRetract;
+import frc.robot.commands.Climber.LockClimber;
 import frc.robot.commands.Climber.MoveClimber;
+import frc.robot.commands.Climber.UnlockClimber;
 import frc.robot.commands.Intake.IntakeAndDeployPivot;
+import frc.robot.commands.Intake.IntakeSpit;
 import frc.robot.commands.Intake.IntakeStop;
 import frc.robot.commands.Intake.IntakeSuck;
 import frc.robot.commands.Intake.MovePivotToPosition;
@@ -137,6 +142,8 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
+    private void configureButtonBindings() {
+        /* Driver Buttons */
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         driver.leftTrigger().whileTrue(new aimToSpeaker(s_Swerve, () -> -driver.getRawAxis(translationAxis),
                 () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_Pivot));
@@ -157,8 +164,12 @@ public class RobotContainer {
         coDriver.b().onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
         coDriver.y().onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
         coDriver.a().onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
+      
         coDriver.povRight().onTrue(new DeployBuddyClimber(s_Climber));
         coDriver.povLeft().onTrue(new StopBuddyClimber(s_Climber));
+        coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
+        coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
+        coDriver.rightBumper() .whileTrue(new IntakeSpit(s_Intake));
 
         SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
             Pose2d currentPose = s_Swerve.getEstimatedPose();
@@ -183,6 +194,9 @@ public class RobotContainer {
             AutoBuilder.followPath(path).schedule();
         }));
 
+        
+
+        
     }
 
     /**
