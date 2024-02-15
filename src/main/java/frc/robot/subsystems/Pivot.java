@@ -61,7 +61,7 @@ public class Pivot extends SubsystemBase {
     };
 
     public Pivot() {
-        SmartDashboard.putNumber("pivotPosition", -90);
+        SmartDashboard.putNumber("deployPosition", -90);
         SmartDashboard.putNumber("ampPosition", -45);
 
         mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
@@ -76,10 +76,11 @@ public class Pivot extends SubsystemBase {
     public void setPosition(PivotPosition position) {
         switch (position) { 
             case STOWED:
-                moveArmToAngle(-4);
+                moveArmToAngle(-1); // TODO Ensure this is checking limit switches
                 break;
+
             case DEPLOYED:
-                moveArmToAngle(SmartDashboard.getNumber("pivotPosition", -90));
+                moveArmToAngle(SmartDashboard.getNumber("deployPosition", -90));
                 break;
             case AMP:
                 moveArmToAngle(SmartDashboard.getNumber("ampPosition", -45));
@@ -88,7 +89,7 @@ public class Pivot extends SubsystemBase {
                 moveArmToAngle(Constants.Intake.trapPos);
                 break;
             case SPEAKER:
-                moveArmToAngle(desiredAngle);
+                moveArmToAngle(-60); // TODO Hard coded for testing
                 break;
         }
     }
@@ -98,25 +99,27 @@ public class Pivot extends SubsystemBase {
      */
     private void moveArmToAngle(double armAngle) { // TODO add limit switch protections
         desiredAngle = armAngle;
-        SmartDashboard.putNumber("desiredAngle", armAngle);
-        mLeftPivot.setControl(anglePosition.withPosition((armAngle/360))
+        SmartDashboard.putNumber("desiredAngle", desiredAngle);
+        mLeftPivot.setControl
+        (
+            anglePosition.withPosition((desiredAngle/360))
                 .withLimitReverseMotion(leftDeploySwitch.get())
                 .withLimitReverseMotion(rightDeploySwitch.get())
 
                 .withLimitForwardMotion(leftStowSwitch.get())
                 .withLimitForwardMotion(rightStowSwitch.get())
-                )
-                ;
+        );
 
-        mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true)
+        mRightPivot.setControl
+        (
+            new Follower(mLeftPivot.getDeviceID(), true)
         
                 // .withLimitForwardMotion(rightDeploySwitch.get())
                 // .withLimitForwardMotion(leftDeploySwitch.get())
 
                 // .withLimitReverseMotion(rightStowSwitch.get())
                 // .withLimitReverseMotion(leftStowSwitch.get())
-                )
-                ;
+        );
     }
 
 
@@ -128,7 +131,7 @@ public class Pivot extends SubsystemBase {
      * PivotPosition.SPEAKER.
      */
     public void setDesiredPostion(Double angle) {
-        this.desiredAngle = angle;
+        desiredAngle = angle;
     }
 
     public double getArmPos() {

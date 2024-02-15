@@ -54,9 +54,9 @@ public class Intake extends SubsystemBase {
 
     public Intake() {
 
-        SmartDashboard.putNumber("topShooterSpeed", 0.1);
-        SmartDashboard.putNumber("bottomShooterSpeed", 0.1);
-        SmartDashboard.putNumber("pivotPosition", 1.2);
+        SmartDashboard.putNumber("topShooterSpeed", 1);
+        SmartDashboard.putNumber("bottomShooterSpeed", 1);
+        //SmartDashboard.putNumber("pivotPosition", 1.2);
     }
 
     /**
@@ -64,7 +64,12 @@ public class Intake extends SubsystemBase {
      * @param speed the speed that the arm rotates at
      */
     public void setIntakeSpeed(double speed, boolean useBeamBreak) {
-            mIntake.set(-speed);   
+        this.useBeamBreak = useBeamBreak;
+        if (useBeamBreak && !BeamBreak.get())
+            mIntake.set(0);
+        else
+            mIntake.set(-speed);
+            
     }
 
     /**
@@ -78,7 +83,7 @@ public class Intake extends SubsystemBase {
                 useBeamBreak = false;
                 break;
             case OUT:
-                setIntakeSpeed(-1, false);
+                setIntakeSpeed(-0.5, false);
                 useBeamBreak = false;
                 break;
             case IN_WITH_BEAM_BREAK:

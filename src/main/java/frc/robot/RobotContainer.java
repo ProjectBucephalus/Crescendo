@@ -121,12 +121,15 @@ public class RobotContainer {
     private void configureButtonBindings() 
     {
         /* Driver Buttons */
-        driver.y()             .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        driver.leftTrigger()   .whileTrue(new aimToSpeaker(s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_Pivot));
-        driver.rightBumper()  .onTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake)).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
-        driver.povUp().onTrue(new UnlockClimber());
-        driver.povDown().onTrue(new LockClimber(s_Climber));
-        
+        driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        driver.leftTrigger()   .whileTrue(new aimToSpeaker(s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_Pivot)); //horizontal only
+        driver.rightBumper()   .whileTrue(new IntakeSuck(s_Intake)); //shouldn't affect position, just sucks
+        driver.povUp()         .onTrue(new UnlockClimber());
+        driver.povDown()       .onTrue(new LockClimber(s_Climber));
+        driver.y()             .onTrue(new PointToAngle(s_Swerve, 180));
+        driver.x()             .onTrue(new PointToAngle(s_Swerve, 60));
+        driver.b()             .onTrue(new PointToAngle(s_Swerve, -60));
+        driver.a()             .onTrue(new PointToAngle(s_Swerve, 90));
         
         /* Co-Driver Buttons */
 
@@ -140,7 +143,7 @@ public class RobotContainer {
         coDriver.b()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.AMP));
         coDriver.y()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.SPEAKER));
         coDriver.a()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.STOWED));
-        coDriver.povLeft()     .onTrue(new DeployBuddyClimber(s_Climber));
+        coDriver.povLeft()     .onTrue(new DeployBuddyClimber(s_Climber)); //buddy climber controls here are the roller, not position
         coDriver.povRight()    .onTrue(new StopBuddyClimber(s_Climber));
         coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
         coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
