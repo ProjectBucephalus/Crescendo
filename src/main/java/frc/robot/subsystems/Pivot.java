@@ -94,8 +94,10 @@ public class Pivot extends SubsystemBase {
         }
     }
 
-    /** moves the arm to a set position, In radians
-     * @param armAngle The angle to move the arm to in degrees. Negative numbers to intake pos. Positive to stow pos.
+    /** moves the arm to a set position, in degrees
+     * TODO Something is seriously wrong with the limit switch use and MUST be resolved
+     * TODO Angle calculations and conversion need to be recalibrated to use sane real-world angles
+     * @param armAngle Degrees - The angle to move the arm to in degrees. Negative numbers to intake pos. Positive to stow pos.
      */
     private void moveArmToAngle(double armAngle) { // TODO add limit switch protections
         desiredAngle = armAngle;
