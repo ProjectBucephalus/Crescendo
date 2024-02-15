@@ -142,8 +142,6 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-    private void configureButtonBindings() {
-        /* Driver Buttons */
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         driver.leftTrigger().whileTrue(new aimToSpeaker(s_Swerve, () -> -driver.getRawAxis(translationAxis),
                 () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_Pivot));
