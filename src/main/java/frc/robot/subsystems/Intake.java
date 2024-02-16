@@ -79,11 +79,11 @@ public class Intake extends SubsystemBase {
     public void setIntakeStatus(IntakeStatus status) {
         switch (status) {
             case IN:
-                setIntakeSpeed(1, false);
+                setIntakeSpeed(0.25, false);
                 useBeamBreak = false;
                 break;
             case OUT:
-                setIntakeSpeed(-0.5, false);
+                setIntakeSpeed(-0.25, false);
                 useBeamBreak = false;
                 break;
             case IN_WITH_BEAM_BREAK:

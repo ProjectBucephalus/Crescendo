@@ -29,6 +29,7 @@ import frc.robot.commands.Intake.IntakeAndDeployPivot;
 import frc.robot.commands.Intake.IntakeSpit;
 import frc.robot.commands.Intake.IntakeStop;
 import frc.robot.commands.Intake.IntakeSuck;
+import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Intake.MoveIntakeToPosition;
 import frc.robot.commands.Intake.StopIntakeAndStow;
 import frc.robot.commands.Shooter.ShooterIdle;
@@ -63,7 +64,7 @@ public class RobotContainer {
     private final int            BRAKE_AXIS            = XboxController.Axis.kRightTrigger.value;
     
     private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kLeftY.value;
-    private final int            MANUAL_SHOTER_AXIS            = XboxController.Axis.kRightY.value;
+    private final int            MANUAL_SHOOTER_AXIS            = XboxController.Axis.kRightY.value;
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -92,7 +93,7 @@ public class RobotContainer {
                         () -> driver.leftBumper().getAsBoolean(),
                         () -> -driver.getRawAxis(BRAKE_AXIS)));
         //s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
-        //s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));   
+        s_Pivot.setDefaultCommand(new MoveIntake(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));   
         s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS))); 
          
 
