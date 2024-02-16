@@ -19,6 +19,7 @@ import frc.robot.subsystems.Pivot;
 public class MoveIntake extends Command {
     Pivot s_Pivot;
     private DoubleSupplier speed;
+    private boolean manualActive = false;
 
     /**
      * 
@@ -34,6 +35,8 @@ public class MoveIntake extends Command {
     
     /**
      * Sends modified axis value to pivot motor speeds
+     * @author 5985
+     * @author Alec
      */
     @Override
     public void execute() 
@@ -41,6 +44,14 @@ public class MoveIntake extends Command {
         //System.out.println(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
         
         if ( Math.abs(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband)) >= 0.1 )
-        s_Pivot.setArmMotorSpeeds(Constants.Intake.pivotManualGain * MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
+        {
+            s_Pivot.setArmMotorSpeeds(Constants.Intake.pivotManualGain * MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
+            manualActive = true;
+        }
+        else if (manualActive)
+        {
+            s_Pivot.setArmMotorSpeeds(0);
+            manualActive = false;
+        }
     }
 }

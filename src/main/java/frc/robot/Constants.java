@@ -122,11 +122,20 @@ public final class Constants {
         public static final double pivotGearRatio = planetaryRatio * (gear1Out/gear1In) * (pivotGearOut/pivotGearIn);
 
 
-        public static final double pivotGearMaxRange = -90; // degrees
-
-        public static final double offsetForZero = -45;
-        public static final double pivotAmpPos = -30;
-        public static final double trapPos = 0;
+        /** Degrees - Difference between pivot mechanism 0 and real-world 0 */
+        public static final double pivotOffsetForZero = -45;
+        /** Degrees - Real-world angle for deployed/intake position */
+        public static final double pivotDeployPos = 60;
+        /** Degrees - Real-world angle for stowed position */
+        public static final double pivotStowPos = -40;
+        /** Degrees - Real-world angle for shooting to Amp */
+        public static final double pivotAmpPos = pivotStowPos;
+        /** Degrees - Real-world angle for shooting to Stage Trap */
+        public static final double pivotTrapPos = pivotStowPos;
+        /** Degrees - Real-world angle for shooter to clear frame */
+        public static final double pivotFrameClearPos = 15;
+        /** Degrees - Real-world angle for default shooter position */
+        public static final double pivotDefaultShootPos = 30;
 
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
         public static final InvertedValue leftPivotMotorInvert = InvertedValue.CounterClockwise_Positive;

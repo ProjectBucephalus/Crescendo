@@ -90,7 +90,7 @@ public class Pivot extends SubsystemBase {
                 moveArmToAngle(SmartDashboard.getNumber("ampPosition", -60));
                 break;
             case TRAP:
-                moveArmToAngle(Constants.Intake.trapPos);
+                moveArmToAngle(Constants.Intake.pivotTrapPos);
                 break;
             case SPEAKER:
                 moveArmToAngle(-75); // TODO Hard coded for testing
@@ -144,9 +144,9 @@ public class Pivot extends SubsystemBase {
     {
         if 
           ( 
-            (speed > 0 && !leftDeploySwitch.get() && !rightDeploySwitch.get())
+            (speed < 0 && !leftDeploySwitch.get() && !rightDeploySwitch.get())
               ||
-            (speed < 0 && !leftStowSwitch  .get() && !rightStowSwitch  .get())
+            (speed > 0 && !leftStowSwitch  .get() && !rightStowSwitch  .get())
           )
         {
             mLeftPivot.set(speed);
