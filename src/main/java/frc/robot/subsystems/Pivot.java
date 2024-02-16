@@ -81,19 +81,19 @@ public class Pivot extends SubsystemBase {
     public void setPosition(PivotPosition position) {
         switch (position) { 
             case STOWED:
-                moveArmToAngle(0); // TODO Ensure this is checking limit switches
+                moveArmToAngle(Constants.Intake.pivotStowPos); // TODO Ensure this is checking limit switches
                 break;
             case DEPLOYED:
-                moveArmToAngle(SmartDashboard.getNumber("deployPosition", -95));
+                moveArmToAngle(Constants.Intake.pivotDeployPos);
                 break;
             case AMP:
-                moveArmToAngle(SmartDashboard.getNumber("ampPosition", -60));
+                moveArmToAngle(Constants.Intake.pivotAmpPos);
                 break;
             case TRAP:
                 moveArmToAngle(Constants.Intake.pivotTrapPos);
                 break;
             case SPEAKER:
-                moveArmToAngle(-75); // TODO Hard coded for testing
+                moveArmToAngle(Constants.Intake.pivotDefaultShootPos); // TODO Hard coded for testing
                 break;
         }
     }
@@ -106,9 +106,10 @@ public class Pivot extends SubsystemBase {
     private void moveArmToAngle(double armAngle) { // TODO add limit switch protections
         desiredAngle = armAngle;
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
+        double realWorldAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
         mLeftPivot.setControl
         (
-            anglePosition.withPosition((desiredAngle/360))
+            anglePosition.withPosition((realWorldAngle/360))
                 .withLimitReverseMotion(leftDeploySwitch.get())
                 .withLimitReverseMotion(rightDeploySwitch.get())
 
