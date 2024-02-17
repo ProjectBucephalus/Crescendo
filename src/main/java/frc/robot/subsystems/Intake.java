@@ -64,10 +64,6 @@ public class Intake extends SubsystemBase {
      * @param speed the speed that the arm rotates at
      */
     public void setIntakeSpeed(double speed, boolean useBeamBreak) {
-        this.useBeamBreak = useBeamBreak;
-        if (useBeamBreak && !BeamBreak.get())
-            mIntake.set(0);
-        else
             mIntake.set(-speed);
             
     }
