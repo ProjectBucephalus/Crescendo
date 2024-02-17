@@ -132,7 +132,7 @@ public class Pivot extends SubsystemBase {
                 moveArmToAngle(Constants.Intake.pivotTrapPos);
                 break;
             case SPEAKER:
-                moveArmToAngle(Constants.Intake.pivotDefaultShootPos); // TODO Hard coded for testing
+                moveArmToAngle(desiredAngle); 
                 break;
             case AMP_MANUAL:
                 moveArmToAngle(0);
@@ -160,7 +160,7 @@ public class Pivot extends SubsystemBase {
      *                 Uses limits
 
      */
-    private void moveArmToAngle(double armAngle) {
+    public void moveArmToAngle(double armAngle) {
         desiredAngle = armAngle;
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
         double realWorldAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
