@@ -41,6 +41,7 @@ import frc.robot.commands.Intake.IntakeAndDeployPivot;
 import frc.robot.commands.Intake.IntakeSpit;
 import frc.robot.commands.Intake.IntakeStop;
 import frc.robot.commands.Intake.IntakeSuck;
+import frc.robot.commands.Intake.MovePivot;
 import frc.robot.commands.Intake.MovePivotToPosition;
 import frc.robot.commands.Intake.StopIntakeAndStow;
 import frc.robot.commands.Shooter.ShooterIdle;
@@ -68,16 +69,15 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
-    // Swerve
-    // private final JoystickButton zeroGyro = new JoystickButton(driver,
-    // XboxController.Button.kY.value);
-    // private final JoystickButton robotCentric = new JoystickButton(driver,
-    // XboxController.Button.kLeftBumper.value);
+        // Swerve
+    //private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    //private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    
+    private final int            BRAKE_AXIS            = XboxController.Axis.kRightTrigger.value;
+    
+    private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kLeftY.value;
+    private final int            MANUAL_SHOOTER_AXIS            = XboxController.Axis.kRightY.value;
 
-    private final int BRAKE_AXIS = XboxController.Axis.kRightTrigger.value;
-
-    private final int MANUAL_CLIMB_AXIS = XboxController.Axis.kLeftY.value;
-    private final int MANUAL_SHOTER_AXIS = XboxController.Axis.kRightY.value;
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -104,11 +104,11 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(rotationAxis),
                         () -> driver.leftBumper().getAsBoolean(),
                         () -> -driver.getRawAxis(BRAKE_AXIS)));
-        // s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
-        // s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () ->
-        // -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));
-        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));
 
+        //s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
+        s_Pivot.setDefaultCommand(new MovePivot(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));   
+        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS))); 
+         
         configureButtonBindings();
 
         NamedCommands.registerCommand("IntakeAndDeployPivot", new IntakeAndDeployPivot(s_Pivot, s_Intake));
@@ -142,17 +142,17 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        driver.leftTrigger().whileTrue(new aimToSpeaker(s_Swerve, () -> -driver.getRawAxis(translationAxis),
-                () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_Pivot));
-        // driver.rightBumper() .whileTrue(new IntakeSuck(s_Intake));
-        // driver.rightBumper() .onTrue(new IntakeSpit(s_Intake)).onFalse(new
-        // IntakeStop(s_Intake));
-        driver.rightBumper().onTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake))
-                .onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
-        // driver.povUp().onTrue(new unlockClimber(s_Climber));
-        // driver.povDown().onTrue(new lockClimber(s_Climber));
 
+        driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        driver.leftTrigger()   .whileTrue(new aimToSpeaker(s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_Pivot)); //horizontal only
+        driver.rightBumper()   .whileTrue(new IntakeSuck(s_Intake)); //shouldn't affect position, just sucks
+        driver.povUp()         .onTrue(new UnlockClimber());
+        driver.povDown()       .onTrue(new LockClimber(s_Climber));
+        driver.y()             .onTrue(new PointToAngle(s_Swerve, 180));
+        driver.x()             .onTrue(new PointToAngle(s_Swerve, 60));
+        driver.b()             .onTrue(new PointToAngle(s_Swerve, -60));
+        driver.a()             .onTrue(new PointToAngle(s_Swerve, 90));
+        
         /* Co-Driver Buttons */
 
         coDriver.leftTrigger().whileTrue(new ShooterRev(s_Shooter)).whileFalse(new ShooterIdle(s_Shooter));
@@ -195,6 +195,15 @@ public class RobotContainer {
         
 
         
+        coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
+        coDriver.b()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
+        coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
+        coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
+        coDriver.povLeft()     .onTrue(new DeployBuddyClimber(s_Climber)); //buddy climber controls here are the roller, not position
+        coDriver.povRight()    .onTrue(new StopBuddyClimber(s_Climber));
+        coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
+        coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
+
     }
 
     /**
