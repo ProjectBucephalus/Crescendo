@@ -16,7 +16,7 @@ import frc.robot.subsystems.Pivot;
  * @author 5985
  * @author Alec
  */
-public class MoveIntake extends Command {
+public class MovePivot extends Command {
     Pivot s_Pivot;
     private DoubleSupplier speed;
     private boolean manualActive = false;
@@ -26,7 +26,7 @@ public class MoveIntake extends Command {
      * @param s_Intake a reference to the intake subsystem
      * @param speedSupplier double supplier speed 
      */
-    public MoveIntake(Pivot s_Pivot, DoubleSupplier speedSupplier) {
+    public MovePivot(Pivot s_Pivot, DoubleSupplier speedSupplier) {
         this.s_Pivot = s_Pivot;
         this.speed = speedSupplier;
         addRequirements(s_Pivot);

@@ -29,8 +29,8 @@ import frc.robot.commands.Intake.IntakeAndDeployPivot;
 import frc.robot.commands.Intake.IntakeSpit;
 import frc.robot.commands.Intake.IntakeStop;
 import frc.robot.commands.Intake.IntakeSuck;
-import frc.robot.commands.Intake.MoveIntake;
-import frc.robot.commands.Intake.MoveIntakeToPosition;
+import frc.robot.commands.Intake.MovePivot;
+import frc.robot.commands.Intake.MovePivotToPosition;
 import frc.robot.commands.Intake.StopIntakeAndStow;
 import frc.robot.commands.Shooter.ShooterIdle;
 import frc.robot.commands.Shooter.ShooterRev;
@@ -93,7 +93,7 @@ public class RobotContainer {
                         () -> driver.leftBumper().getAsBoolean(),
                         () -> -driver.getRawAxis(BRAKE_AXIS)));
         //s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
-        s_Pivot.setDefaultCommand(new MoveIntake(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));   
+        s_Pivot.setDefaultCommand(new MovePivot(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));   
         s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS))); 
          
 
@@ -140,10 +140,10 @@ public class RobotContainer {
         
 
         
-        coDriver.x()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.DEPLOYED));
-        coDriver.b()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.AMP));
-        coDriver.y()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.SPEAKER));
-        coDriver.a()           .onTrue(new MoveIntakeToPosition(s_Pivot, PivotPosition.STOWED));
+        coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
+        coDriver.b()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
+        coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
+        coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
         coDriver.povLeft()     .onTrue(new DeployBuddyClimber(s_Climber)); //buddy climber controls here are the roller, not position
         coDriver.povRight()    .onTrue(new StopBuddyClimber(s_Climber));
         coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
