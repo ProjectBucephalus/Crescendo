@@ -183,8 +183,8 @@ public class Pivot extends SubsystemBase {
 
         // .withLimitReverseMotion(rightStowSwitch.get())
         // .withLimitReverseMotion(leftStowSwitch.get())
-        );
-    }
+        ;
+    
 
     /**
      * 
@@ -255,31 +255,31 @@ public class Pivot extends SubsystemBase {
 
         if (leftDeployPressed == true && !leftDeploySwitch.get()) {
             leftDeployPressed = false;
-            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotGearDeployAngle));
+            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
         if (rightDeployPressed == true && !rightDeploySwitch.get()) {
             rightDeployPressed = false;
-            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotGearDeployAngle));
+            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
 
         if (leftStowSwitch.get() && !isCalibrated) {
             isCalibrated = true;
-            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotGearStowAngle));
+            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
         }
 
         if (rightStowSwitch.get() && !isCalibrated) {
             isCalibrated = true;
-            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotGearStowAngle));
+            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
         }
 
         if (leftDeploySwitch.get() && !isCalibrated) {
             isCalibrated = true;
-            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotGearDeployAngle));
+            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
 
         if (rightDeploySwitch.get() && !isCalibrated) {
             isCalibrated = true;
-            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotGearDeployAngle));
+            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
 
         for (int i = 0; i < limitSwitches.length; i++) {
