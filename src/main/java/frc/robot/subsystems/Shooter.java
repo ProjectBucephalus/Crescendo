@@ -46,15 +46,15 @@ public class Shooter extends SubsystemBase {
     
     /* sets shooter to full speed */
     public void setShooterState(ShooterState state) {
-        double bottomSpeed = SmartDashboard.getNumber("bottomShooterSpeed", 1);
-        double topSpeed = SmartDashboard.getNumber("topShooterSpeed", 1);
+        // double bottomSpeed = SmartDashboard.getNumber("bottomShooterSpeed", 1);
+        // double topSpeed = SmartDashboard.getNumber("topShooterSpeed", 1);
         
         switch (state) {
             case RUNNING:
-                driveDutyCycle.Output = bottomSpeed;
-                mBottomShooter.setControl(driveDutyCycle);
+                driveDutyCycle.Output = 1;
+                mBottomShooter.setControl(driveDutyCycle);                
 
-                driveDutyCycle.Output = topSpeed;
+                driveDutyCycle.Output = 1;
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case STOPPED:
@@ -64,29 +64,29 @@ public class Shooter extends SubsystemBase {
                 driveDutyCycle.Output = 0;
                 mTopShooter.setControl(driveDutyCycle);
             case IDLE:
-                driveDutyCycle.Output = -0;
+                driveDutyCycle.Output = -0.2;
                 mBottomShooter.setControl(driveDutyCycle);
 
-                driveDutyCycle.Output = -0;
+                driveDutyCycle.Output = -0.2;
                 mTopShooter.setControl(driveDutyCycle);
             default:
                 break;
         }        
-        SmartDashboard.putNumber("bottomShooterSpeed", bottomSpeed);
-        SmartDashboard.putNumber("topShooterSpeed", topSpeed);
+        // SmartDashboard.putNumber("bottomShooterSpeed", bottomSpeed);
+        // SmartDashboard.putNumber("topShooterSpeed", topSpeed);
     }
 
     /* stops shooter */
-    public void stopShooter() {
-        mTopShooter.set(0);
-        mBottomShooter.set(0);
-    }
+    // public void stopShooter() {
+    //     mTopShooter.set(0);
+    //     mBottomShooter.set(0);
+    // }
 
     /* sets shooter to idle speed */
-    public void idleShooter() {
-        mTopShooter.set(Constants.Shooter.shooterIdleSpeed);
-        mBottomShooter.set(Constants.Shooter.shooterIdleSpeed);
-    }
+    // public void idleShooter() {
+    //     mTopShooter.set(Constants.Shooter.shooterIdleSpeed);
+    //     mBottomShooter.set(Constants.Shooter.shooterIdleSpeed);
+    // }
 
     public void setFlapSpeed(double speed) {
         mFlap.set(VictorSPXControlMode.PercentOutput, speed);
@@ -105,5 +105,10 @@ public class Shooter extends SubsystemBase {
                 SmartDashboard.putNumber("Bus voltage", mFlap.getBusVoltage()); // prints the bus voltage seen by the motor controller
                 break;
         }
+        
+    }
+    @Override
+    public void periodic() {
+        
     }
 }
