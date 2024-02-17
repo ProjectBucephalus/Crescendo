@@ -2,7 +2,24 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Auto Chooser": "String Chooser"
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/On-the-fly path": "Command"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "PathPlanner": {
+        "HotReload": {
+          "open": true
+        },
+        "open": true
+      },
+      "photonvision": {
+        "BackCam": {
+          "open": true
+        }
+      }
     }
   },
   "NetworkTables Info": {

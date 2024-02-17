@@ -168,13 +168,14 @@ public class RobotContainer {
         coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
         coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
         coDriver.rightBumper() .whileTrue(new IntakeSpit(s_Intake));
+        
 
         SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
             Pose2d currentPose = s_Swerve.getEstimatedPose();
 
             // The rotation component in these poses represents the direction of travel
             Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-            Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)),
+            Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 2.0)),
                     new Rotation2d());
 
             List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
