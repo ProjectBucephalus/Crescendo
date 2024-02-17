@@ -108,8 +108,6 @@ public final class Constants {
 
         public static final int mBuddyClimbID = 16;
 
-        public static final double FlapMaxCurrent = 40;
-
         /* Arm Ratios and Limis */
         public static final double planetaryRingTeeth = 72;
         public static final double planetarySunTeeth = 18;
@@ -120,6 +118,7 @@ public final class Constants {
         public static final double pivotGearIn = 10;
         public static final double pivotGearOut = 40;
         public static final double pivotGearRatio = planetaryRatio * (gear1Out/gear1In) * (pivotGearOut/pivotGearIn);
+
 
 
         /** Degrees - Difference between pivot mechanism 0 and real-world 0 */
@@ -137,9 +136,10 @@ public final class Constants {
         /** Degrees - Real-world angle for default shooter position */
         public static final double pivotDefaultShootPos = 0;
 
+
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
-        public static final InvertedValue leftPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
-        public static final InvertedValue rightPivotMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue rightPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
 
         public static double angleKP;
         public static double angleKI;
@@ -150,8 +150,8 @@ public final class Constants {
         public static final boolean pivotEnableCurrentLimit = false;
         public static final double pivotManualGain = 0.25;
 
-        public static double pivotKP = 60;
-        public static double pivotKI = 50;
+        public static double pivotKP = 50;
+        public static double pivotKI = 30;
         public static double pivotKD = 0;
 
     }
