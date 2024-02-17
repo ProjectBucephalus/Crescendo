@@ -123,7 +123,7 @@ public final class Constants {
 
 
         /** Degrees - Difference between pivot mechanism 0 and real-world 0 */
-        public static final double pivotOffsetForZero = -45;
+        public static final double pivotOffsetForZero = -37;
         /** Degrees - Real-world angle for deployed/intake position */
         public static final double pivotDeployPos = 60;
         /** Degrees - Real-world angle for stowed position */
