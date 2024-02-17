@@ -135,7 +135,7 @@ public final class Constants {
         /** Degrees - Real-world angle for shooter to clear frame */
         public static final double pivotFrameClearPos = 15;
         /** Degrees - Real-world angle for default shooter position */
-        public static final double pivotDefaultShootPos = 30;
+        public static final double pivotDefaultShootPos = 0;
 
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
         public static final InvertedValue leftPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
