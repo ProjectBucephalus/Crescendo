@@ -29,4 +29,9 @@ public class PointToAngle extends Command {
     {
         new Rotation2d(targetRotation);
     }
+
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }
