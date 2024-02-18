@@ -96,8 +96,6 @@ public class Pivot extends SubsystemBase {
         mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
         mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
         mRightPivot.getConfigurator().setPosition(0);
-
-
         mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true));
 
         limitSwitchFlags = new boolean[] {
