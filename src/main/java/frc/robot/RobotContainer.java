@@ -148,10 +148,10 @@ public class RobotContainer {
         driver.rightBumper()   .whileTrue(new IntakeSuck(s_Intake)); //shouldn't affect position, just sucks
         driver.povUp()         .onTrue(new UnlockClimber());
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
-        driver.y()             .onTrue(new PointToAngle(s_Swerve, 180));
-        driver.x()             .onTrue(new PointToAngle(s_Swerve, 60));
-        driver.b()             .onTrue(new PointToAngle(s_Swerve, -60));
-        driver.a()             .onTrue(new PointToAngle(s_Swerve, 90));
+        driver.y()             .onTrue(new MoveToPos(new Rotation2d(Units.degreesToRadians(Constants.centerStageAngle)), s_Swerve.getEstimatedPose().getTranslation(), s_Swerve, false));
+        driver.x()             .onTrue(new MoveToPos(new Rotation2d(Units.degreesToRadians(Constants.leftStageAngle)), s_Swerve.getEstimatedPose().getTranslation(), s_Swerve, false));
+        driver.b()             .onTrue(new MoveToPos(new Rotation2d(Units.degreesToRadians(Constants.rightStageAngle)), s_Swerve.getEstimatedPose().getTranslation(), s_Swerve, false));
+        driver.a()             .onTrue(new MoveToPos(new Rotation2d(Units.degreesToRadians(Constants.ampAngle)), s_Swerve.getEstimatedPose().getTranslation(), s_Swerve, false));
         
         /* Co-Driver Buttons */
 

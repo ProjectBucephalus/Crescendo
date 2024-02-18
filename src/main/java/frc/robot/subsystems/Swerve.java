@@ -246,6 +246,20 @@ public class Swerve extends SubsystemBase {
                 new Pose2d(getPose().getTranslation(), heading));
     }
 
+    /**
+     * Returns the current translational motion of the robot
+     * @author 5985
+     * @author Alec
+     */
+    public Translation2d getCurrentTranslation() 
+    {
+        Translation2d currentTranslation;
+        Pose2d currentPose = getPose();
+        currentTranslation = currentPose.getTranslation();
+
+        return currentTranslation;
+    }
+
     public void zeroHeading() {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(),
                 new Pose2d(getPose().getTranslation(), new Rotation2d()));
@@ -310,7 +324,7 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
-     * TODO i dont know how the swerve works, todo docs
+     * TODO documentation
      * 
      * @param robotRelativeSpeeds
      */
@@ -369,7 +383,7 @@ public class Swerve extends SubsystemBase {
 
     @Override
     /**
-     * TODO i dont know how the swerve works, todo docs
+     * TODO documentation
      */
     public void periodic() {
 

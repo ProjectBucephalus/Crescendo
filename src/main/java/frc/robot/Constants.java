@@ -45,6 +45,12 @@ public final class Constants {
     /* CAN IDs */
     public static final int pigeonID = 53;
 
+    /* Preset Angles */
+    public static final double centerStageAngle = 180;
+    public static final double leftStageAngle = -60;
+    public static final double rightStageAngle = 60;
+    public static final double ampAngle = 90;
+
     public static final class Vision {
         /* Names */
         public static final String frontCamName = "FrontCam";
