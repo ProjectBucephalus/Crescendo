@@ -115,6 +115,12 @@ public class Pivot extends SubsystemBase {
 
     }
 
+    /**
+     * Sets the position of the pivot based on an enum
+     * @param position The desired position, as an enum
+     * @author 5985
+     * @author Aidan
+     */
     public void setPosition(PivotPosition position) {
         switch (position) {
             case STOWED:
