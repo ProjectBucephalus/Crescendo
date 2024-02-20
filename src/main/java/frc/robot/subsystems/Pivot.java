@@ -96,7 +96,8 @@ public class Pivot extends SubsystemBase {
         mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
         mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
         mRightPivot.getConfigurator().setPosition(0);
-        mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true));
+
+        mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), false)); // CTREConfigs already has Left and Right use opposite directions
 
         limitSwitchFlags = new boolean[] {
                 leftDeployPressed,
@@ -159,18 +160,16 @@ public class Pivot extends SubsystemBase {
     /**
      * moves the arm to a set position, In degrees
      * 
-     * @param armAngle The angle to move the arm to in degrees. Negative numbers to
-     *                 intake pos. Positive to stow pos.
-     *                 Uses limits
-
+     * @param inputAngle The real-world angle to move the arm to in degrees. Intake Posative
+     *                   Using limits switches.
      */
-    public void moveArmToAngle(double armAngle) {
-        desiredAngle = armAngle;
+    public void moveArmToAngle(double inputAngle) {
+        desiredAngle = inputAngle;
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
-        double realWorldAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
+        double motorAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
         mLeftPivot.setControl
         (
-            anglePosition.withPosition((realWorldAngle/360))
+            anglePosition.withPosition((motorAngle/360))
 
                 .withLimitReverseMotion(leftDeploySwitch.get())
                 .withLimitReverseMotion(rightDeploySwitch.get())
@@ -187,7 +186,7 @@ public class Pivot extends SubsystemBase {
 
         // .withLimitReverseMotion(rightStowSwitch.get())
         // .withLimitReverseMotion(leftStowSwitch.get())
-        ;
+        
     
 
     /**
@@ -247,9 +246,9 @@ public class Pivot extends SubsystemBase {
         SmartDashboard.putBoolean("rightDeploySwitch", rightDeploySwitch.get());
         SmartDashboard.putBoolean("rightStowSwitch", rightStowSwitch.get());
 
-        SmartDashboard.putNumber("PivotError", desiredAngle - getArmPos());
         SmartDashboard.putBoolean("isCalibrated", isCalibrated);
 
+        // TODO Comments to explain the purpose and process used here
         if (leftDeploySwitch.get()) {
             leftDeployPressed = true;
         }
@@ -257,11 +256,11 @@ public class Pivot extends SubsystemBase {
             rightDeployPressed = true;
         }
 
-        if (leftDeployPressed == true && !leftDeploySwitch.get()) {
+        if (leftDeployPressed && !leftDeploySwitch.get()) {
             leftDeployPressed = false;
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
-        if (rightDeployPressed == true && !rightDeploySwitch.get()) {
+        if (rightDeployPressed && !rightDeploySwitch.get()) {
             rightDeployPressed = false;
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
@@ -286,6 +285,7 @@ public class Pivot extends SubsystemBase {
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
 
+        // TODO
         for (int i = 0; i < limitSwitches.length; i++) {
             boolean isPressed = limitSwitches[i].get();
             if (isPressed) {
