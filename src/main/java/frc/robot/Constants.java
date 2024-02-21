@@ -102,7 +102,7 @@ public final class Constants {
         public static final int rightInSwitchID = 2;
         public static final int rightOutSwitchID = 1;
 
-        public static final int mFlapID = 14;
+        public static final int mFlapID = 35;
 
         public static final int mIntakeID = 12;
 
@@ -150,8 +150,8 @@ public final class Constants {
         public static final boolean pivotEnableCurrentLimit = false;
         public static final double pivotManualGain = 0.25;
 
-        public static double pivotKP = 50;
-        public static double pivotKI = 30;
+        public static double pivotKP = 40;
+        public static double pivotKI = 10;
         public static double pivotKD = 0;
 
     }

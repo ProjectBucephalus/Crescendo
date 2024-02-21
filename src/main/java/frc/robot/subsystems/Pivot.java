@@ -166,10 +166,10 @@ public class Pivot extends SubsystemBase {
     public void moveArmToAngle(double inputAngle) {
         desiredAngle = inputAngle;
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
-        double motorAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
+        //double motorAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
         mLeftPivot.setControl
         (
-            anglePosition.withPosition((motorAngle/360))
+            anglePosition.withPosition((inputAngle/360))
 
                 .withLimitReverseMotion(leftDeploySwitch.get())
                 .withLimitReverseMotion(rightDeploySwitch.get())
