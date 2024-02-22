@@ -55,10 +55,8 @@ public class Swerve extends SubsystemBase {
 
     public boolean usingVisionAlignment = false;
 
-    final AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); // see docs for how to
-                                                                                                // do this better and
-                                                                                                // set origin for red
-                                                                                                // alliance
+    final AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); 
+    // see docs for how to do this better and set origin for red alliance
 
     private final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
             new PIDConstants(Constants.AutoConstants.kPXController),
@@ -106,8 +104,7 @@ public class Swerve extends SubsystemBase {
                 this::resetEstimatedOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
-                                                 // Constants class
+                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                         new PIDConstants(10, 0.3, 0.3), // Translation PID constants
                         new PIDConstants(10, 0.3, 0.3), // Rotation PID constants
                         100, // Max module speed, in m/s
@@ -132,7 +129,7 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
-     * TODO i dont know how the swerve works, todo docs
+     * TODO docs
      * 
      * @param translation
      * @param rotation
@@ -175,7 +172,7 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
-     * TODO i dont know how the swerve works, todo docs
+     * TODO docs
      * 
      * @param xSpeed
      * @param ySpeed
