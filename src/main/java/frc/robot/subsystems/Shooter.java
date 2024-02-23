@@ -29,6 +29,8 @@ public class Shooter extends SubsystemBase {
     public TalonFX mTopShooter = new TalonFX(Constants.Shooter.mTopShooterID);
     public TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
 
+    private ShootPosition shooterMode = ShootPosition.SPEAKER;
+
     public enum FlapPosition {
         OPEN,
         CLOSED,
@@ -40,6 +42,12 @@ public class Shooter extends SubsystemBase {
         IDLE,
     };
 
+    public enum ShootPosition {
+        AMP,
+        SPEAKER,
+        TRAP,
+    };
+
     public Shooter() {
         
     }
@@ -48,7 +56,7 @@ public class Shooter extends SubsystemBase {
     public void setShooterState(ShooterState state) {
         // double bottomSpeed = SmartDashboard.getNumber("bottomShooterSpeed", 1);
         // double topSpeed = SmartDashboard.getNumber("topShooterSpeed", 1);
-        
+        SmartDashboard.putString("Current State of Shooter Motors for sim", state.name());
         switch (state) {
             case RUNNING:
                 driveDutyCycle.Output = 1;
@@ -107,8 +115,21 @@ public class Shooter extends SubsystemBase {
         }
         
     }
+
+    public void setShooterPosition(ShootPosition pos) {
+        shooterMode = pos;
+    }
+
+    public ShootPosition getShootPosition() {
+        return shooterMode;
+    }
+
+    public boolean rpmWithinTolerance() {
+        return true; // TODO
+    }
     @Override
     public void periodic() {
-        
+        SmartDashboard.putString("Where am I shooting", getShootPosition().name());
+        SmartDashboard.putString("Current State of Motors for sim", getShootPosition().name());
     }
 }

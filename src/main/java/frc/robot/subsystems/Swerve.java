@@ -45,13 +45,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
-    public SwerveDriveOdometry swerveOdometryEstimated;
 
     public SwerveDrivePoseEstimator poseEstimator;
     public PhotonPoseEstimator photonPoseEstimatorFront;
     public PhotonPoseEstimator photonPoseEstimatorBack;
     public PhotonCamera frontCam = new PhotonCamera(Constants.Vision.backCamName);
     public PhotonCamera backCam = new PhotonCamera(Constants.Vision.frontCamName);
+
+    // set to true initially so that if we manually set the angle and dont use any auto functions it will still shoot
+    private boolean alignedToTargert = true;
 
     public boolean usingVisionAlignment = false;
 
@@ -82,9 +84,6 @@ public class Swerve extends SubsystemBase {
         };
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
-        swerveOdometryEstimated = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(),
-                getModulePositions());
-
         poseEstimator = new SwerveDrivePoseEstimator(
                 Constants.Swerve.swerveKinematics,
                 getGyroYaw(),
@@ -228,6 +227,15 @@ public class Swerve extends SubsystemBase {
         return swerveOdometry.getPoseMeters();
     }
 
+    public boolean getWithinRequiredHeading() {
+        return alignedToTargert;
+    }
+    // Used for shooter sequence when checking if we are within rolerence to an angle. This does not align the robot.
+    // Record whether at the right heading, so that other commands can check
+    public void setWithinRequiredHeading(boolean aligned) {
+        this.alignedToTargert = aligned;
+    }
+
     /**
      * TODO i dont know how the swerve works, todo docs
      * 
@@ -278,9 +286,10 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
-     * TODO i dont know how the swerve works, todo docs
+     * Use reset estimated odometry
      * 
-     * @param pose
+     * @deprecated
+     * use resetEstimatedOdometry() instead
      */
     public void resetOdometry(Pose2d pose) {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
@@ -367,6 +376,19 @@ public class Swerve extends SubsystemBase {
                 }, this);
     }
 
+    // lock wheels in x position to resist pushing
+    public void lockWheels() {
+    //     double lockRadians = Math.toRadians(45);
+    //     for (SwerveModule mod : mSwerveMods) {
+    //         mod.setDesiredState(new SwerveModuleState(), usingVisionAlignment);
+    //     }
+    //     double lockRadians = Math.toRadians(45);
+    //     m_swerveModules[0].set(0.0, lockRadians);
+    //     m_swerveModules[1].set(0.0, -lockRadians);
+    //     m_swerveModules[2].set(0.0, -lockRadians);
+    //     m_swerveModules[3].set(0.0, lockRadians);
+    }
+
     @Override
     /**
      * TODO i dont know how the swerve works, todo docs
@@ -374,7 +396,6 @@ public class Swerve extends SubsystemBase {
     public void periodic() {
 
         swerveOdometry.update(getGyroYaw(), getModulePositions());
-        swerveOdometryEstimated.update(getGyroYaw(), getModulePositions());
 
         final Optional<EstimatedRobotPose> optionalEstimatedPoseFront = photonPoseEstimatorFront.update();
         if (optionalEstimatedPoseFront.isPresent()) {
@@ -404,16 +425,16 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
         }
 
-        SmartDashboard.putNumber("Pose X ", getPose().getX());
-        SmartDashboard.putNumber("Pose Y ", getPose().getY());
         SmartDashboard.putNumber("Pose X (Estimated)", getEstimatedPose().getX());
         SmartDashboard.putNumber("Pose Y (Estimated)", getEstimatedPose().getY());
         SmartDashboard.putNumber("Rotaton (Estimated)", getEstimatedPose().getRotation().getDegrees());
-        SmartDashboard.putNumber("Pose X (PhotonPoseEstimator)", poseEstimator.getEstimatedPosition().getX());
-        SmartDashboard.putNumber("Pose Y (PhotonPoseEstimator)", poseEstimator.getEstimatedPosition().getY());
-        SmartDashboard.putNumber("Rotaton (PhotonPoseEstimator)",
-                poseEstimator.getEstimatedPosition().getRotation().getDegrees());
 
+        SmartDashboard.putBoolean("usingVisionAlignment", usingVisionAlignment);
+        SmartDashboard.putBoolean("getWithinRequiredHeading", getWithinRequiredHeading());
+
+        
+
+        
     }
 
 }

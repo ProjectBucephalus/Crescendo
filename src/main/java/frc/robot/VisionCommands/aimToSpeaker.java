@@ -14,6 +14,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.FieldConstants;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Pivot.PivotPosition;
@@ -37,11 +38,13 @@ public class aimToSpeaker extends Command {
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
         this.brakeSup = brakeSup;
+
     }
 
     @Override
     public void initialize() {
         s_Swerve.setVisionAlignmentBool(true);
+
     }
 
     @Override
@@ -50,29 +53,53 @@ public class aimToSpeaker extends Command {
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double brakeVal = MathUtil.applyDeadband(brakeSup.getAsDouble(), Constants.stickDeadband);
         Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed);
-        s_Swerve.visionDrive(translation, (calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getRadians()) * 70, true, brakeVal);
+
+
+        s_Swerve.visionDrive(translation,
+                (calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getRadians()) * 70, true, brakeVal);
+
+        /* Used for figuring out how we should shoot */
         s_Pivot.setPosition(PivotPosition.SPEAKER);
-        s_Pivot.setDesiredPostion(-calculatedRequiredShooterAngle());
+
+        s_Pivot.setDesiredPostion(calculatedRequiredShooterAngle());
+
+        s_Swerve.setWithinRequiredHeading(Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
+                - Math.abs(calculateRequiredHeading().getDegrees())) < Constants.Swerve.ANGLE_TOLERANCE_DEGREES);
         SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
         SmartDashboard.putNumber("calculated shooter angle", calculatedRequiredShooterAngle());
+
+        
+    }
+
+    public boolean isFinished() {
+        return false;
     }
 
     @Override
     public void end(boolean end) {
         s_Swerve.setVisionAlignmentBool(false);
         s_Pivot.setPosition(PivotPosition.STOWED);
+
+        /*
+         * Make sure we do this so that other manual alignment functions work. It should
+         * only be false if we are currently auto aligning and not withing alignemnt
+         * error.
+         */
+        s_Swerve.setWithinRequiredHeading(true);
     }
 
     public Rotation2d calculateRequiredHeading() {
         var pose = s_Swerve.getEstimatedPose();
-        //TODO Change with alliances
-        return PhotonUtils.getYawToPose(pose, new Pose2d(0, 5.6, new Rotation2d(0, 0)));
+        // TODO Change with alliances
+        return PhotonUtils.getYawToPose(pose, new Pose2d(FieldConstants.SPEAKER, new Rotation2d(0, 0)));
     }
 
     public double calculatedRequiredShooterAngle() {
         var pose = s_Swerve.getEstimatedPose();
-        SmartDashboard.putNumber("distance to target", PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0))));
-        return Units.radiansToDegrees(Math.atan((1.95-0.425) / (PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0))))));
-        //return 0;
+        SmartDashboard.putNumber("distance to target",
+                PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0))));
+        return Units.radiansToDegrees(Math.atan(
+                (1.95 - 0.425) / (PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0))))));
+        // return 0;
     }
 }

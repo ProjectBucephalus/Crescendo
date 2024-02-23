@@ -73,6 +73,7 @@ public class Intake extends SubsystemBase {
      * @param speed the motor speed of the intake motors
      */
     public void setIntakeStatus(IntakeStatus status) {
+        SmartDashboard.putString("intake Status", status.name());
         switch (status) {
             case IN:
                 setIntakeSpeed(0.25, false);

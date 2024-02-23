@@ -119,7 +119,7 @@ public final class Constants {
         public static final double pivotGearOut = 40;
         public static final double pivotGearRatio = planetaryRatio * (gear1Out/gear1In) * (pivotGearOut/pivotGearIn);
 
-
+        public static final double ANGLE_TOLERANCE_DEGREE = 10;
 
         /** Degrees - Difference between pivot mechanism 0 and real-world 0 */
         public static final double pivotOffsetForZero = -37;
@@ -194,6 +194,9 @@ public final class Constants {
         public static final double wheelBase = 0.48;
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
+        /* Used by other commands to check if the auto alignment is sucessfull */
+        public static final double ANGLE_TOLERANCE_DEGREES = 5;
+
         /*
          * Swerve Kinematics
          * No need to ever change this unless you are not doing a traditional
@@ -241,7 +244,7 @@ public final class Constants {
         public static final double angleKD = chosenModule.angleKD;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 2.25;
+        public static final double driveKP = 2;
         public static final double driveKI = 0.03;
         public static final double driveKD = 0.04;
         public static final double driveKF = 0.0;
