@@ -13,7 +13,8 @@ import frc.robot.subsystems.Shooter.ShootPosition;
 import frc.robot.subsystems.Shooter.ShooterState;
 
 public class ShootSequence extends Command {
-    private static final double SHOOT_TIME = 1.0; // seconds
+    private static final double SHOOT_TIME = 2.7; // seconds
+    private static final double SHOOT_SPIN_UP_TIME = 2.0; // seconds
 
     Shooter s_Shooter;
     Intake s_Intake;
@@ -32,12 +33,12 @@ public class ShootSequence extends Command {
     public void initialize() {
         if (s_Shooter.getShootPosition() == ShootPosition.SPEAKER) {
             // speaker shot
-            s_Intake.setIntakeStatus(IntakeStatus.IN);
+            //s_Intake.setIntakeStatus(IntakeStatus.IN);
             s_Shooter.setShooterState(ShooterState.RUNNING);
-        } else if (s_Shooter.getShootPosition() == ShootPosition.AMP){
+        } else if (s_Shooter.getShootPosition() == ShootPosition.AMP) {
             // amp shot
             s_Intake.setIntakeStatus(IntakeStatus.OUT);
-        } else if (s_Shooter.getShootPosition() == ShootPosition.TRAP){
+        } else if (s_Shooter.getShootPosition() == ShootPosition.TRAP) {
             // amp shot
             s_Shooter.setShooterState(ShooterState.RUNNING);
         }
@@ -48,11 +49,26 @@ public class ShootSequence extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        if (m_timer.hasElapsed(SHOOT_SPIN_UP_TIME)) {
+            if (s_Shooter.getShootPosition() == ShootPosition.SPEAKER) {
+                // speaker shot
+                s_Intake.setIntakeStatus(IntakeStatus.IN_FOR_SHOOTING);
+                //s_Shooter.setShooterState(ShooterState.RUNNING);
+            } else if (s_Shooter.getShootPosition() == ShootPosition.AMP){
+                // amp shot
+                s_Intake.setIntakeStatus(IntakeStatus.OUT);
+            } else if (s_Shooter.getShootPosition() == ShootPosition.TRAP){
+                // amp shot
+                s_Shooter.setShooterState(ShooterState.RUNNING);
+            }
+        }
+        
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+
         s_Shooter.setShooterState(ShooterState.STOPPED);
         s_Intake.setIntakeStatus(IntakeStatus.STOPPED);
     }

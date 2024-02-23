@@ -95,9 +95,6 @@ public class Pivot extends SubsystemBase {
         mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
         mRightPivot.getConfigurator().setPosition(0);
 
-        mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), false)); // CTREConfigs already has Left and Right
-                                                                               // use opposite directions
-
         limitSwitchFlags = new boolean[] {
                 leftDeployPressed,
                 leftStowPressed,
@@ -122,6 +119,7 @@ public class Pivot extends SubsystemBase {
      * @author Aidan
      */
     public void setPosition(PivotPosition position) {
+        SmartDashboard.putString("Pivot Position Status", position.name());
         switch (position) {
             case STOWED:
                 moveArmToAngle(Constants.Intake.pivotStowPos); // TODO Ensure this is checking limit switches
@@ -174,12 +172,16 @@ public class Pivot extends SubsystemBase {
         mLeftPivot.setControl(
                 anglePosition.withPosition((inputAngle / 360))
 
-                        .withLimitReverseMotion(leftDeploySwitch.get())
-                        .withLimitReverseMotion(rightDeploySwitch.get())
+                        .withLimitReverseMotion(leftStowSwitch.get())
+                        .withLimitReverseMotion(rightStowSwitch.get())
 
-                        .withLimitForwardMotion(leftStowSwitch.get())
+                        .withLimitForwardMotion(leftDeploySwitch.get())
 
-                        .withLimitForwardMotion(rightStowSwitch.get()));
+                        .withLimitForwardMotion(rightDeploySwitch.get())
+                        );
+        mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true)); // CTREConfigs already has Left and Right
+                                                                              // use opposite directions
+
     }
 
     // .withLimitForwardMotion(rightDeploySwitch.get())

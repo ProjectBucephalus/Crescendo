@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -24,7 +25,6 @@ public class Shooter extends SubsystemBase {
     // motors
     private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
 
-    public VictorSPX mFlap = new VictorSPX(Constants.Intake.mFlapID);
 
     public TalonFX mTopShooter = new TalonFX(Constants.Shooter.mTopShooterID);
     public TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
@@ -50,6 +50,7 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() {
         
+        
     }
     
     /* sets shooter to full speed */
@@ -59,10 +60,10 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putString("Current State of Shooter Motors for sim", state.name());
         switch (state) {
             case RUNNING:
-                driveDutyCycle.Output = 1;
+                driveDutyCycle.Output = 0.5;
                 mBottomShooter.setControl(driveDutyCycle);                
 
-                driveDutyCycle.Output = 1;
+                driveDutyCycle.Output = 0.5;
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case STOPPED:
@@ -72,10 +73,10 @@ public class Shooter extends SubsystemBase {
                 driveDutyCycle.Output = 0;
                 mTopShooter.setControl(driveDutyCycle);
             case IDLE:
-                driveDutyCycle.Output = -0.2;
+                driveDutyCycle.Output = 0.2;
                 mBottomShooter.setControl(driveDutyCycle);
 
-                driveDutyCycle.Output = -0.2;
+                driveDutyCycle.Output = 0.2;
                 mTopShooter.setControl(driveDutyCycle);
             default:
                 break;
@@ -95,26 +96,6 @@ public class Shooter extends SubsystemBase {
     //     mTopShooter.set(Constants.Shooter.shooterIdleSpeed);
     //     mBottomShooter.set(Constants.Shooter.shooterIdleSpeed);
     // }
-
-    public void setFlapSpeed(double speed) {
-        mFlap.set(VictorSPXControlMode.PercentOutput, speed);
-    }
-
-    public void setFlapPosition (FlapPosition pos) {
-        switch (pos) {
-            case OPEN:
-                mFlap.set(ControlMode.PercentOutput, 1);
-                break;
-        
-            case CLOSED:
-                mFlap.set(ControlMode.PercentOutput, -1);
-                SmartDashboard.putNumber("Output Voltage", mFlap.getMotorOutputVoltage());
-                SmartDashboard.putNumber("Percent Output", mFlap.getMotorOutputPercent()); // prints the percent output of the motor (0.5)
-                SmartDashboard.putNumber("Bus voltage", mFlap.getBusVoltage()); // prints the bus voltage seen by the motor controller
-                break;
-        }
-        
-    }
 
     public void setShooterPosition(ShootPosition pos) {
         shooterMode = pos;

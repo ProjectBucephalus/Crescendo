@@ -1,5 +1,6 @@
 package frc.robot.VisionCommands;
 
+import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 
 import org.photonvision.PhotonUtils;
@@ -61,6 +62,7 @@ public class aimToSpeaker extends Command {
         /* Used for figuring out how we should shoot */
         s_Pivot.setPosition(PivotPosition.SPEAKER);
 
+        // the -4 is purely for backlash adjustment
         s_Pivot.setDesiredPostion(calculatedRequiredShooterAngle());
 
         s_Swerve.setWithinRequiredHeading(Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
@@ -83,7 +85,7 @@ public class aimToSpeaker extends Command {
         /*
          * Make sure we do this so that other manual alignment functions work. It should
          * only be false if we are currently auto aligning and not withing alignemnt
-         * error.
+         * tolerance.
          */
         s_Swerve.setWithinRequiredHeading(true);
     }
@@ -95,11 +97,40 @@ public class aimToSpeaker extends Command {
     }
 
     public double calculatedRequiredShooterAngle() {
+
         var pose = s_Swerve.getEstimatedPose();
-        SmartDashboard.putNumber("distance to target",
-                PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0))));
-        return Units.radiansToDegrees(Math.atan(
-                (1.95 - 0.425) / (PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0))))));
+
+        double[] distances = {5, 10, 15, 20}; // distances in meters
+        double[] angles    = {30, 45, 60, 75};   // shooter angles in degrees
+
+        // SmartDashboard.putNumber("distance to target",
+        //         PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0))));
+        
+        // Example target distance
+        double targetDistance = PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0)));
+        
+        // Ensure the target distance is within the range of the data
+        if (targetDistance < distances[0]) {
+            // Extrapolate using the first two points
+            return angles[0] + (angles[1] - angles[0]) * (targetDistance - distances[0]) / (distances[1] - distances[0]);
+        } else if (targetDistance > distances[distances.length - 1]) {
+            // Extrapolate using the last two points
+            int n = distances.length;
+            return angles[n - 2] + (angles[n - 1] - angles[n - 2]) * (targetDistance - distances[n - 2]) / (distances[n - 1] - distances[n - 2]);
+        }
+
+        // Perform linear interpolation
+        double angle = 0;
+        for (int i = 0; i < distances.length - 1; i++) {
+            if (targetDistance >= distances[i] && targetDistance <= distances[i + 1]) {
+                angle = angles[i] + (angles[i + 1] - angles[i]) * (targetDistance - distances[i]) / (distances[i + 1] - distances[i]);
+                break;
+            }
+        }
+        return angle;
+
+        // return Units.radiansToDegrees(Math.atan(
+        //         (2 - 0.425) / (PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0))))));
         // return 0;
     }
 }

@@ -20,7 +20,7 @@ public class CheckPrepStatsAndRumble extends Command {
 
     // Value between 0-1. 0 is nothing 1 is a lot.
     // 0.3 should be nonintrusive to the driver
-    private static final double RUMBLE_INTENSITY = 0.3;
+    private static final double RUMBLE_INTENSITY = 0.1;
 
     /** Creates a new CheckPrepStatsAndRumble. */
     public CheckPrepStatsAndRumble(Pivot s_Pivot, Shooter s_Shooter, Swerve s_Swerve, XboxController xboxController) {

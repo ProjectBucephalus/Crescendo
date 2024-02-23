@@ -14,6 +14,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.PhotonUtils;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -432,8 +433,8 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putBoolean("usingVisionAlignment", usingVisionAlignment);
         SmartDashboard.putBoolean("getWithinRequiredHeading", getWithinRequiredHeading());
 
-        
-
+        SmartDashboard.putNumber("distance to target",
+                PhotonUtils.getDistanceToPose(getEstimatedPose(), new Pose2d(0.2, 5.6, new Rotation2d(0, 0))));
         
     }
 

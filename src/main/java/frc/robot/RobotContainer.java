@@ -26,6 +26,7 @@ import frc.robot.VisionCommands.AimToSpeakerNoDrive;
 import frc.robot.VisionCommands.aimToSpeaker;
 import frc.robot.VisionCommands.aimToSpeakerSequence;
 import frc.robot.commands.PointToAngle;
+import frc.robot.commands.StabiliserBar;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
 import frc.robot.commands.BuddyClimb.StopBuddyClimber;
@@ -51,6 +52,7 @@ import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Intake.StabiliserPos;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -105,12 +107,12 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(translationAxis),
                         () -> -driver.getRawAxis(strafeAxis),
                         () -> -driver.getRawAxis(rotationAxis),
-                        () -> driver.leftBumper().getAsBoolean(),
+                        () -> driver.leftTrigger().getAsBoolean(),
                         () -> -driver.getRawAxis(BRAKE_AXIS)));
 
         //s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
         s_Pivot.setDefaultCommand(new MovePivot(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));   
-        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS))); 
+        //s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS))); 
          
         configureButtonBindings();
 
@@ -150,10 +152,12 @@ public class RobotContainer {
         driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
         /* Pass in codriver for controller to receive rumble */
-        driver.leftTrigger()   .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+        driver.leftBumper()   .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
         driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake)).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
         driver.povUp()         .onTrue(new UnlockClimber());
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
+        driver.povRight()      .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
+        driver.povLeft()       .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         driver.y()             .onTrue(new PointToAngle(s_Swerve, 180));
         driver.x()             .onTrue(new PointToAngle(s_Swerve, 60));
         driver.b()             .onTrue(new PointToAngle(s_Swerve, -60));
@@ -162,7 +166,7 @@ public class RobotContainer {
         /* Co-Driver Buttons */
 
         coDriver.leftTrigger().onTrue(new ShootSequence(s_Shooter, s_Intake));
-        coDriver.rightTrigger().whileTrue(new IntakeSuck(s_Intake));
+        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake));
 
         coDriver.x().onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
         coDriver.b().onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
@@ -183,6 +187,7 @@ public class RobotContainer {
             //Pose2d startPos = new Pose2d(currentPose.getTranslation(), currentPose.getRotation());
             Pose2d startPos = currentPose;
             Pose2d endPos = new Pose2d((new Translation2d(2.0, 2.0)), new Rotation2d(Units.degreesToRadians(90)));
+            //Pose2d endPos = 
 
             List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
             PathPlannerPath path = new PathPlannerPath(

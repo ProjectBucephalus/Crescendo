@@ -102,7 +102,9 @@ public final class Constants {
         public static final int rightInSwitchID = 2;
         public static final int rightOutSwitchID = 1;
 
-        public static final int mFlapID = 35;
+        public static final int mIndexerID = 35;
+
+        public static final int mStabilserID = 14; 
 
         public static final int mIntakeID = 12;
 
@@ -139,7 +141,7 @@ public final class Constants {
 
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
         public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final InvertedValue rightPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue rightPivotMotorInvert = InvertedValue.Clockwise_Positive;
 
         public static double angleKP;
         public static double angleKI;
@@ -150,9 +152,13 @@ public final class Constants {
         public static final boolean pivotEnableCurrentLimit = false;
         public static final double pivotManualGain = 0.25;
 
+        public static final double openLoopRamp = 0.25;
+
         public static double pivotKP = 40;
-        public static double pivotKI = 10;
+        public static double pivotKI = 5;
         public static double pivotKD = 0;
+
+        
 
     }
 
@@ -167,6 +173,8 @@ public final class Constants {
 
         public static final double horizontalShooterAngle = 20;
         public static final double mFlapMaxCurrent = 40;
+
+        public static final double openLoopRamp = 0;
     }
 
     public static final class Climber {
@@ -244,7 +252,7 @@ public final class Constants {
         public static final double angleKD = chosenModule.angleKD;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 2;
+        public static final double driveKP = 1.8;
         public static final double driveKI = 0.03;
         public static final double driveKD = 0.04;
         public static final double driveKF = 0.0;
