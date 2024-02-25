@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -52,6 +53,7 @@ import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Intake.IndexerPosition;
 import frc.robot.subsystems.Intake.StabiliserPos;
 
 /**
@@ -74,15 +76,16 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
-        // Swerve
-    //private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    //private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    
-    private final int            BRAKE_AXIS            = XboxController.Axis.kRightTrigger.value;
-    
-    private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kLeftY.value;
-    private final int            MANUAL_SHOOTER_AXIS            = XboxController.Axis.kRightY.value;
+    // Swerve
+    // private final JoystickButton zeroGyro = new JoystickButton(driver,
+    // XboxController.Button.kY.value);
+    // private final JoystickButton robotCentric = new JoystickButton(driver,
+    // XboxController.Button.kLeftBumper.value);
 
+    private final int BRAKE_AXIS = XboxController.Axis.kRightTrigger.value;
+
+    private final int MANUAL_CLIMB_AXIS = XboxController.Axis.kLeftY.value;
+    private final int MANUAL_SHOOTER_AXIS = XboxController.Axis.kRightY.value;
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -110,10 +113,10 @@ public class RobotContainer {
                         () -> driver.leftTrigger().getAsBoolean(),
                         () -> -driver.getRawAxis(BRAKE_AXIS)));
 
-        //s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
-        s_Pivot.setDefaultCommand(new MovePivot(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));   
-        //s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS))); 
-         
+        // s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
+        s_Pivot.setDefaultCommand(new MovePivot(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));
+        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));
+
         configureButtonBindings();
 
         NamedCommands.registerCommand("IntakeAndDeployPivot", new IntakeAndDeployPivot(s_Pivot, s_Intake));
@@ -123,9 +126,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("Stop Shooter", new ShooterIdle(s_Shooter));
         NamedCommands.registerCommand("Intake Suck", new IntakeSuck(s_Intake));
         NamedCommands.registerCommand("Intake Stop", new IntakeStop(s_Intake));
-        NamedCommands.registerCommand("Move to Base Speaker Angle", new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER_MANUAL));
+        NamedCommands.registerCommand("Move to Base Speaker Angle",
+                new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER_MANUAL));
         NamedCommands.registerCommand("Stow Pivot", new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
-        
+
         // NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
         // NamedCommands.registerCommand("print hello", Commands.print("hello"));
 
@@ -152,8 +156,8 @@ public class RobotContainer {
         driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
         /* Pass in codriver for controller to receive rumble */
-        driver.leftBumper()   .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
-        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake)).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
+        driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake)).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake).andThen(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED)));
         driver.povUp()         .onTrue(new UnlockClimber());
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
         driver.povRight()      .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
@@ -165,21 +169,21 @@ public class RobotContainer {
         
         /* Co-Driver Buttons */
 
-        coDriver.leftTrigger().onTrue(new ShootSequence(s_Shooter, s_Intake));
-        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake));
-
-        coDriver.x().onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
-        coDriver.b().onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
-        coDriver.y().onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
-        coDriver.a().onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
-      
-        coDriver.povRight().onTrue(new DeployBuddyClimber(s_Climber));
-        coDriver.povLeft().onTrue(new StopBuddyClimber(s_Climber));
-        coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
-        coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
+        coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake));
+        //coDriver.leftBumper()  .whileTrue(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.IN))).onFalse(getAutonomousCommand());
+        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake));
         coDriver.rightBumper() .whileTrue(new IntakeSpit(s_Intake));
-        
 
+        coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
+        coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
+        coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
+        //coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
+        
+        
+        coDriver.povLeft()     .whileTrue(new DeployBuddyClimber(s_Climber)).onFalse(new StopBuddyClimber(s_Climber));
+        // coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
+        // coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
+        
         SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
             Pose2d currentPose = s_Swerve.getEstimatedPose();
 
@@ -204,17 +208,59 @@ public class RobotContainer {
             AutoBuilder.followPath(path).schedule();
         }));
 
-        
+        SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+            Pose2d currentPose = s_Swerve.getEstimatedPose();
+
+            // The rotation component in these poses represents the direction of travel
+            //Pose2d startPos = new Pose2d(currentPose.getTranslation(), currentPose.getRotation());
+            Pose2d startPos = currentPose;
+            Pose2d endPos = new Pose2d((new Translation2d(2.0, 2.0)), new Rotation2d(Units.degreesToRadians(90)));
+            //Pose2d endPos = 
+
+            AutoBuilder.pathfindToPose(endPos, null);
+            List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
+            PathPlannerPath path = new PathPlannerPath(
+                    bezierPoints,
+                    new PathConstraints(4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                    new GoalEndState(0.0, endPos.getRotation()));
+
+            // Prevent this path from being flipped on the red alliance, since the given
+            // positions are already correct
+            path.preventFlipping = true;
+
+            AutoBuilder.followPath(path).schedule();
+        }));
+
+        SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+            Pose2d currentPose = s_Swerve.getEstimatedPose();
+
+            // The rotation component in these poses represents the direction of travel
+            //Pose2d startPos = new Pose2d(currentPose.getTranslation(), currentPose.getRotation());
+            Pose2d startPos = currentPose;
+            Pose2d endPos = new Pose2d((new Translation2d(2.0, 2.0)), new Rotation2d(Units.degreesToRadians(90)));
+            //Pose2d endPos = 
+
+            AutoBuilder.pathfindToPose(endPos, null);
+            List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
+            PathPlannerPath path = new PathPlannerPath(
+                    bezierPoints,
+                    new PathConstraints(
+                            4.0, 4.0,
+                            Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                    new GoalEndState(0.0, endPos.getRotation()));
+
+            // Prevent this path from being flipped on the red alliance, since the given
+            // positions are already correct
+            path.preventFlipping = true;
+
+            AutoBuilder.pathfindToPoseFlipped(path, new PathConstraints(
+            4.0, 4.0,
+                            Units.degreesToRadians(360), Units.degreesToRadians(540)),).schedule();
+        }));
 
         
-        coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
-        coDriver.b()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
-        coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
-        coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
-        coDriver.povLeft()     .onTrue(new DeployBuddyClimber(s_Climber)); //buddy climber controls here are the roller, not position
-        coDriver.povRight()    .onTrue(new StopBuddyClimber(s_Climber));
-        coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
-        coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
+        
+        
 
     }
 

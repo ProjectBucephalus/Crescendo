@@ -26,7 +26,7 @@ public class IntakeSuck extends Command {
     @Override
     public void execute() {
 
-        s_Intake.setIntakeStatus(IntakeStatus.IN_WITH_BEAM_BREAK);
+        s_Intake.setIntakeStatus(IntakeStatus.IN);
 
     }
 

@@ -73,10 +73,10 @@ public class Shooter extends SubsystemBase {
                 driveDutyCycle.Output = 0;
                 mTopShooter.setControl(driveDutyCycle);
             case IDLE:
-                driveDutyCycle.Output = 0.2;
+                driveDutyCycle.Output = -0.2;
                 mBottomShooter.setControl(driveDutyCycle);
 
-                driveDutyCycle.Output = 0.2;
+                driveDutyCycle.Output = -0.2;
                 mTopShooter.setControl(driveDutyCycle);
             default:
                 break;

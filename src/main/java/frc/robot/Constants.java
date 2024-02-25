@@ -30,7 +30,7 @@ public final class Constants {
     public static boolean useVision = true;
 
     public static final double stickDeadband = 0.3;
-    
+
     /* Shooter Constants */
     public static final double shooterAngleOffset = 15;
     public static final double horizontalShooterAngle = 20;
@@ -53,17 +53,17 @@ public final class Constants {
 
         /* Offsets */
         public static final Transform3d backCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                0, 0, 0.187,
+                -0.2, 0.19, 0.450,
                 new Rotation3d(
                         0, Units.degreesToRadians(31), Units.degreesToRadians(0)));
         public static final Transform3d frontCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                
-                0.225, -0.125, 0.6,
+
+                0.225, -0.125, 0.190,
                 new Rotation3d(
-                        0,Units.degreesToRadians(31), Units.degreesToRadians(180)));
+                        0, Units.degreesToRadians(31), Units.degreesToRadians(180)));
 
         public static final Transform3d noteCamToRobot = new Transform3d(
-            0, 0, 0.525,
+                0, 0, 0.525,
                 new Rotation3d(
                         0, Units.degreesToRadians(45), Units.degreesToRadians(45)));
 
@@ -77,11 +77,11 @@ public final class Constants {
         public static final boolean simulationSupport = false;
 
         public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),
-                        // if these numbers are less than one, multiplying will do bad things
-                        1, // x
-                        1, // y
-                        1 * Math.PI // theta
-                );
+                // if these numbers are less than one, multiplying will do bad things
+                1, // x
+                1, // y
+                1 * Math.PI // theta
+        );
 
         /**
          * Standard deviations of the vision measurements. Increase these numbers to
@@ -89,7 +89,7 @@ public final class Constants {
          * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
          * radians.
          */
-        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),.1, .1, 1);
+        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), .1, .1, 1);
 
     }
 
@@ -104,7 +104,7 @@ public final class Constants {
 
         public static final int mIndexerID = 35;
 
-        public static final int mStabilserID = 14; 
+        public static final int mStabilserID = 14;
 
         public static final int mIntakeID = 12;
 
@@ -114,12 +114,13 @@ public final class Constants {
         public static final double planetaryRingTeeth = 72;
         public static final double planetarySunTeeth = 18;
         public static final double planetaryPlanetTeeth = 18;
-        public static final double planetaryRatio = (planetaryRingTeeth/planetarySunTeeth) + 1;
+        public static final double planetaryRatio = (planetaryRingTeeth / planetarySunTeeth) + 1;
         public static final double gear1In = 20;
         public static final double gear1Out = 76;
         public static final double pivotGearIn = 10;
         public static final double pivotGearOut = 40;
-        public static final double pivotGearRatio = planetaryRatio * (gear1Out/gear1In) * (pivotGearOut/pivotGearIn);
+        public static final double pivotGearRatio = planetaryRatio * (gear1Out / gear1In)
+                * (pivotGearOut / pivotGearIn);
 
         public static final double ANGLE_TOLERANCE_DEGREE = 10;
 
@@ -130,14 +131,13 @@ public final class Constants {
         /** Degrees - Real-world angle for stowed position */
         public static final double pivotStowPos = -40;
         /** Degrees - Real-world angle for shooting to Amp */
-        public static final double pivotAmpPos = pivotStowPos;
+        public static final double pivotAmpPos = 47;
         /** Degrees - Real-world angle for shooting to Stage Trap */
         public static final double pivotTrapPos = pivotStowPos;
         /** Degrees - Real-world angle for shooter to clear frame */
         public static final double pivotFrameClearPos = 15;
         /** Degrees - Real-world angle for default shooter position */
         public static final double pivotDefaultShootPos = 0;
-
 
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
         public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
@@ -154,11 +154,9 @@ public final class Constants {
 
         public static final double openLoopRamp = 0.25;
 
-        public static double pivotKP = 40;
-        public static double pivotKI = 5;
+        public static double pivotKP = 50;
+        public static double pivotKI = 10;
         public static double pivotKD = 0;
-
-        
 
     }
 
@@ -185,7 +183,7 @@ public final class Constants {
         public static final double maxExtensionSpoolRotations = 3.2;
         public static final double motorToSpoolGearRatio = 100;
         public static final double climberDownPos = 0;
-        
+
     }
 
     public static final class Swerve {

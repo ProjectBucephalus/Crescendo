@@ -158,10 +158,11 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putString("Stabliser Statsu", pos.name());
         switch (pos) {
             case IN:
-                mStabilser.set(ControlMode.PercentOutput, 0.6);
+                mStabilser.set(ControlMode.PercentOutput, -0.6);
+
                 break;
             case OUT:
-                mStabilser.set(ControlMode.PercentOutput, -0.6);
+                mStabilser.set(ControlMode.PercentOutput, 0.6);
                 break;
             case STOPPED:
                 mStabilser.set(ControlMode.PercentOutput, 0);
