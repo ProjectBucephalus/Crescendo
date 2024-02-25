@@ -37,7 +37,7 @@ public final class Constants {
     public static final double mFlapMaxCurrent = 40;
 
     /* Image Tracking Constants */
-    public static final double cameraPitchOffset = 26;
+    //public static final double cameraPitchOffset = 20;
     public static final double speakerTagHeight = 144;
     public static final double cameraHeightOverGround = 23;
     public static final double targetHeightOverTag = 40;

@@ -36,11 +36,11 @@ public class SwerveModule {
         this.angleOffset = moduleConstants.angleOffset;
         
         /* Angle Encoder Config */
-        angleEncoder = new CANcoder(moduleConstants.cancoderID);
-        CANcoderConfiguration xyz = new CANcoderConfiguration();
-        angleEncoder.getConfigurator().refresh(xyz);
-        Robot.ctreConfigs.swerveCANcoderConfig.MagnetSensor.MagnetOffset = xyz.MagnetSensor.MagnetOffset;
-        angleEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCANcoderConfig);
+        angleEncoder = new CANcoder(moduleConstants.cancoderID); // Create new CANcoder
+        CANcoderConfiguration oldConfig = new CANcoderConfiguration(); // Create CANcoder config to pull existing values into
+        angleEncoder.getConfigurator().refresh(oldConfig); // Pull previous CANcoder values into config holder
+        Robot.ctreConfigs.swerveCANcoderConfig.MagnetSensor.MagnetOffset = oldConfig.MagnetSensor.MagnetOffset; // Extract previous MagnetOffset into standard configs
+        angleEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCANcoderConfig); // Push standard configs with previous MagnetOffset into new CANcoder
 
         /* Angle Motor Config */
         mAngleMotor = new TalonFX(moduleConstants.angleMotorID);

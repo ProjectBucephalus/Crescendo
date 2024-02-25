@@ -33,7 +33,7 @@ public class MoveClimber extends Command {
     @Override
     public void execute() 
     {
-        //System.out.println(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
+        //System.out.println("Climber Speed : " + MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
         climber.setSpeed(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
     }
     
