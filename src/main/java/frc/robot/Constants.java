@@ -37,7 +37,7 @@ public final class Constants {
     public static final double mFlapMaxCurrent = 40;
 
     /* Image Tracking Constants */
-    public static final double cameraPitchOffset = 26;
+    //public static final double cameraPitchOffset = 20;
     public static final double speakerTagHeight = 144;
     public static final double cameraHeightOverGround = 23;
     public static final double targetHeightOverTag = 40;
@@ -53,19 +53,17 @@ public final class Constants {
 
         /* Offsets */
         public static final Transform3d backCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                0, 0, 0.187,
-                new Rotation3d(
-                        0, Units.degreesToRadians(31), Units.degreesToRadians(0)));
+                //0.18, -0.21, 0.455,
+                -0.18, -0.21, 0.455,
+                new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(180)));
+        
         public static final Transform3d frontCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                
-                0.225, -0.125, 0.6,
-                new Rotation3d(
-                        0,Units.degreesToRadians(31), Units.degreesToRadians(180)));
+                0, 0, 0,
+                new Rotation3d(0,Units.degreesToRadians(20), Units.degreesToRadians(0)));
 
         public static final Transform3d noteCamToRobot = new Transform3d(
-            0, 0, 0.525,
-                new Rotation3d(
-                        0, Units.degreesToRadians(45), Units.degreesToRadians(45)));
+                0, 0, 0.525,
+                new Rotation3d(0, Units.degreesToRadians(45), Units.degreesToRadians(45)));
 
         public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
         public static final double POSE_AMBIGUITY_SHIFTER = 0.2;

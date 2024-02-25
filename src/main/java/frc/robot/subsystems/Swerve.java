@@ -50,13 +50,13 @@ public class Swerve extends SubsystemBase {
     public SwerveDrivePoseEstimator poseEstimator;
     public PhotonPoseEstimator photonPoseEstimatorFront;
     public PhotonPoseEstimator photonPoseEstimatorBack;
-    public PhotonCamera frontCam = new PhotonCamera(Constants.Vision.backCamName);
-    public PhotonCamera backCam = new PhotonCamera(Constants.Vision.frontCamName);
+    public PhotonCamera frontCam = new PhotonCamera(Constants.Vision.frontCamName);
+    public PhotonCamera backCam = new PhotonCamera(Constants.Vision.backCamName);
 
     // set to true initially so that if we manually set the angle and dont use any auto functions it will still shoot
     private boolean alignedToTargert = true;
 
-    public boolean usingVisionAlignment = false;
+    public boolean usingVisionAlignment = true;
 
     final AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); 
     // see docs for how to do this better and set origin for red alliance
@@ -235,7 +235,7 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
-     * TODO i dont know how the swerve works, todo docs
+     * TODO docs
      * 
      * @param pose
      */
@@ -317,7 +317,7 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
-     * TODO i dont know how the swerve works, todo docs
+     * TODO docs
      * 
      * @param robotRelativeSpeeds
      */
@@ -387,30 +387,37 @@ public class Swerve extends SubsystemBase {
     //     m_swerveModules[3].set(0.0, lockRadians);
     }
 
+    private Optional<EstimatedRobotPose> visionEstimatedPoseFront, visionEstimatedPoseBack;
+    private EstimatedRobotPose estimatedRobotPose;
+
     @Override
     /**
-     * TODO i dont know how the swerve works, todo docs
+     * TODO docs
      */
     public void periodic() {
 
         swerveOdometry.update(getGyroYaw(), getModulePositions());
 
-        final Optional<EstimatedRobotPose> optionalEstimatedPoseFront = photonPoseEstimatorFront.update();
-        if (optionalEstimatedPoseFront.isPresent()) {
+        //final Optional<EstimatedRobotPose> 
+        visionEstimatedPoseFront = photonPoseEstimatorFront.update();
+        if (visionEstimatedPoseFront.isPresent()) {
             SmartDashboard.putBoolean("Using Vision", true);
-            final EstimatedRobotPose estimatedPose = optionalEstimatedPoseFront.get();
-            poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds,
-                    confidenceCalculator(estimatedPose));
+            //final EstimatedRobotPose 
+            estimatedRobotPose = visionEstimatedPoseFront.get();
+            poseEstimator.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds,
+                    confidenceCalculator(estimatedRobotPose));
         } else {
             SmartDashboard.putBoolean("Using Vision", false);
         }
 
-        final Optional<EstimatedRobotPose> optionalEstimatedPoseBack = photonPoseEstimatorBack.update();
-        if (optionalEstimatedPoseBack.isPresent()) {
+        //final Optional<EstimatedRobotPose> 
+        visionEstimatedPoseBack = photonPoseEstimatorBack.update();
+        if (visionEstimatedPoseBack.isPresent()) {
             SmartDashboard.putBoolean("Using Vision", true);
-            final EstimatedRobotPose estimatedPose = optionalEstimatedPoseBack.get();
-            poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds,
-                    confidenceCalculator(estimatedPose));
+            //final EstimatedRobotPose 
+            estimatedRobotPose = visionEstimatedPoseBack.get();
+            poseEstimator.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds,
+                    confidenceCalculator(estimatedRobotPose));
         } else {
             SmartDashboard.putBoolean("Using Vision", false);
         }
@@ -419,8 +426,8 @@ public class Swerve extends SubsystemBase {
 
         for (SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
+            ///SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
+            //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
         }
 
         SmartDashboard.putNumber("Pose X (Estimated)", getEstimatedPose().getX());
