@@ -102,7 +102,9 @@ public final class Constants {
         public static final int rightInSwitchID = 2;
         public static final int rightOutSwitchID = 1;
 
-        public static final int mFlapID = 35;
+        public static final int mIndexerID = 35;
+
+        public static final int mStabilserID = 14; 
 
         public static final int mIntakeID = 12;
 
@@ -119,7 +121,7 @@ public final class Constants {
         public static final double pivotGearOut = 40;
         public static final double pivotGearRatio = planetaryRatio * (gear1Out/gear1In) * (pivotGearOut/pivotGearIn);
 
-
+        public static final double ANGLE_TOLERANCE_DEGREE = 10;
 
         /** Degrees - Difference between pivot mechanism 0 and real-world 0 */
         public static final double pivotOffsetForZero = -37;
@@ -139,7 +141,7 @@ public final class Constants {
 
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
         public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final InvertedValue rightPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue rightPivotMotorInvert = InvertedValue.Clockwise_Positive;
 
         public static double angleKP;
         public static double angleKI;
@@ -150,9 +152,13 @@ public final class Constants {
         public static final boolean pivotEnableCurrentLimit = false;
         public static final double pivotManualGain = 0.25;
 
+        public static final double openLoopRamp = 0.25;
+
         public static double pivotKP = 40;
-        public static double pivotKI = 10;
+        public static double pivotKI = 5;
         public static double pivotKD = 0;
+
+        
 
     }
 
@@ -167,6 +173,8 @@ public final class Constants {
 
         public static final double horizontalShooterAngle = 20;
         public static final double mFlapMaxCurrent = 40;
+
+        public static final double openLoopRamp = 0;
     }
 
     public static final class Climber {
@@ -193,6 +201,9 @@ public final class Constants {
         public static final double trackWidth = 0.48;
         public static final double wheelBase = 0.48;
         public static final double wheelCircumference = chosenModule.wheelCircumference;
+
+        /* Used by other commands to check if the auto alignment is sucessfull */
+        public static final double ANGLE_TOLERANCE_DEGREES = 5;
 
         /*
          * Swerve Kinematics
@@ -241,7 +252,7 @@ public final class Constants {
         public static final double angleKD = chosenModule.angleKD;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 2.25;
+        public static final double driveKP = 1.8;
         public static final double driveKI = 0.03;
         public static final double driveKD = 0.04;
         public static final double driveKF = 0.0;

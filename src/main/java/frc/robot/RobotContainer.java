@@ -2,10 +2,6 @@ package frc.robot;
 
 import java.util.List;
 
-import org.photonvision.PhotonCamera;
-
-import com.choreo.lib.Choreo;
-import com.choreo.lib.ChoreoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.GoalEndState;
@@ -28,8 +24,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.VisionCommands.AimToSpeakerNoDrive;
 import frc.robot.VisionCommands.aimToSpeaker;
-import frc.robot.VisionCommands.multiTagPoseEstimatior;
-import frc.robot.commands.*;
+import frc.robot.VisionCommands.aimToSpeakerSequence;
+import frc.robot.commands.PointToAngle;
+import frc.robot.commands.StabiliserBar;
+import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
 import frc.robot.commands.BuddyClimb.StopBuddyClimber;
 import frc.robot.commands.Climber.ClimberExtend;
@@ -44,10 +42,17 @@ import frc.robot.commands.Intake.IntakeSuck;
 import frc.robot.commands.Intake.MovePivot;
 import frc.robot.commands.Intake.MovePivotToPosition;
 import frc.robot.commands.Intake.StopIntakeAndStow;
+import frc.robot.commands.Shooter.ShootSequence;
 import frc.robot.commands.Shooter.ShooterIdle;
 import frc.robot.commands.Shooter.ShooterRev;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.NoteVision;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Intake.StabiliserPos;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -102,12 +107,12 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(translationAxis),
                         () -> -driver.getRawAxis(strafeAxis),
                         () -> -driver.getRawAxis(rotationAxis),
-                        () -> driver.leftBumper().getAsBoolean(),
+                        () -> driver.leftTrigger().getAsBoolean(),
                         () -> -driver.getRawAxis(BRAKE_AXIS)));
 
         //s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
         s_Pivot.setDefaultCommand(new MovePivot(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));   
-        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS))); 
+        //s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> -coDriver.getRawAxis(MANUAL_CLIMB_AXIS))); 
          
         configureButtonBindings();
 
@@ -143,11 +148,16 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
 
+        driver.back()          .onTrue(new InstantCommand(s_Swerve::lockWheels, s_Swerve)); // TODO 
         driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        driver.leftTrigger()   .whileTrue(new aimToSpeaker(s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_Pivot)); //horizontal only
-        driver.rightBumper()   .whileTrue(new IntakeSuck(s_Intake)); //shouldn't affect position, just sucks
+
+        /* Pass in codriver for controller to receive rumble */
+        driver.leftBumper()   .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake)).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
         driver.povUp()         .onTrue(new UnlockClimber());
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
+        driver.povRight()      .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
+        driver.povLeft()       .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         driver.y()             .onTrue(new PointToAngle(s_Swerve, 180));
         driver.x()             .onTrue(new PointToAngle(s_Swerve, 60));
         driver.b()             .onTrue(new PointToAngle(s_Swerve, -60));
@@ -155,8 +165,8 @@ public class RobotContainer {
         
         /* Co-Driver Buttons */
 
-        coDriver.leftTrigger().whileTrue(new ShooterRev(s_Shooter)).whileFalse(new ShooterIdle(s_Shooter));
-        coDriver.rightTrigger().whileTrue(new IntakeSuck(s_Intake));
+        coDriver.leftTrigger().onTrue(new ShootSequence(s_Shooter, s_Intake));
+        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake));
 
         coDriver.x().onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
         coDriver.b().onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
@@ -177,6 +187,7 @@ public class RobotContainer {
             //Pose2d startPos = new Pose2d(currentPose.getTranslation(), currentPose.getRotation());
             Pose2d startPos = currentPose;
             Pose2d endPos = new Pose2d((new Translation2d(2.0, 2.0)), new Rotation2d(Units.degreesToRadians(90)));
+            //Pose2d endPos = 
 
             List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
             PathPlannerPath path = new PathPlannerPath(

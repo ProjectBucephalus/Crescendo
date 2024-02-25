@@ -15,6 +15,9 @@
         },
         "open": true
       },
+      "SmartDashboard": {
+        "open": true
+      },
       "photonvision": {
         "BackCam": {
           "open": true
