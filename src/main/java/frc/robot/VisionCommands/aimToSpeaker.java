@@ -66,8 +66,8 @@ public class aimToSpeaker extends Command {
         s_Pivot.setDesiredPostion(calculatedRequiredShooterAngle());
         //s_Pivot.setDesiredPostion(SmartDashboard.getNumber("Pivot position for array", 0));
 
-        s_Swerve.setWithinRequiredHeading(Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
-                - Math.abs(calculateRequiredHeading().getDegrees())) < Constants.Swerve.ANGLE_TOLERANCE_DEGREES);
+        s_Swerve.setWithinRequiredHeading(Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees() - Math.abs(calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getDegrees())) < Constants.Swerve.ANGLE_TOLERANCE_DEGREES);
+        SmartDashboard.putNumber("Is our auto aligned heading aligned?", Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees() - Math.abs(calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getDegrees())));
         SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
         SmartDashboard.putNumber("calculated shooter angle", calculatedRequiredShooterAngle());
 
@@ -107,8 +107,8 @@ public class aimToSpeaker extends Command {
 
         var pose = s_Swerve.getEstimatedPose();
 
-        double[] distances = { 1.5, 2, 3, 4, 5, 6 }; // distances in meters
-        double[] angles = { 38, 32, 29, 27, 26, 25 };// shooter angles in degrees
+        double[] distances = Constants.distancesFromSpeaker; // distances in meters
+        double[] angles = Constants.anglesOfPivot; // shooter angles in degrees
 
         // SmartDashboard.putNumber("distance to target",
         // PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0,

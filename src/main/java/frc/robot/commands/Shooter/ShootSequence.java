@@ -12,12 +12,17 @@ import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Shooter.ShootPosition;
 import frc.robot.subsystems.Shooter.ShooterState;
 
+/**
+ * Automated control sequence to spin-up shooter, eject note, then spin-down shooter.
+ * @author 5985
+ * @author Aidan
+ */
 public class ShootSequence extends Command {
-    /* Total time allowed for the shooter to spin up and shoot */
+    /** MAX Total time allowed for the shooter to spin up and shoot if the beam break doesn't work*/
     private double SHOOT_TIME;
 
-    /*
-     * Total time allowed for the shooter to spin up. The difference between the two
+    /**
+     * Total time allowed for the shooter to spin up. The difference between the two 
      * values will be the time allowed for note to eject.
      */
     private double SHOOT_SPIN_UP_TIME;
@@ -33,7 +38,12 @@ public class ShootSequence extends Command {
         addRequirements(s_Shooter);
     }
 
-    // Called when the command is initially scheduled.
+    /**
+     * Called when the command is initially scheduled. 
+     * Sets appropriate values for time limits and directions based on current shooter position
+     * @author 5985
+     * @author Aidan
+     */
     @Override
     public void initialize() {
         if (s_Shooter.getShootPosition() == ShootPosition.SPEAKER) {
@@ -58,6 +68,9 @@ public class ShootSequence extends Command {
     }
 
     // Called every time the scheduler runs while the command is scheduled.
+    /**
+     * Sets intake feed direction only after shooter has had enough time to spin-up
+     */
     @Override
     public void execute() {
         if (m_timer.hasElapsed(SHOOT_SPIN_UP_TIME)) {
@@ -73,20 +86,23 @@ public class ShootSequence extends Command {
                 s_Intake.setIntakeStatus(IntakeStatus.IN_FOR_SHOOTING);
             }
         }
-
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-
         s_Shooter.setShooterState(ShooterState.IDLE);
         s_Intake.setIntakeStatus(IntakeStatus.STOPPED);
     }
 
     // Returns true when the command should end.
+    /**
+     * Returns true (Finished) when shooter has had enough time to eject note, or note is no-longer detected in intake
+     * @author 5985
+     * @author Aidan
+     */
     @Override
     public boolean isFinished() {
-        return m_timer.hasElapsed(SHOOT_TIME);
+        return (m_timer.hasElapsed(SHOOT_TIME) || s_Intake.getBeamBreak()) ;
     }
 }

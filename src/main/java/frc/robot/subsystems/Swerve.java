@@ -40,6 +40,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -50,8 +51,11 @@ public class Swerve extends SubsystemBase {
     public SwerveDrivePoseEstimator poseEstimator;
     public PhotonPoseEstimator photonPoseEstimatorFront;
     public PhotonPoseEstimator photonPoseEstimatorBack;
+    
     public PhotonCamera frontCam = new PhotonCamera(Constants.Vision.frontCamName);
     public PhotonCamera backCam = new PhotonCamera(Constants.Vision.backCamName);
+
+    private final Field2d m_field = new Field2d();
 
     // set to true initially so that if we manually set the angle and dont use any auto functions it will still shoot
     private boolean alignedToTargert = true;
@@ -398,6 +402,8 @@ public class Swerve extends SubsystemBase {
 
         swerveOdometry.update(getGyroYaw(), getModulePositions());
 
+        m_field.setRobotPose(getEstimatedPose());
+
         //final Optional<EstimatedRobotPose> 
         visionEstimatedPoseFront = photonPoseEstimatorFront.update();
         if (visionEstimatedPoseFront.isPresent()) {
@@ -437,8 +443,12 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putBoolean("usingVisionAlignment", usingVisionAlignment);
         SmartDashboard.putBoolean("getWithinRequiredHeading", getWithinRequiredHeading());
 
-        SmartDashboard.putNumber("distance to target",
-                PhotonUtils.getDistanceToPose(getEstimatedPose(), new Pose2d(0.2, 5.6, new Rotation2d(0, 0))));
+        SmartDashboard.putNumber("distance to target", PhotonUtils.getDistanceToPose(getEstimatedPose(), new Pose2d(0.2, 5.6, new Rotation2d(0, 0))));
+        
+
+        // Do this in either robot or subsystem init
+        SmartDashboard.putData("Field", m_field);
+
         
     }
 

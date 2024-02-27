@@ -1,28 +1,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.Intake.BeamBreakStatus;
-import frc.lib.math.Conversions;
-import frc.robot.CTREConfigs;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 /**
  * intake subsystem
@@ -79,7 +65,8 @@ public class Intake extends SubsystemBase {
     /**
      * sets the speed of the motor
      * 
-     * @param speed the speed that the arm rotates at
+     * @param speed Intake motor speed [-1..1]
+     * @param useBeamBreak (Unused) Set true to stop intake when note is detected
      */
     public void setIntakeSpeed(double speed, boolean useBeamBreak) {
         mIntake.set(speed);
@@ -89,10 +76,10 @@ public class Intake extends SubsystemBase {
     /**
      * sets the speed that the intake motors rotate to suck in notes
      * 
-     * @param speed the motor speed of the intake motors
+     * @param status Enum value corresponding to intake motor speed and related values
      */
     public void setIntakeStatus(IntakeStatus status) {
-        SmartDashboard.putString("intake Status", status.name());
+        SmartDashboard.putString("Intake Status", status.name());
         switch (status) {
             case IN_FOR_SHOOTING:
                 setIndexPosition(IndexerPosition.IN_FOR_SHOOTING);
@@ -112,7 +99,7 @@ public class Intake extends SubsystemBase {
             case IN_WITH_BEAM_BREAK:
                 
                 setIndexPosition(IndexerPosition.IN_WITH_BEAM_BREAK);
-                setIntakeSpeed(0.50, true);
+                setIntakeSpeed(0.75, true);
                 useBeamBreak = true;
                 break;
             case STOPPED:
@@ -127,8 +114,11 @@ public class Intake extends SubsystemBase {
     }
 
     /**
-     * sets the position of the flap
-     * @param pos can be open or closed
+     * sets the status of the indexer 
+     * TODO replace values with constants
+     * @param pos Enum value corresponding to indexer speeds
+     * @author 5985
+     * @author Aidan
      */
     public void setIndexPosition(IndexerPosition pos) {
         SmartDashboard.putString("indexer Status", pos.name());
@@ -155,7 +145,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setStabliserPos(StabiliserPos pos) {
-        SmartDashboard.putString("Stabliser Statsu", pos.name());
+        SmartDashboard.putString("Stabliser Status", pos.name());
         switch (pos) {
             case IN:
                 mStabilser.set(ControlMode.PercentOutput, -0.6);
@@ -173,15 +163,18 @@ public class Intake extends SubsystemBase {
         }
     }
 
-    @Override
-    public void periodic() {
-        SmartDashboard.putBoolean("BeamBreak", beamBreakBool);
-        beamBreakBool = BeamBreak.get();
-        if (useBeamBreak) {
-            if (!beamBreakBool) {
-                setIntakeStatus(IntakeStatus.STOPPED);
-            }
-        }
+    public boolean getBeamBreak() {
+        return beamBreakBool;
     }
 
+    @Override
+    public void periodic() 
+    {
+        beamBreakBool = BeamBreak.get();
+        SmartDashboard.putBoolean("BeamBreak", beamBreakBool);
+        if (useBeamBreak && !beamBreakBool)
+        {
+            setIntakeStatus(IntakeStatus.STOPPED);
+        }
+    }
 }

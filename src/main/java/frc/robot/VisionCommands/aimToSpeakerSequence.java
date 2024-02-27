@@ -23,10 +23,11 @@ public class aimToSpeakerSequence extends ParallelCommandGroup {
 
         addCommands(
                 // set shoot mode, so that TriggerShot can be a single command/button
+                new CheckPrepStatsAndRumble(s_Pivot, s_Shooter, s_Swerve, xboxController),
                 new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
                 //new ActiveSetShooter(shooter, shooterPivot, this::getShootValues),
-                new aimToSpeaker(s_Swerve, translationSup, strafeSup, brakeSup, s_Pivot),
-                new CheckPrepStatsAndRumble(s_Pivot, s_Shooter, s_Swerve, xboxController)
+                new aimToSpeaker(s_Swerve, translationSup, strafeSup, brakeSup, s_Pivot)
+                
         );
         
     }

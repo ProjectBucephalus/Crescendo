@@ -72,12 +72,14 @@ public class Shooter extends SubsystemBase {
 
                 driveDutyCycle.Output = 0;
                 mTopShooter.setControl(driveDutyCycle);
+                break;
             case IDLE:
-                driveDutyCycle.Output = -0.2;
+                driveDutyCycle.Output = -0;
                 mBottomShooter.setControl(driveDutyCycle);
 
-                driveDutyCycle.Output = -0.2;
+                driveDutyCycle.Output = -0;
                 mTopShooter.setControl(driveDutyCycle);
+                break;
             default:
                 break;
         }        
@@ -105,9 +107,17 @@ public class Shooter extends SubsystemBase {
         return shooterMode;
     }
 
+    /**
+     * Checks if shooter RPM is within acceptable tolerance. 
+     * TODO not implimented yet
+     * @return Boolean, true when current shooter RPM is acceptable
+     * @author 5985
+     * @author Aidan
+     */
     public boolean rpmWithinTolerance() {
         return true; // TODO
     }
+
     @Override
     public void periodic() {
         SmartDashboard.putString("Where am I shooting", getShootPosition().name());

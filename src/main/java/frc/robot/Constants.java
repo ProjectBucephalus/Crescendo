@@ -36,14 +36,12 @@ public final class Constants {
     public static final double horizontalShooterAngle = 20;
     public static final double mFlapMaxCurrent = 40;
 
-    /* Image Tracking Constants */
-    //public static final double cameraPitchOffset = 20;
-    public static final double speakerTagHeight = 144;
-    public static final double cameraHeightOverGround = 23;
-    public static final double targetHeightOverTag = 40;
-
     /* CAN IDs */
     public static final int pigeonID = 53;
+
+    public static final double[] distancesFromSpeaker = { 1.5,    2, 2.5,  3, 3.5,  4, 5, 6 }; // distances in meters
+    // TODO Values to calibrate: 3.5
+    public static final double[] anglesOfPivot =        {  37, 29.5,  28, 23,  22, 20, 20,20 }; // shooter angles in degrees
 
     public static final class Vision {
         /* Names */
@@ -53,19 +51,18 @@ public final class Constants {
 
         /* Offsets */
         public static final Transform3d backCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                -0.2, 0.19, 0.450,
-                new Rotation3d(
-                        0, Units.degreesToRadians(31), Units.degreesToRadians(0)));
+                //0.18, -0.21, 0.455,
+                -0.18, -0.21, 0.455,
+                new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(180)));
+
         public static final Transform3d frontCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
 
-                0.225, -0.125, 0.190,
-                new Rotation3d(
-                        0, Units.degreesToRadians(31), Units.degreesToRadians(180)));
+                0, 0, 0,
+                new Rotation3d(0,Units.degreesToRadians(20), Units.degreesToRadians(0)));
 
         public static final Transform3d noteCamToRobot = new Transform3d(
                 0, 0, 0.525,
-                new Rotation3d(
-                        0, Units.degreesToRadians(45), Units.degreesToRadians(45)));
+                new Rotation3d(0, Units.degreesToRadians(45), Units.degreesToRadians(45)));
 
         public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
         public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
@@ -73,6 +70,14 @@ public final class Constants {
         public static final double NOISY_DISTANCE_METERS = 2.5;
         public static final double DISTANCE_WEIGHT = 7;
         public static final int TAG_PRESENCE_WEIGHT = 10;
+
+        public static final double kLimelightFocalHeight = .775; //FIXME
+        public static final double kHighTargetHeight = (41.96875 * 2.54)/100;
+        public static final double kLimelightMountingAngle = 0;
+        public static final double kLimelightErrorValue = 32387943713712937127893.32324;
+        public static final double kMidTargetHeight = .864;
+
+        public static final double kHorizontalMetresToPosition = 3.75;
 
         public static final boolean simulationSupport = false;
 
@@ -152,11 +157,11 @@ public final class Constants {
         public static final boolean pivotEnableCurrentLimit = false;
         public static final double pivotManualGain = 0.25;
 
-        public static final double openLoopRamp = 0.25;
+        public static final double openLoopRamp = 0.4;
 
-        public static double pivotKP = 50;
-        public static double pivotKI = 10;
-        public static double pivotKD = 0;
+        public static double pivotKP = 100;
+        public static double pivotKI = 20;
+        public static double pivotKD = 2;
 
     }
 
@@ -201,7 +206,7 @@ public final class Constants {
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         /* Used by other commands to check if the auto alignment is sucessfull */
-        public static final double ANGLE_TOLERANCE_DEGREES = 5;
+        public static final double ANGLE_TOLERANCE_DEGREES = 10;
 
         /*
          * Swerve Kinematics

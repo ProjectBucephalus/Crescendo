@@ -18,9 +18,9 @@ public class CheckPrepStatsAndRumble extends Command {
     private final Swerve s_Swerve;
     private final XboxController m_controller;
 
-    // Value between 0-1. 0 is nothing 1 is a lot.
+    // Value in range [0..1] : 0 is nothing, 1 is a lot.
     // 0.3 should be nonintrusive to the driver
-    private static final double RUMBLE_INTENSITY = 0.1;
+    private static final double RUMBLE_INTENSITY = 0.3;
 
     /** Creates a new CheckPrepStatsAndRumble. */
     public CheckPrepStatsAndRumble(Pivot s_Pivot, Shooter s_Shooter, Swerve s_Swerve, XboxController xboxController) {
@@ -38,11 +38,11 @@ public class CheckPrepStatsAndRumble extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (s_Pivot.angleWithinTolerance() && m_Shooter.rpmWithinTolerance() && s_Swerve.getWithinRequiredHeading()) {
+        if (s_Pivot.angleWithinTolerance() &&  s_Swerve.getWithinRequiredHeading() && m_controller != null) {
             // Sets rumble
             m_controller.setRumble(RumbleType.kBothRumble, RUMBLE_INTENSITY);
             SmartDashboard.putBoolean("Ready to shoot?", true);
-        } else {
+        } else if (m_controller != null) {
             m_controller.setRumble(RumbleType.kBothRumble, 0);
             SmartDashboard.putBoolean("Ready to shoot?", false);
         }
@@ -54,7 +54,10 @@ public class CheckPrepStatsAndRumble extends Command {
     @Override
     public void end(boolean interrupted) {
         // Turns it off once done
-        m_controller.setRumble(RumbleType.kBothRumble, 0);
+        if (m_controller != null) {
+            m_controller.setRumble(RumbleType.kBothRumble, 0);
+        }
+        
     }
 
     // Returns true when the command should end.

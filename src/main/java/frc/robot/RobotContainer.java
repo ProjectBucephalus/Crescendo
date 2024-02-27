@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Utilities.Limelight;
 import frc.robot.VisionCommands.AimToSpeakerNoDrive;
 import frc.robot.VisionCommands.aimToSpeaker;
 import frc.robot.VisionCommands.aimToSpeakerSequence;
@@ -48,7 +49,6 @@ import frc.robot.commands.Shooter.ShooterIdle;
 import frc.robot.commands.Shooter.ShooterRev;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.NoteVision;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
 import frc.robot.subsystems.Shooter;
@@ -94,7 +94,7 @@ public class RobotContainer {
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
 
-    private final NoteVision m_noteVision = new NoteVision();
+    private Limelight m_lime = new Limelight("limelight");
 
     /* Autonomous */
     private final SendableChooser<Command> autoChooser;
@@ -119,7 +119,7 @@ public class RobotContainer {
 
         configureButtonBindings();
 
-        NamedCommands.registerCommand("IntakeAndDeployPivot", new IntakeAndDeployPivot(s_Pivot, s_Intake));
+        NamedCommands.registerCommand("IntakeAndDeployPivot", new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID()));
         NamedCommands.registerCommand("StopIntakeAndStow", new StopIntakeAndStow(s_Pivot, s_Intake));
         NamedCommands.registerCommand("AimToSpeaker", new AimToSpeakerNoDrive(s_Swerve, s_Pivot));
         NamedCommands.registerCommand("Start Shooter", new ShooterRev(s_Shooter));
@@ -152,20 +152,36 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
 
-        driver.back()          .onTrue(new InstantCommand(s_Swerve::lockWheels, s_Swerve)); // TODO 
+        //driver.back()          .onTrue(new InstantCommand(s_Swerve::lockWheels, s_Swerve)); // TODO 
         driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+
+        driver.leftTrigger().whileTrue(new TurnToNote(s_Swerve, m_lime, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
 
         /* Pass in codriver for controller to receive rumble */
         driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
-        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake)).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake).andThen(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED)));
+       
+        /* Pass in driver for controller to receive rumble when note in intake*/
+        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake).andThen(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED)));
         driver.povUp()         .onTrue(new UnlockClimber());
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
         driver.povRight()      .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         driver.povLeft()       .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
-        driver.y()             .onTrue(new PointToAngle(s_Swerve, 180));
-        driver.x()             .onTrue(new PointToAngle(s_Swerve, 60));
-        driver.b()             .onTrue(new PointToAngle(s_Swerve, -60));
-        driver.a()             .onTrue(new PointToAngle(s_Swerve, 90));
+        // driver.y()             .onTrue(new PointToAngle(s_Swerve, 180));
+        // driver.x()             .onTrue(new PointToAngle(s_Swerve, 60));
+        // driver.b()             .onTrue(new PointToAngle(s_Swerve, -60));
+        // driver.a()             .onTrue(new PointToAngle(s_Swerve, 90));
+        // driver.a()             .whileTrue({
+            
+            
+        //     Pose2d endPos = new Pose2d((new Translation2d(2.0, 2.0)), new Rotation2d(Units.degreesToRadians(90)));
+        //     // We use pathfind to pose flipped so that it flips correctly to the red alliance.
+        //     AutoBuilder.pathfindToPoseFlipped(endPos, new PathConstraints(
+        //         4.0,
+        //         4.0,
+        //         Units.degreesToRadians(360),
+        //         Units.degreesToRadians(540)))
+        //         .schedule();
+        // })););
         
         /* Co-Driver Buttons */
 
@@ -208,55 +224,8 @@ public class RobotContainer {
             AutoBuilder.followPath(path).schedule();
         }));
 
-        SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-            Pose2d currentPose = s_Swerve.getEstimatedPose();
 
-            // The rotation component in these poses represents the direction of travel
-            //Pose2d startPos = new Pose2d(currentPose.getTranslation(), currentPose.getRotation());
-            Pose2d startPos = currentPose;
-            Pose2d endPos = new Pose2d((new Translation2d(2.0, 2.0)), new Rotation2d(Units.degreesToRadians(90)));
-            //Pose2d endPos = 
-
-            AutoBuilder.pathfindToPose(endPos, null);
-            List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
-            PathPlannerPath path = new PathPlannerPath(
-                    bezierPoints,
-                    new PathConstraints(4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
-                    new GoalEndState(0.0, endPos.getRotation()));
-
-            // Prevent this path from being flipped on the red alliance, since the given
-            // positions are already correct
-            path.preventFlipping = true;
-
-            AutoBuilder.followPath(path).schedule();
-        }));
-
-        SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-            Pose2d currentPose = s_Swerve.getEstimatedPose();
-
-            // The rotation component in these poses represents the direction of travel
-            //Pose2d startPos = new Pose2d(currentPose.getTranslation(), currentPose.getRotation());
-            Pose2d startPos = currentPose;
-            Pose2d endPos = new Pose2d((new Translation2d(2.0, 2.0)), new Rotation2d(Units.degreesToRadians(90)));
-            //Pose2d endPos = 
-
-            AutoBuilder.pathfindToPose(endPos, null);
-            List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
-            PathPlannerPath path = new PathPlannerPath(
-                    bezierPoints,
-                    new PathConstraints(
-                            4.0, 4.0,
-                            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-                    new GoalEndState(0.0, endPos.getRotation()));
-
-            // Prevent this path from being flipped on the red alliance, since the given
-            // positions are already correct
-            path.preventFlipping = true;
-
-            AutoBuilder.pathfindToPoseFlipped(path, new PathConstraints(
-            4.0, 4.0,
-                            Units.degreesToRadians(360), Units.degreesToRadians(540)),).schedule();
-        }));
+        
 
         
         
