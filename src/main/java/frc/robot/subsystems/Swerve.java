@@ -31,6 +31,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -45,40 +46,53 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Swerve extends SubsystemBase {
-    public SwerveDriveOdometry swerveOdometry;
+public class Swerve extends SubsystemBase 
+{
 
+    // Creates a poseEstimator object, which stores and estimates the robot's field relative pose
     public SwerveDrivePoseEstimator poseEstimator;
+    
+    // Creates photonPoseEstimator objects for both cameras, which estimate the camera's pose relative to the field
     public PhotonPoseEstimator photonPoseEstimatorFront;
     public PhotonPoseEstimator photonPoseEstimatorBack;
     
+    // Creates objects representing both cameras
     public PhotonCamera frontCam = new PhotonCamera(Constants.Vision.frontCamName);
     public PhotonCamera backCam = new PhotonCamera(Constants.Vision.backCamName);
 
+    // Creates an object representing the field in 2d
     private final Field2d m_field = new Field2d();
 
     // set to true initially so that if we manually set the angle and dont use any auto functions it will still shoot
-    private boolean alignedToTargert = true;
+    private boolean alignedToTarget = true;
 
     public boolean usingVisionAlignment = true;
 
     final AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); 
     // see docs for how to do this better and set origin for red alliance
 
+    // Creates config object for the path follower commands
     private final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
             new PIDConstants(Constants.AutoConstants.kPXController),
             new PIDConstants(Constants.AutoConstants.kPYController), Constants.AutoConstants.kMaxSpeedMetersPerSecond,
             Constants.Swerve.trackWidth, new ReplanningConfig());
 
+    /** List of swerve module motors */
     public SwerveModule[] mSwerveMods;
+    
+    /** Robot's gyro [X Right, Y Forward, Z Up] */
     public Pigeon2 gyro;
+    
+    /** Robot's field relative position */
     public Pose2d pose;
 
     public Swerve() {
+        // Define and initialise gyro, as well as applying config
         gyro = new Pigeon2(Constants.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
 
+        // Define and initialise list of swerve modules
         mSwerveMods = new SwerveModule[] {
                 new SwerveModule(0, Constants.Swerve.Mod0.constants),
                 new SwerveModule(1, Constants.Swerve.Mod1.constants),
@@ -86,7 +100,7 @@ public class Swerve extends SubsystemBase {
                 new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
 
-        swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
+        // Define and initialise pose estimator
         poseEstimator = new SwerveDrivePoseEstimator(
                 Constants.Swerve.swerveKinematics,
                 getGyroYaw(),
@@ -95,15 +109,17 @@ public class Swerve extends SubsystemBase {
                 Constants.Vision.STATE_STANDARD_DEVIATIONS,
                 Constants.Vision.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
 
+        // Define and initialise PhotonPoseEstimators
         photonPoseEstimatorFront = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCam,
                 Constants.Vision.frontCamToRobot);
         photonPoseEstimatorBack = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, backCam,
                 Constants.Vision.backCamToRobot);
-
         photonPoseEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         photonPoseEstimatorBack.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-        AutoBuilder.configureHolonomic(
+        // Configures the AutoBuilder
+        AutoBuilder.configureHolonomic
+        (
                 this::getEstimatedPose, // Robot pose supplier
                 this::resetEstimatedOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
@@ -133,65 +149,93 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
-     * TODO docs
+     * 364 Magic
      * 
      * @param translation
      * @param rotation
      * @param fieldRelative
      * @param isOpenLoop
+     * @author 364
      */
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop,
-            double brakeVal) {
-        if (!usingVisionAlignment) {
-            SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                    fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                            translation.getX(),
-                            translation.getY(),
-                            rotation,
-                            getHeading())
-                            : new ChassisSpeeds(
-                                    translation.getX(),
-                                    translation.getY(),
-                                    rotation));
-            SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
-                    Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
-            for (SwerveModule mod : mSwerveMods) {
+    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) 
+    {
+        if (!usingVisionAlignment) 
+        {
+            SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates
+            (
+                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds
+                (
+                    translation.getX(),
+                    translation.getY(),
+                    rotation,
+                    getHeading()
+                )
+                : new ChassisSpeeds
+                (
+                    translation.getX(),
+                    translation.getY(),
+                    rotation
+                )
+            );
+            
+            SwerveDriveKinematics.desaturateWheelSpeeds
+                (swerveModuleStates, Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
+            
+            for (SwerveModule mod : mSwerveMods) 
+            {
                 mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
             }
         }
     }
 
-    public void visionDrive(Translation2d translation, double rotation, boolean isOpenLoop, double brakeVal) {
-        SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                ChassisSpeeds.fromFieldRelativeSpeeds(
-                        translation.getX(),
-                        translation.getY(),
-                        rotation,
-                        getHeading()));
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
-                Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
-        for (SwerveModule mod : mSwerveMods) {
+    /**
+     * 364 Magic
+     * 
+     * @param translation
+     * @param rotation
+     * @param isOpenLoop
+     * @param brakeVal
+     * @author 364
+     */
+    public void visionDrive(Translation2d translation, double rotation, boolean isOpenLoop, double brakeVal) 
+    {
+        SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates
+        (
+            ChassisSpeeds.fromFieldRelativeSpeeds
+            (
+                translation.getX(),
+                translation.getY(),
+                rotation,
+                getHeading()
+            )
+        );
+        SwerveDriveKinematics.desaturateWheelSpeeds
+            (swerveModuleStates, Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
+        for (SwerveModule mod : mSwerveMods) 
+        {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
     }
 
     /**
-     * TODO docs
+     * 364 Magic
      * 
      * @param xSpeed
      * @param ySpeed
      * @param rot
      * @param fieldRelative
+     * @author 364
      */
-    public void ChoreoDrive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-        var swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                        xSpeed, ySpeed, rot, gyro.getRotation2d())
-                        : new ChassisSpeeds(xSpeed, ySpeed, rot));
-        SwerveDriveKinematics.desaturateWheelSpeeds(
-                swerveModuleStates, Constants.Swerve.maxSpeed);
-
-        for (SwerveModule mod : mSwerveMods) {
+    public void ChoreoDrive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) 
+    {
+        var swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates
+        (
+            fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
+            : new ChassisSpeeds(xSpeed, ySpeed, rot)
+        );
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+        for (SwerveModule mod : mSwerveMods) 
+        {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], true);
         }
     }
@@ -226,38 +270,24 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return swerveOdometry.getPoseMeters();
+        return poseEstimator.getEstimatedPosition();
     }
 
     public boolean getWithinRequiredHeading() {
-        return alignedToTargert;
+        return alignedToTarget;
     }
     // Used for shooter sequence when checking if we are within rolerence to an angle. This does not align the robot.
     // Record whether at the right heading, so that other commands can check
     public void setWithinRequiredHeading(boolean aligned) {
-        this.alignedToTargert = aligned;
-    }
-
-    /**
-     * TODO docs
-     * 
-     * @param pose
-     */
-    public void setPose(Pose2d pose) {
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
+        this.alignedToTarget = aligned;
     }
 
     public Rotation2d getHeading() {
         return getPose().getRotation();
     }
 
-    public void setHeading(Rotation2d heading) {
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(),
-                new Pose2d(getPose().getTranslation(), heading));
-    }
-
     public void zeroHeading() {
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(),
+        poseEstimator.resetPosition(getGyroYaw(), getModulePositions(),
                 new Pose2d(getPose().getTranslation(), new Rotation2d()));
     }
 
@@ -285,16 +315,6 @@ public class Swerve extends SubsystemBase {
         double R = (endCoord2 - startCoord2) / (endCoord1 - startCoord1);
         double y = startCoord2 + (valueCoord1 * R) + R;
         return (y);
-    }
-
-    /**
-     * Use reset estimated odometry
-     * 
-     * @deprecated
-     * use resetEstimatedOdometry() instead
-     */
-    public void resetOdometry(Pose2d pose) {
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
     public void resetEstimatedOdometry(Pose2d pose) {
@@ -399,8 +419,6 @@ public class Swerve extends SubsystemBase {
      * TODO docs
      */
     public void periodic() {
-
-        swerveOdometry.update(getGyroYaw(), getModulePositions());
 
         m_field.setRobotPose(getEstimatedPose());
 
