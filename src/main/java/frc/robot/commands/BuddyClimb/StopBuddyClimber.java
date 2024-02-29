@@ -4,6 +4,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Climber.BuddyClimbPosition;
 
+/**
+ * Stop buddy climber command
+ * @author 5985
+ */
 public class StopBuddyClimber extends Command {
     private Climber s_Climber;
 
@@ -13,6 +17,7 @@ public class StopBuddyClimber extends Command {
 
     @Override
     public void execute() {
+        // Sets the buddyClimberPosition to the variable STOPPED
         s_Climber.setBuddyClimb(BuddyClimbPosition.STOPPED);
     }
 

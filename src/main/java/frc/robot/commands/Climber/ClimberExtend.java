@@ -5,7 +5,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
 /**
- * climber extension command
+ * Climber extension command
  * @author 5985
  */
 public class ClimberExtend extends Command{
@@ -31,7 +31,9 @@ public class ClimberExtend extends Command{
         if (s_Climber.getPosition() < (360 * (Constants.Climber.maxExtensionSpoolRotations * Constants.Climber.motorToSpoolGearRatio))) // Climber spool rotation * climber motor gear ratio, converted to degrees
         { 
             s_Climber.setSpeed(1);
-        } else {
+        } 
+        else 
+        {
             s_Climber.setSpeed(0);
             isFinished = true;
         }

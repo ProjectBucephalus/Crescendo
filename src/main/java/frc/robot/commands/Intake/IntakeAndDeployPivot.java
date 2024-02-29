@@ -9,7 +9,7 @@ import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Pivot.PivotPosition;
 
 /**
- * intake deploy command
+ * Intake deploy command
  * @author 5985
  */
 public class IntakeAndDeployPivot extends Command {

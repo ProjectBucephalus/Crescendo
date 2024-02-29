@@ -4,9 +4,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
 
+/**
+ * Move to intake position command
+ * @author 5985
+ */
 public class MovePivotToPosition extends Command {
     public boolean isFinished = false;
-
     private Pivot s_Pivot;
     private PivotPosition position;
 

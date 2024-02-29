@@ -6,7 +6,8 @@ import frc.robot.subsystems.Climber;
 public class BuddyClimberDeploy extends Command{
 
    /**
-     * !!EMPTY COMMAND!!
+     * TODO empty command
+     * 
      */
     public BuddyClimberDeploy()
     {}

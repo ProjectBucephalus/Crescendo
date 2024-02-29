@@ -5,7 +5,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeStatus;
 
 /**
- * intake split command
+ * Intake stop command
  * @author 5985
  */
 public class IntakeStop extends Command {
@@ -21,6 +21,7 @@ public class IntakeStop extends Command {
     public void execute() {
         s_Intake.setIntakeStatus(IntakeStatus.STOPPED);
     }
+
 
     @Override
     public boolean isFinished() {

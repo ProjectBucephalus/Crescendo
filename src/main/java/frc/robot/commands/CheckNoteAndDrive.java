@@ -21,6 +21,9 @@ import frc.robot.subsystems.NoteVision;
 
 //this is only for the center 5 notes 
 //we can make a different command if we want to generate a trajectory to the note on the fly 
+/**
+ * @author 5985
+ */
 public class CheckNoteAndDrive extends Command {
     /** Creates a new checkNoteAndDrive. */
     private Swerve s_Swerve;
@@ -33,6 +36,7 @@ public class CheckNoteAndDrive extends Command {
 
     private static final Map<Integer, Pose2d> NOTE_POSITIONS = new HashMap<Integer, Pose2d>() {
         {
+            // Finds the postition of the notes on field
             put(1, FieldConstants.NOTE_C_1);
             put(2, FieldConstants.NOTE_C_2);
             put(3, FieldConstants.NOTE_C_3);
@@ -43,6 +47,7 @@ public class CheckNoteAndDrive extends Command {
 
     private static final Map<Integer, PathPlannerPath> ROBOT_PATHS = new HashMap<Integer, PathPlannerPath>() {
         {
+            // Creates runs for the robot so it can move on the field
             put(1, PathPlannerPath.fromPathFile("Test"));
             put(2, PathPlannerPath.fromPathFile("Test"));
             put(3, PathPlannerPath.fromPathFile("Test"));

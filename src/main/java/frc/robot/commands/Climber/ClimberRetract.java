@@ -5,7 +5,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
 /**
- * climber retraction command
+ * Climber retraction command
  * @author 5985
  */
 public class ClimberRetract extends Command {
@@ -25,6 +25,7 @@ public class ClimberRetract extends Command {
 
     public void execute() 
     {
+        // Retracts until below minimum climber position
         if (s_Climber.getPosition() > Constants.Climber.climberDownPos) 
         {
             s_Climber.setSpeed(-1);
