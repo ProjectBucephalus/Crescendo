@@ -7,7 +7,7 @@ import frc.robot.subsystems.Intake.IndexerPosition;
 import frc.robot.subsystems.Intake.IntakeStatus;
 
 /**
- * intake suck command
+ * Intake suck command
  * @author 5985
  */
 public class IntakeSuck extends Command {

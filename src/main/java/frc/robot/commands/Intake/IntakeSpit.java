@@ -5,7 +5,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeStatus;
 
 /**
- * intake split command
+ * Intake spit command
  * @author 5985
  */
 public class IntakeSpit extends Command {

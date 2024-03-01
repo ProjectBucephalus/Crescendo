@@ -69,9 +69,11 @@ public class Pivot extends SubsystemBase {
     };
 
     public Pivot() {
+        // Prints values to Smart Dashboard
         SmartDashboard.putNumber("deployPosition", -95);
         SmartDashboard.putNumber("ampPosition", -60);
 
+        // Initialises motor controller objects and configures them
         mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
         mLeftPivot.getConfigurator().apply(CTREConfigs.leftPivotMotorFXConfig);
         mLeftPivot.getConfigurator().setPosition(0);
@@ -80,6 +82,7 @@ public class Pivot extends SubsystemBase {
         mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
         mRightPivot.getConfigurator().setPosition(0);
 
+        // Creates list containing all the limit switch flags
         limitSwitchFlags = new boolean[] {
                 leftDeployPressed,
                 leftStowPressed,
@@ -87,6 +90,7 @@ public class Pivot extends SubsystemBase {
                 rightStowPressed
         };
 
+        // Creates list containing all the limit switch objects
         limitSwitches = new DigitalInput[] {
                 leftDeploySwitch,
                 leftStowSwitch,
@@ -194,6 +198,10 @@ public class Pivot extends SubsystemBase {
         return mRightPivot.getPosition().getValueAsDouble();
     }
 
+    /** 
+     * Checks if the angle is within the acceptable tolerance
+     * @return Boolean, true if current angle is acceptable
+     */
     public boolean angleWithinTolerance() {
         return Math.abs(desiredAngle - getPivotPos()) < Constants.Intake.ANGLE_TOLERANCE_DEGREE;
     }
@@ -227,7 +235,9 @@ public class Pivot extends SubsystemBase {
     // file
 
     @Override
-    public void periodic() {
+    public void periodic() 
+    {
+        // Prints a bunch of values to the Smart Dashboard
         SmartDashboard.putNumber( "ReportedPivotPosition", getPivotPos());
         SmartDashboard.putNumber( "PivotError",            desiredAngle - getPivotPos());
         SmartDashboard.putBoolean("leftDeploySwitch",      leftDeploySwitch.get());
@@ -235,18 +245,23 @@ public class Pivot extends SubsystemBase {
         SmartDashboard.putBoolean("rightDeploySwitch",     rightDeploySwitch.get());
         SmartDashboard.putBoolean("rightStowSwitch",       rightStowSwitch.get());
 
-        if (leftDeploySwitch.get() || rightDeploySwitch.get()) {
+        // If either outer limit switch is pressed, calibrates current motor positions as their deployed positions
+        if (leftDeploySwitch.get() || rightDeploySwitch.get()) 
+        {
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
 
-        if (leftStowSwitch.get() || rightStowSwitch.get()) {
+        // If either inner limit switch is pressed, calibrates current motor positions as their stowed positions
+        if (leftStowSwitch.get() || rightStowSwitch.get()) 
+        {
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
         }
 
 
-        // TODO Comments to explain the purpose and process used here
+        // Not being used currently.
+        // TODO Evaluate calibration process
         // if (leftDeploySwitch.get()) {
         //     leftDeployPressed = true;
         // }

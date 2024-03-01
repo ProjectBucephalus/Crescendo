@@ -5,7 +5,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterState;
 
 /**
- * shooter rev command
+ * Shooter rev command
  * @author 5985
  */
 public class ShooterRev extends Command {
@@ -16,6 +16,7 @@ public class ShooterRev extends Command {
         this.s_Shooter = s_Shooter;
     }
 
+    // Sets shooterState to the variable RUNNING
     public void execute() {
         s_Shooter.setShooterState(ShooterState.RUNNING);
     }
