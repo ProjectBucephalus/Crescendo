@@ -8,7 +8,7 @@ public class UnlockClimber extends Command {
 
     public boolean isFinished;
     /**
-     * !!EMPTY COMMAND!!
+     * TODO Empty Command
      */
     
     public UnlockClimber()

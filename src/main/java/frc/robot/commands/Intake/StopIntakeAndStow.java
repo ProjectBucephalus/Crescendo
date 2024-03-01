@@ -7,7 +7,7 @@ import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
 
 /**
- * intake stow command
+ * Intake stow command
  * @author 5985
  */
 public class StopIntakeAndStow extends Command {

@@ -8,7 +8,7 @@ public class BuddyClimberRetract extends Command{
     public boolean isFinished;
 
     /**
-     * !!EMPTY COMMAND!!
+     * TODO empty command
      */
     public BuddyClimberRetract()
     {}
