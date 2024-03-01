@@ -60,7 +60,7 @@ public class Swerve extends SubsystemBase {
     // set to true initially so that if we manually set the angle and dont use any auto functions it will still shoot
     private boolean alignedToTargert = true;
 
-    public boolean usingVisionAlignment = true;
+    public boolean usingVisionAlignment = false;
 
     final AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); 
     // see docs for how to do this better and set origin for red alliance

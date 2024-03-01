@@ -34,9 +34,9 @@ public class IntakeAndDeployPivot extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        if (xbox != null) {
-            xbox.setRumble(RumbleType.kBothRumble, 0);
-        }
+        // if (xbox != null) {
+        //     xbox.setRumble(RumbleType.kBothRumble, 0);
+        // }
 
     }
 
@@ -45,11 +45,11 @@ public class IntakeAndDeployPivot extends Command {
     public void execute() {
         s_Pivot.setPosition(PivotPosition.DEPLOYED);
         s_Intake.setIntakeStatus(IntakeStatus.IN_WITH_BEAM_BREAK);
-        if (!s_Intake.getBeamBreak() && xbox != null) {
-            xbox.setRumble(RumbleType.kBothRumble, 0.3);
-        } else if (xbox != null) {
-            xbox.setRumble(RumbleType.kBothRumble, 0);
-        }
+        // if (!s_Intake.getBeamBreak() && xbox != null) {
+        //     xbox.setRumble(RumbleType.kBothRumble, 0.3);
+        // } else if (xbox != null) {
+        //     xbox.setRumble(RumbleType.kBothRumble, 0);
+        // }
         // s_Intake.setFlapPosition(FlapPosition.CLOSED);
     }
 

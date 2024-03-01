@@ -189,8 +189,9 @@ public class Pivot extends SubsystemBase {
     public double getPivotPos()
     {
         // motor.getPosition() returns rotations: convert to degrees and return average.
-        return ((mRightPivot.getPosition().getValueAsDouble() * 360)
-                + (mLeftPivot.getPosition().getValueAsDouble() * 360)) / 2;
+        // return ((mRightPivot.getPosition().getValueAsDouble() * 360)
+        //         + (mLeftPivot.getPosition().getValueAsDouble() * 360)) / 2;
+        return mRightPivot.getPosition().getValueAsDouble();
     }
 
     public boolean angleWithinTolerance() {
