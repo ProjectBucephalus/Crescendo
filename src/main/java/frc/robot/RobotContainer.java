@@ -49,6 +49,7 @@ import frc.robot.commands.Shooter.ShooterIdle;
 import frc.robot.commands.Shooter.ShooterRev;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.NoteVision;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
 import frc.robot.subsystems.Shooter;
@@ -93,8 +94,12 @@ public class RobotContainer {
     private final Pivot s_Pivot = new Pivot();
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
+    private final NoteVision s_noteVision = new NoteVision();
 
     private Limelight m_lime = new Limelight("limelight");
+
+    private final SendableChooser<Command> m_chosenAuto = new SendableChooser<>();
+    private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();
 
     /* Autonomous */
     private final SendableChooser<Command> autoChooser;
@@ -185,10 +190,10 @@ public class RobotContainer {
         
         /* Co-Driver Buttons */
 
-        coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake));
+        coDriver               .leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake));
         //coDriver.leftBumper()  .whileTrue(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.IN))).onFalse(getAutonomousCommand());
-        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake));
-        coDriver.rightBumper() .whileTrue(new IntakeSpit(s_Intake));
+        coDriver               .rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake));
+        coDriver               .rightBumper() .whileTrue(new IntakeSpit(s_Intake));
 
         coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
         coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
@@ -224,14 +229,29 @@ public class RobotContainer {
             AutoBuilder.followPath(path).schedule();
         }));
 
-
-        
-
-        
-        
-        
-
     }
+    // private void configureAutos() {
+    //     // List of start locations
+    //     m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
+    //     m_startLocation.addOption("Center", FieldConstants.ROBOT_START_2);
+    //     m_startLocation.addOption("Amp Side", FieldConstants.ROBOT_START_3);
+    //     SmartDashboard.putData("Start Location", m_startLocation);
+
+    //     String autoName = "C1-C2";
+    //     autoChooser.setDefaultOption(autoName, new GetMultiNoteGeneric(autoName, m_driveTrain, m_noteVision, m_shooter, m_intake));
+
+    //     autoName = "C2-C1";
+    //     autoChooser.addOption(autoName, new GetMultiNoteGeneric(autoName, m_driveTrain, m_noteVision, m_shooter, m_intake));
+
+    //     List<String> autonamesDropdown = Arrays.asList("S1-S2", "S1-W-S2", "S1-W-W-S2", "S3-S2", "S1-S2-S3", "S3-S2-S1", "S2-S1", "S1-C1", "C4", "C5", "S3-C4-C5" );
+
+    //     for (String autoNm : autonamesDropdown) {
+    //         m_chosenAuto.addOption(autoNm, new GetMultiNoteGeneric(autoNm, m_driveTrain, m_noteVision, m_shooter, m_intake));
+    //     }
+        
+    //     m_chosenAuto.addOption("Test Auto", new NoteAuto(m_driveTrain));
+    //     SmartDashboard.putData("Chosen Auto", m_chosenAuto);
+    // }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
