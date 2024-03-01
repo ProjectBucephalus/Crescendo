@@ -2,7 +2,8 @@ package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Intake.FlapPosition;
+import frc.robot.subsystems.Intake.IndexerPosition;
+import frc.robot.subsystems.Intake.IndexerPosition;
 import frc.robot.subsystems.Intake.IntakeStatus;
 
 /**
@@ -26,7 +27,6 @@ public class IntakeSuck extends Command {
     public void execute() {
 
         s_Intake.setIntakeStatus(IntakeStatus.IN);
-        s_Intake.setFlapPosition(FlapPosition.OPEN);
 
     }
 

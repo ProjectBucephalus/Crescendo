@@ -45,7 +45,7 @@ public class MovePivot extends Command {
         
         if ( Math.abs(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband)) >= 0.1 )
         {
-            s_Pivot.moveArmToAngle(s_Pivot.getArmPos() + (Constants.Intake.pivotManualGain * MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband)));
+            s_Pivot.setArmMotorSpeeds(Constants.Intake.pivotManualGain * MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
             manualActive = true;
         }
         else if (manualActive)

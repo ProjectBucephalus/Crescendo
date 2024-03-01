@@ -6,29 +6,26 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants.Swerve;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.StabiliserPos;
 
 /**
  * PointToAngle Command
  * @author Alec
- * @author 5985
  */
-public class PointToAngle extends Command {
-    private frc.robot.subsystems.Swerve s_Swerve;
-    private double targetRotation;
-
-    public PointToAngle(frc.robot.subsystems.Swerve s_Swerve, double targetRotation)
+public class StabiliserBar extends Command {
+    Intake sIntake;
+    StabiliserPos pos;
+    public StabiliserBar(Intake sIntake, StabiliserPos pos)
     {
-        this.s_Swerve = s_Swerve;
-        addRequirements(s_Swerve);
-
-        this.targetRotation = targetRotation;
+        this.sIntake =sIntake;
+        this.pos = pos;
     }
 
     @Override
     public void execute() 
     {
-        new Rotation2d(targetRotation);
+        sIntake.setStabliserPos(pos);
     }
 
     @Override

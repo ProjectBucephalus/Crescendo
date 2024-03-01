@@ -102,6 +102,12 @@ public final class CTREConfigs {
         rightPivotMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
         rightPivotMotorFXConfig.Slot0.kD = Constants.Intake.pivotKI;
         rightPivotMotorFXConfig.Slot0.kI = Constants.Intake.pivotKD;
+
+        rightPivotMotorFXConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = Constants.Intake.openLoopRamp;
+        rightPivotMotorFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = Constants.Intake.openLoopRamp;
+        
+        leftPivotMotorFXConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = Constants.Intake.openLoopRamp;
+        leftPivotMotorFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = Constants.Intake.openLoopRamp;
         
 
         

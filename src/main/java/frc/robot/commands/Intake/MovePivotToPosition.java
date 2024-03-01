@@ -12,6 +12,7 @@ public class MovePivotToPosition extends Command {
     public boolean isFinished = false;
     private Pivot s_Pivot;
     private PivotPosition position;
+    
 
     public MovePivotToPosition(Pivot s_Pivot, PivotPosition position) {
         this.s_Pivot = s_Pivot;

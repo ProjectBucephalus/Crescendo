@@ -23,7 +23,7 @@ public class DeployBuddyClimber extends Command {
         s_Climber.setBuddyClimb(BuddyClimbPosition.RUNNING);
     }
 
-    public boolean isFinsied() {
+    public boolean isFinished() {
         return true;
     }
 

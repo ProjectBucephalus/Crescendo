@@ -5,6 +5,19 @@
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/On-the-fly path": "Command"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
@@ -12,6 +25,14 @@
       "PathPlanner": {
         "HotReload": {
           "open": true
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "Auto Chooser": {
+          "string[]##v_/SmartDashboard/Auto Chooser/options": {
+            "open": true
+          }
         },
         "open": true
       },
@@ -24,5 +45,23 @@
   },
   "NetworkTables Info": {
     "visible": true
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 326
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    }
   }
 }

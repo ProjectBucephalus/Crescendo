@@ -30,20 +30,18 @@ public final class Constants {
     public static boolean useVision = true;
 
     public static final double stickDeadband = 0.3;
-    
+
     /* Shooter Constants */
     public static final double shooterAngleOffset = 15;
     public static final double horizontalShooterAngle = 20;
     public static final double mFlapMaxCurrent = 40;
 
-    /* Image Tracking Constants */
-    public static final double cameraPitchOffset = 26;
-    public static final double speakerTagHeight = 144;
-    public static final double cameraHeightOverGround = 23;
-    public static final double targetHeightOverTag = 40;
-
     /* CAN IDs */
     public static final int pigeonID = 53;
+
+    public static final double[] distancesFromSpeaker = { 1.5,    2, 2.5,  3, 3.5,  4, 5, 6 }; // distances in meters
+    // TODO Values to calibrate: 3.5
+    public static final double[] anglesOfPivot =        {  37, 29.5,  28, 23,  22, 20, 20,20 }; // shooter angles in degrees
 
     public static final class Vision {
         /* Names */
@@ -53,19 +51,18 @@ public final class Constants {
 
         /* Offsets */
         public static final Transform3d backCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                0, 0, 0.187,
-                new Rotation3d(
-                        0, Units.degreesToRadians(31), Units.degreesToRadians(0)));
+                //0.18, -0.21, 0.455,
+                -0.18, -0.21, 0.455,
+                new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(180)));
+
         public static final Transform3d frontCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                
-                0.225, -0.125, 0.6,
-                new Rotation3d(
-                        0,Units.degreesToRadians(31), Units.degreesToRadians(180)));
+
+                0, 0, 0,
+                new Rotation3d(0,Units.degreesToRadians(20), Units.degreesToRadians(0)));
 
         public static final Transform3d noteCamToRobot = new Transform3d(
-            0, 0, 0.525,
-                new Rotation3d(
-                        0, Units.degreesToRadians(45), Units.degreesToRadians(45)));
+                0, 0, 0.525,
+                new Rotation3d(0, Units.degreesToRadians(45), Units.degreesToRadians(45)));
 
         public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
         public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
@@ -74,14 +71,22 @@ public final class Constants {
         public static final double DISTANCE_WEIGHT = 7;
         public static final int TAG_PRESENCE_WEIGHT = 10;
 
+        public static final double kLimelightFocalHeight = .775; //FIXME
+        public static final double kHighTargetHeight = (41.96875 * 2.54)/100;
+        public static final double kLimelightMountingAngle = 0;
+        public static final double kLimelightErrorValue = 32387943713712937127893.32324;
+        public static final double kMidTargetHeight = .864;
+
+        public static final double kHorizontalMetresToPosition = 3.75;
+
         public static final boolean simulationSupport = false;
 
         public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),
-                        // if these numbers are less than one, multiplying will do bad things
-                        1, // x
-                        1, // y
-                        1 * Math.PI // theta
-                );
+                // if these numbers are less than one, multiplying will do bad things
+                1, // x
+                1, // y
+                1 * Math.PI // theta
+        );
 
         /**
          * Standard deviations of the vision measurements. Increase these numbers to
@@ -89,7 +94,7 @@ public final class Constants {
          * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
          * radians.
          */
-        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),.1, .1, 1);
+        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), .1, .1, 1);
 
     }
 
@@ -102,7 +107,9 @@ public final class Constants {
         public static final int rightInSwitchID = 2;
         public static final int rightOutSwitchID = 1;
 
-        public static final int mFlapID = 14;
+        public static final int mIndexerID = 35;
+
+        public static final int mStabilserID = 14;
 
         public static final int mIntakeID = 12;
 
@@ -112,14 +119,15 @@ public final class Constants {
         public static final double planetaryRingTeeth = 72;
         public static final double planetarySunTeeth = 18;
         public static final double planetaryPlanetTeeth = 18;
-        public static final double planetaryRatio = (planetaryRingTeeth/planetarySunTeeth) + 1;
+        public static final double planetaryRatio = (planetaryRingTeeth / planetarySunTeeth) + 1;
         public static final double gear1In = 20;
         public static final double gear1Out = 76;
         public static final double pivotGearIn = 10;
         public static final double pivotGearOut = 40;
-        public static final double pivotGearRatio = planetaryRatio * (gear1Out/gear1In) * (pivotGearOut/pivotGearIn);
+        public static final double pivotGearRatio = planetaryRatio * (gear1Out / gear1In)
+                * (pivotGearOut / pivotGearIn);
 
-
+        public static final double ANGLE_TOLERANCE_DEGREE = 10;
 
         /** Degrees - Difference between pivot mechanism 0 and real-world 0 */
         public static final double pivotOffsetForZero = -37;
@@ -128,7 +136,7 @@ public final class Constants {
         /** Degrees - Real-world angle for stowed position */
         public static final double pivotStowPos = -40;
         /** Degrees - Real-world angle for shooting to Amp */
-        public static final double pivotAmpPos = pivotStowPos;
+        public static final double pivotAmpPos = 47;
         /** Degrees - Real-world angle for shooting to Stage Trap */
         public static final double pivotTrapPos = pivotStowPos;
         /** Degrees - Real-world angle for shooter to clear frame */
@@ -136,10 +144,9 @@ public final class Constants {
         /** Degrees - Real-world angle for default shooter position */
         public static final double pivotDefaultShootPos = 0;
 
-
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
         public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final InvertedValue rightPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue rightPivotMotorInvert = InvertedValue.Clockwise_Positive;
 
         public static double angleKP;
         public static double angleKI;
@@ -150,9 +157,11 @@ public final class Constants {
         public static final boolean pivotEnableCurrentLimit = false;
         public static final double pivotManualGain = 0.25;
 
-        public static double pivotKP = 50;
-        public static double pivotKI = 30;
-        public static double pivotKD = 0;
+        public static final double openLoopRamp = 0.4;
+
+        public static double pivotKP = 100;
+        public static double pivotKI = 20;
+        public static double pivotKD = 2;
 
     }
 
@@ -167,6 +176,8 @@ public final class Constants {
 
         public static final double horizontalShooterAngle = 20;
         public static final double mFlapMaxCurrent = 40;
+
+        public static final double openLoopRamp = 0;
     }
 
     public static final class Climber {
@@ -177,7 +188,7 @@ public final class Constants {
         public static final double maxExtensionSpoolRotations = 3.2;
         public static final double motorToSpoolGearRatio = 100;
         public static final double climberDownPos = 0;
-        
+
     }
 
     public static final class Swerve {
@@ -193,6 +204,9 @@ public final class Constants {
         public static final double trackWidth = 0.48;
         public static final double wheelBase = 0.48;
         public static final double wheelCircumference = chosenModule.wheelCircumference;
+
+        /* Used by other commands to check if the auto alignment is sucessfull */
+        public static final double ANGLE_TOLERANCE_DEGREES = 10;
 
         /*
          * Swerve Kinematics
@@ -241,7 +255,7 @@ public final class Constants {
         public static final double angleKD = chosenModule.angleKD;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.1;
+        public static final double driveKP = 1.8;
         public static final double driveKI = 0.03;
         public static final double driveKD = 0.04;
         public static final double driveKF = 0.0;

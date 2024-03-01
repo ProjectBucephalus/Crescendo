@@ -29,8 +29,8 @@ public class ClimberRetract extends Command {
         if (s_Climber.getPosition() > Constants.Climber.climberDownPos) 
         {
             s_Climber.setSpeed(-1);
-            System.out.println(s_Climber.getPosition());
-            System.out.println("Running");
+            // System.out.println(s_Climber.getPosition());
+            // System.out.println("Running");
         } 
         else 
         {

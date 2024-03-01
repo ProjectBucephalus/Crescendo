@@ -1,30 +1,15 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.SwerveModule;
-import frc.lib.math.Conversions;
 import frc.robot.CTREConfigs;
-
-import javax.print.attribute.standard.Destination;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Pivot extends SubsystemBase {
     // motors
@@ -35,7 +20,8 @@ public class Pivot extends SubsystemBase {
 
     public TalonFX mBuddyClimb = new TalonFX(Constants.Intake.mBuddyClimbID);
 
-    //public ArmFeedforward feedforward = new ArmFeedforward(0.9, 0.45, 0.82, 0); // not implimented yet, and may not be calibrated yet
+    // public ArmFeedforward feedforward = new ArmFeedforward(0.9, 0.45, 0.82, 0);
+    // // not implimented yet, and may not be calibrated yet
 
     // limit switches
     public DigitalInput leftDeploySwitch = new DigitalInput(Constants.Intake.leftOutSwitchID);
@@ -47,8 +33,6 @@ public class Pivot extends SubsystemBase {
     double intakeDeployLimitPos;
 
     double desiredAngle = 0;
-
-
 
     // Limit Switches for backlash
     boolean limitSwitchFlags[];
@@ -68,7 +52,6 @@ public class Pivot extends SubsystemBase {
      */
     boolean isCalibrated = false;
 
-
     public enum PivotPosition {
         STOWED,
         DEPLOYED,
@@ -86,9 +69,11 @@ public class Pivot extends SubsystemBase {
     };
 
     public Pivot() {
+        // Prints values to Smart Dashboard
         SmartDashboard.putNumber("deployPosition", -95);
         SmartDashboard.putNumber("ampPosition", -60);
 
+        // Initialises motor controller objects and configures them
         mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
         mLeftPivot.getConfigurator().apply(CTREConfigs.leftPivotMotorFXConfig);
         mLeftPivot.getConfigurator().setPosition(0);
@@ -97,9 +82,7 @@ public class Pivot extends SubsystemBase {
         mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
         mRightPivot.getConfigurator().setPosition(0);
 
-
-        mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true));
-
+        // Creates list containing all the limit switch flags
         limitSwitchFlags = new boolean[] {
                 leftDeployPressed,
                 leftStowPressed,
@@ -107,6 +90,7 @@ public class Pivot extends SubsystemBase {
                 rightStowPressed
         };
 
+        // Creates list containing all the limit switch objects
         limitSwitches = new DigitalInput[] {
                 leftDeploySwitch,
                 leftStowSwitch,
@@ -114,10 +98,17 @@ public class Pivot extends SubsystemBase {
                 rightStowSwitch
         };
 
-
     }
 
+    /**
+     * Sets the position of the pivot based on an enum
+     * 
+     * @param position The desired position, as an enum
+     * @author 5985
+     * @author Aidan
+     */
     public void setPosition(PivotPosition position) {
+        SmartDashboard.putString("Pivot Position Status", position.name());
         switch (position) {
             case STOWED:
                 moveArmToAngle(Constants.Intake.pivotStowPos); // TODO Ensure this is checking limit switches
@@ -132,7 +123,7 @@ public class Pivot extends SubsystemBase {
                 moveArmToAngle(Constants.Intake.pivotTrapPos);
                 break;
             case SPEAKER:
-                moveArmToAngle(desiredAngle); 
+                moveArmToAngle(desiredAngle);
                 break;
             case AMP_MANUAL:
                 moveArmToAngle(0);
@@ -146,45 +137,40 @@ public class Pivot extends SubsystemBase {
         }
     }
 
-
-    /** moves the arm to a set position, in degrees
-     * TODO Something is seriously wrong with the limit switch use and MUST be resolved
-     * TODO Angle calculations and conversion need to be recalibrated to use reasonable real-world angles
-     * @param armAngle Degrees - The angle to move the arm to in degrees. Negative numbers to intake pos. Positive to stow pos.
-
     /**
-     * moves the arm to a set position, In degrees
+     * moves the arm to a set position, in degrees
+     * TODO Something is seriously wrong with the limit switch use and MUST be
+     * resolved
+     * TODO Angle calculations and conversion need to be recalibrated to use
+     * reasonable real-world angles
      * 
-     * @param armAngle The angle to move the arm to in degrees. Negative numbers to
-     *                 intake pos. Positive to stow pos.
-     *                 Uses limits
-
+     * @param inputAngle The real-world angle to move the arm to in degrees. 
+     *                   Intake Posative, 
+     *                   Using limits switches.
      */
-    public void moveArmToAngle(double armAngle) {
-        desiredAngle = armAngle;
+    public void moveArmToAngle(double inputAngle) {
+        desiredAngle = inputAngle;
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
-        double realWorldAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
-        mLeftPivot.setControl
-        (
-            anglePosition.withPosition((realWorldAngle/360))
+        // double motorAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
+        mLeftPivot.setControl(
+                anglePosition.withPosition((inputAngle / 360))
 
-                .withLimitReverseMotion(leftDeploySwitch.get())
-                .withLimitReverseMotion(rightDeploySwitch.get())
+                        .withLimitReverseMotion(leftStowSwitch.get())
+                        .withLimitReverseMotion(rightStowSwitch.get())
 
-                .withLimitForwardMotion(leftStowSwitch.get())
-
-                .withLimitForwardMotion(rightStowSwitch.get())
+                        .withLimitForwardMotion(leftDeploySwitch.get())
+                        .withLimitForwardMotion(rightDeploySwitch.get())
         );
+        mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true)); 
+        // CTREConfigs already has Left and Right use opposite directions
+
     }
 
+    // .withLimitForwardMotion(rightDeploySwitch.get())
+    // .withLimitForwardMotion(leftDeploySwitch.get())
 
-        // .withLimitForwardMotion(rightDeploySwitch.get())
-        // .withLimitForwardMotion(leftDeploySwitch.get())
-
-        // .withLimitReverseMotion(rightStowSwitch.get())
-        // .withLimitReverseMotion(leftStowSwitch.get())
-        ;
-    
+    // .withLimitReverseMotion(rightStowSwitch.get())
+    // .withLimitReverseMotion(leftStowSwitch.get())
 
     /**
      * 
@@ -192,7 +178,7 @@ public class Pivot extends SubsystemBase {
      *              method is called with the correct enum.
      * 
      *              for example, if we want to align to the speaker, we would call
-     *              this metod and pass in the desired angle and call setPosition()
+     *              this method and pass in the desired angle and call setPosition()
      *              with
      *              PivotPosition.SPEAKER.
      */
@@ -200,105 +186,136 @@ public class Pivot extends SubsystemBase {
         desiredAngle = angle;
     }
 
-    public double getArmPos() {
-        return ((mRightPivot.getPosition().getValueAsDouble() * 360)
-                + (mLeftPivot.getPosition().getValueAsDouble() * 360)) / 2;
+    /**
+     * Gets the pivot position as the average of the two motors
+     * @return Pivot position degrees
+     */
+    public double getPivotPos()
+    {
+        // motor.getPosition() returns rotations: convert to degrees and return average.
+        // return ((mRightPivot.getPosition().getValueAsDouble() * 360)
+        //         + (mLeftPivot.getPosition().getValueAsDouble() * 360)) / 2;
+        return mRightPivot.getPosition().getValueAsDouble();
+    }
+
+    /** 
+     * Checks if the angle is within the acceptable tolerance
+     * @return Boolean, true if current angle is acceptable
+     */
+    public boolean angleWithinTolerance() {
+        return Math.abs(desiredAngle - getPivotPos()) < Constants.Intake.ANGLE_TOLERANCE_DEGREE;
     }
 
     /**
      * Manually sets the movement of the intake position, respecting limitswitches. 
-     * Resets desiredAngle so manual position is held. 
-     * @param speed Double speed of motor [-1..1], posative to Deploy (Confirm this)
+     * Resets desiredAngle so manual position is held.
+     * 
+     * @param speed Double speed of motor [-1..1], negative to Deploy
      * @author 5985
      * @author Alec
      */
     public void setArmMotorSpeeds(double speed) 
     {
-        if 
-          ( 
-            (speed < 0 && !leftDeploySwitch.get() && !rightDeploySwitch.get())
+        if ((speed < 0 && !leftDeploySwitch.get() && !rightDeploySwitch.get())
               ||
-            (speed > 0 && !leftStowSwitch  .get() && !rightStowSwitch  .get())
-          )
+            (speed > 0 && !leftStowSwitch.get() && !rightStowSwitch.get())) 
         {
             mLeftPivot.set(speed);
-            //mRightPivot.set(speed); // mRightPivot is set as reversed follower of mLeftPivot
-            desiredAngle = getArmPos();
-        }
-        else
+            // mRightPivot.set(speed); // mRightPivot is set as reversed follower of mLeftPivot
+            desiredAngle = getPivotPos();
+        } 
+        else 
         {
             mLeftPivot.set(0);
-            //mRightPivot.set(0); // mRightPivot is set as reversed follower of mLeftPivot
+            // mRightPivot.set(0); // mRightPivot is set as reversed follower of mLeftPivot
         }
     }
-    
-    // commented out for safety's sake. same with reference to it in IntakeStowed file
+
+    // commented out for safety's sake. same with reference to it in IntakeStowed
+    // file
 
     @Override
-    public void periodic() {
-        SmartDashboard.putNumber("ReportedPivotPosition", getArmPos());
-        SmartDashboard.putNumber("PivotError", desiredAngle-getArmPos());
-        SmartDashboard.putBoolean("leftDeploySwitch", leftDeploySwitch.get());
-        SmartDashboard.putBoolean("leftStowSwitch", leftStowSwitch.get());
-        SmartDashboard.putBoolean("rightDeploySwitch", rightDeploySwitch.get());
-        SmartDashboard.putBoolean("rightStowSwitch", rightStowSwitch.get());
+    public void periodic() 
+    {
+        // Prints a bunch of values to the Smart Dashboard
+        SmartDashboard.putNumber( "ReportedPivotPosition", getPivotPos());
+        SmartDashboard.putNumber( "PivotError",            desiredAngle - getPivotPos());
+        SmartDashboard.putBoolean("leftDeploySwitch",      leftDeploySwitch.get());
+        SmartDashboard.putBoolean("leftStowSwitch",        leftStowSwitch.get());
+        SmartDashboard.putBoolean("rightDeploySwitch",     rightDeploySwitch.get());
+        SmartDashboard.putBoolean("rightStowSwitch",       rightStowSwitch.get());
 
-        SmartDashboard.putNumber("PivotError", desiredAngle - getArmPos());
-        SmartDashboard.putBoolean("isCalibrated", isCalibrated);
-
-        if (leftDeploySwitch.get()) {
-            leftDeployPressed = true;
-        }
-        if (rightDeploySwitch.get()) {
-            rightDeployPressed = true;
-        }
-
-        if (leftDeployPressed == true && !leftDeploySwitch.get()) {
-            leftDeployPressed = false;
+        // If either outer limit switch is pressed, calibrates current motor positions as their deployed positions
+        if (leftDeploySwitch.get() || rightDeploySwitch.get()) 
+        {
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
-        }
-        if (rightDeployPressed == true && !rightDeploySwitch.get()) {
-            rightDeployPressed = false;
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
 
-        if (leftStowSwitch.get() && !isCalibrated) {
-            isCalibrated = true;
+        // If either inner limit switch is pressed, calibrates current motor positions as their stowed positions
+        if (leftStowSwitch.get() || rightStowSwitch.get()) 
+        {
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
-        }
-
-        if (rightStowSwitch.get() && !isCalibrated) {
-            isCalibrated = true;
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
         }
 
-        if (leftDeploySwitch.get() && !isCalibrated) {
-            isCalibrated = true;
-            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
-        }
 
-        if (rightDeploySwitch.get() && !isCalibrated) {
-            isCalibrated = true;
-            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
-        }
+        // Not being used currently.
+        // TODO Evaluate calibration process
+        // if (leftDeploySwitch.get()) {
+        //     leftDeployPressed = true;
+        // }
+        // if (rightDeploySwitch.get()) {
+        //     rightDeployPressed = true;
+        // }
 
+        // if (leftDeployPressed && !leftDeploySwitch.get()) {
+        //     leftDeployPressed = false;
+        //     mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
+        // }
+        // if (rightDeployPressed && !rightDeploySwitch.get()) {
+        //     rightDeployPressed = false;
+        //     mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
+        // }
+
+        // if (leftStowSwitch.get() && !isCalibrated) {
+        //     isCalibrated = true;
+        //     mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
+        // }
+
+        // if (rightStowSwitch.get() && !isCalibrated) {
+        //     isCalibrated = true;
+        //     mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
+        // }
+
+        // if (leftDeploySwitch.get() && !isCalibrated) {
+        //     isCalibrated = true;
+        //     mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
+        // }
+
+        // if (rightDeploySwitch.get() && !isCalibrated) {
+        //     isCalibrated = true;
+        //     mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
+        // }
+
+        // TODO
+        /*
         for (int i = 0; i < limitSwitches.length; i++) {
-            boolean isPressed = limitSwitches[i].get();
-            if (isPressed) {
+            if (limitSwitches[i].get()) {
 
             } else {
 
             }
         }
         for (int i = 0; i < limitSwitchFlags.length; i++) {
-            boolean isPressed = limitSwitchFlags[i];
-            if (isPressed) {
+            if (limitSwitchFlags[i]) {
 
             } else {
 
             }
 
         }
+        */
     }
 
 }
