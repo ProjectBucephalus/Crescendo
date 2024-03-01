@@ -189,13 +189,13 @@ public class Swerve extends SubsystemBase
     }
 
     /**
-     * 364 Magic
+     * Swerve magic
      * 
      * @param translation
      * @param rotation
      * @param isOpenLoop
      * @param brakeVal
-     * @author 364
+     * @author 5985
      */
     public void visionDrive(Translation2d translation, double rotation, boolean isOpenLoop, double brakeVal) 
     {
@@ -218,13 +218,13 @@ public class Swerve extends SubsystemBase
     }
 
     /**
-     * 364 Magic
+     * Swerve magic
      * 
      * @param xSpeed
      * @param ySpeed
      * @param rot
      * @param fieldRelative
-     * @author 364
+     * @author 5985
      */
     public void ChoreoDrive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) 
     {
@@ -243,64 +243,119 @@ public class Swerve extends SubsystemBase
     /**
      * Used by SwerveControllerCommand in Auto
      * 
-     * @param desiredStates
+     * @param desiredStates A list of the states for each module to be set to
+     * @author 364
      */
-    public void setModuleStates(SwerveModuleState[] desiredStates) {
+    public void setModuleStates(SwerveModuleState[] desiredStates) 
+    {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
 
-        for (SwerveModule mod : mSwerveMods) {
+        for (SwerveModule mod : mSwerveMods) 
+        {
             mod.setDesiredState(desiredStates[mod.moduleNumber], false);
         }
     }
 
-    public SwerveModuleState[] getModuleStates() {
+    /**
+     * Gets all of the swerve module states
+     * @return A list containing the state of each swerve module
+     * @author 364
+     */
+    public SwerveModuleState[] getModuleStates() 
+    {
         SwerveModuleState[] states = new SwerveModuleState[4];
-        for (SwerveModule mod : mSwerveMods) {
+        for (SwerveModule mod : mSwerveMods) 
+        {
             states[mod.moduleNumber] = mod.getState();
         }
         return states;
     }
 
-    public SwerveModulePosition[] getModulePositions() {
+    /**
+     * Gets all of the swerve module positions
+     * @return A list containing the position of each swerve module
+     * @author 364
+     */
+    public SwerveModulePosition[] getModulePositions() 
+    {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
-        for (SwerveModule mod : mSwerveMods) {
+        for (SwerveModule mod : mSwerveMods) 
+        {
             positions[mod.moduleNumber] = mod.getPosition();
         }
         return positions;
     }
 
-    public Pose2d getPose() {
+    /**
+     * Gets the current 2d pose of the robot
+     * @return The 2d pose of the robot
+     * @author 364
+     */
+    public Pose2d getPose() 
+    {
         return poseEstimator.getEstimatedPosition();
     }
 
-    public boolean getWithinRequiredHeading() {
+    public boolean getWithinRequiredHeading() 
+    {
         return alignedToTarget;
     }
     // Used for shooter sequence when checking if we are within rolerence to an angle. This does not align the robot.
     // Record whether at the right heading, so that other commands can check
-    public void setWithinRequiredHeading(boolean aligned) {
+    public void setWithinRequiredHeading(boolean aligned) 
+    {
         this.alignedToTarget = aligned;
     }
 
-    public Rotation2d getHeading() {
+    /**
+     * Gets the current rotation of the robot
+     * @return The current 2d rotation of the robot
+     * @author 364
+     */
+    public Rotation2d getHeading() 
+    {
         return getPose().getRotation();
     }
 
-    public void zeroHeading() {
+    /**
+     * Resets the heading so that the current heading is zero
+     * @author 364
+     */
+    public void zeroHeading() 
+    {
         poseEstimator.resetPosition(getGyroYaw(), getModulePositions(),
                 new Pose2d(getPose().getTranslation(), new Rotation2d()));
     }
 
-    public Rotation2d getGyroYaw() {
+    /**
+     * Gets the current yaw angle reported by the gyro
+     * @return The gyro's yaw angle, as a rotation2d object
+     * @author 364
+     */
+    public Rotation2d getGyroYaw() 
+    {
         return Rotation2d.fromDegrees(gyro.getYaw().getValue());
     }
 
-    public Rotation2d getGyro() {
+    /**
+     * Gets the current overall field relative rotation reported by the gyro
+     * @return The field relative 2D rotation, from the gyro
+     * @author 5985
+     * @author Aidan
+     */
+    public Rotation2d getGyro() 
+    {
         return gyro.getRotation2d();
     }
 
-    public void resetModulesToAbsolute() {
-        for (SwerveModule mod : mSwerveMods) {
+    /**
+     * Rotates all swerve modules back to their absolute zero positions
+     * @author 364
+     */
+    public void resetModulesToAbsolute() 
+    {
+        for (SwerveModule mod : mSwerveMods) 
+        {
             mod.resetToAbsolute();
         }
     }
@@ -317,11 +372,25 @@ public class Swerve extends SubsystemBase
         return (y);
     }
 
-    public void resetEstimatedOdometry(Pose2d pose) {
+    /**
+     * Sets the estimated position to a specified value
+     * @param pose The value to set the estimated position to
+     * @author 5985
+     * @author Aidan
+     */
+    public void resetEstimatedOdometry(Pose2d pose) 
+    {
         poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
-    public Pose2d getEstimatedPose() {
+    /**
+     * Returns the current esimated position
+     * @return The current estimated 2d position
+     * @author 5985
+     * @author Aidan
+     */
+    public Pose2d getEstimatedPose() 
+    {
         return poseEstimator.getEstimatedPosition();
     }
 
@@ -332,18 +401,27 @@ public class Swerve extends SubsystemBase
      * @param newVal Set to true to ignore rotational inputs and use roation from
      *               driveRobotRelative(). Set to false to revert.
      */
-    public void setVisionAlignmentBool(boolean newVal) {
+    public void setVisionAlignmentBool(boolean newVal) 
+    {
         usingVisionAlignment = newVal;
     }
 
-    public ChassisSpeeds getRobotRelativeSpeeds() {
+    /**
+     * Gets the current speed of the robot
+     * @return A ChassisSpeeds object representing the current speed of the robot chassis
+     * @author Unknown
+     */
+    public ChassisSpeeds getRobotRelativeSpeeds() 
+    {
         return Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
     /**
-     * TODO docs
+     * Drives the robot at a set speed
      * 
-     * @param robotRelativeSpeeds
+     * @param robotRelativeSpeeds A ChassisSpeeds object representing the desired speed of the robot chassis
+     * @author 5985
+     * @author Unknown
      */
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
@@ -352,6 +430,12 @@ public class Swerve extends SubsystemBase
         setModuleStates(targetStates);
     }
 
+    /**
+     * Uses the number of targets found and the closest of those targets to calculate the confidence of the estimation
+     * @param estimation The estimated robot pose to find the confidence of
+     * @return A matrix representing the confidence of it's pose estimation
+     * @author Unknown online repository
+     */
     private Matrix<N3, N1> confidenceCalculator(EstimatedRobotPose estimation) {
         double smallestDistance = Double.POSITIVE_INFINITY;
         for (var target : estimation.targetsUsed) {
@@ -361,8 +445,8 @@ public class Swerve extends SubsystemBase
                 smallestDistance = distance;
         }
         double poseAmbiguityFactor = estimation.targetsUsed.size() != 1
-                ? 1
-                : Math.max(
+                ? 1 : Math.max
+                (
                         1,
                         (estimation.targetsUsed.get(0).getPoseAmbiguity()
                                 + Constants.Vision.POSE_AMBIGUITY_SHIFTER)
