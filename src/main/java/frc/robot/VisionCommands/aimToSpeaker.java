@@ -92,8 +92,7 @@ public class aimToSpeaker extends Command {
 
     public Rotation2d calculateRequiredHeading() {
         var pose = s_Swerve.getEstimatedPose();
-        // TODO Change with alliances
-        return PhotonUtils.getYawToPose(pose, new Pose2d(FieldConstants.SPEAKER, new Rotation2d(0, 0)));
+        return PhotonUtils.getYawToPose(pose, FieldConstants.flipPose(new Pose2d(FieldConstants.SPEAKER, new Rotation2d(0, 0))));
     }
 
     /**
