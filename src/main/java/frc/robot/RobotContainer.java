@@ -94,7 +94,7 @@ public class RobotContainer {
     private final Pivot s_Pivot = new Pivot();
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
-    private final NoteVision s_noteVision = new NoteVision();
+    //private final NoteVision s_NoteVision = new NoteVision();
 
     private final Limelight m_lime = new Limelight("limelight");
 
@@ -160,7 +160,7 @@ public class RobotContainer {
         //driver.back()          .onTrue(new InstantCommand(s_Swerve::lockWheels, s_Swerve)); // TODO 
         driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
-        driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, m_lime, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+        //driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
 
         /* Pass in codriver for controller to receive rumble */
         driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));

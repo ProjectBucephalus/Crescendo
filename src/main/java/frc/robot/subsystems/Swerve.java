@@ -50,6 +50,7 @@ public class Swerve extends SubsystemBase
 {
 
     // Creates a poseEstimator object, which stores and estimates the robot's field relative pose
+    public SwerveDriveOdometry swerveOdometry;
     public SwerveDrivePoseEstimator poseEstimator;
     
     // Creates photonPoseEstimator objects for both cameras, which estimate the camera's pose relative to the field
@@ -101,6 +102,7 @@ public class Swerve extends SubsystemBase
         };
 
         // Define and initialise pose estimator
+        swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
         poseEstimator = new SwerveDrivePoseEstimator(
                 Constants.Swerve.swerveKinematics,
                 getGyroYaw(),
@@ -551,9 +553,6 @@ public class Swerve extends SubsystemBase
         // Do this in either robot or subsystem init
         SmartDashboard.putData("Field", m_field);
 
-        SmartDashboard.
-
-        
     }
 
 }

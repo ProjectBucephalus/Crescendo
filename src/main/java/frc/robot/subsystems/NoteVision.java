@@ -92,6 +92,31 @@ public class NoteVision extends SubsystemBase {
         }
         return positions;
     }
+    public List<Double> getNotesYaw() {
+        List<Double> positions = new ArrayList<Double>();
+
+        if (!m_noteCamera.isConnected()) {
+            SmartDashboard.putString("Note Camera: ", "Disconnected");
+            return positions;
+        } else {
+            SmartDashboard.putString("Note Camera: ", "Connected");
+        }
+
+        var results = m_noteCamera.getLatestResult();
+        List<PhotonTrackedTarget> targets = results.getTargets();
+
+        for (PhotonTrackedTarget tgt : targets) {
+            // this calc assumes pitch angle is positive UP, so flip the camera's pitch
+            // note that PV target angles are in degrees
+            double d = Math.abs(m_robotToNoteCam.getZ() /
+                    Math.tan(-m_robotToNoteCam.getRotation().getY() + Math.toRadians(tgt.getPitch())));
+            double yaw = (tgt.getYaw());
+            positions.add(yaw);
+        }
+        return positions;
+    }
+
+    
 
     // get visible NOTEs, in field-centric positions
     public List<Translation2d> getNotes(Pose2d robotPose) {
