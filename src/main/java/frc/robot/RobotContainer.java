@@ -96,7 +96,7 @@ public class RobotContainer {
     private final Shooter s_Shooter = new Shooter();
     private final NoteVision s_noteVision = new NoteVision();
 
-    private Limelight m_lime = new Limelight("limelight");
+    private final Limelight m_lime = new Limelight("limelight");
 
     private final SendableChooser<Command> m_chosenAuto = new SendableChooser<>();
     private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();

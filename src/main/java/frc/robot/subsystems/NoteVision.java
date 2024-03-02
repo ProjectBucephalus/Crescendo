@@ -53,7 +53,7 @@ public class NoteVision extends SubsystemBase {
     private VisionSystemSim m_visionSim;
 
     public NoteVision() {
-        if (Constants.Vision.simulationSupport) {
+        if (true /* Constants.USING_SIM */) {
             // initialize a simulated camera. Must be done after creating the tag layout
             initializeSimulation();
         }
@@ -71,7 +71,10 @@ public class NoteVision extends SubsystemBase {
         List<Translation2d> positions = new ArrayList<Translation2d>();
 
         if (!m_noteCamera.isConnected()) {
+            SmartDashboard.putString("Note Camera: ", "Disconnected");
             return positions;
+        } else {
+            SmartDashboard.putString("Note Camera: ", "Connected");
         }
 
         var results = m_noteCamera.getLatestResult();
@@ -154,11 +157,11 @@ public class NoteVision extends SubsystemBase {
     public void periodic() {
         // DEBUG
         List<Translation2d> notes = getNotes();
-        SmartDashboard.putNumber("noteVision/nFound", notes.size());
+        SmartDashboard.putNumber("noteVision nFound", notes.size());
         if (notes.size() > 0) {
             Translation2d p = notes.get(0);
-            SmartDashboard.putNumber("noteVision/x", p.getX());
-            SmartDashboard.putNumber("noteVision/y", p.getY());
+            SmartDashboard.putNumber("noteVision x", p.getX());
+            SmartDashboard.putNumber("noteVision y", p.getY());
         }
     }
 
