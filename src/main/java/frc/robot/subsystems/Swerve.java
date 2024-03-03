@@ -63,7 +63,6 @@ public class Swerve extends SubsystemBase {
     public boolean usingVisionAlignment = false;
 
     final AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); 
-    // see docs for how to do this better and set origin for red alliance
 
     private final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
             new PIDConstants(Constants.AutoConstants.kPXController),
