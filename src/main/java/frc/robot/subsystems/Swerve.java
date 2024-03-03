@@ -87,6 +87,9 @@ public class Swerve extends SubsystemBase
     /** Robot's field relative position */
     public Pose2d pose;
 
+    private Optional<EstimatedRobotPose> visionEstimatedPoseFront, visionEstimatedPoseBack;
+    private EstimatedRobotPose estimatedRobotPose;
+
     public Swerve() {
         // Define and initialise gyro, as well as applying config
         gyro = new Pigeon2(Constants.pigeonID);
@@ -298,12 +301,20 @@ public class Swerve extends SubsystemBase
         return swerveOdometry.getPoseMeters();
     }
 
+    /**
+     * Gets whether the robot is aligned to the target
+     * @return Whether the robot is aligned to the target. True or false.
+     */
     public boolean getWithinRequiredHeading() 
     {
         return alignedToTarget;
     }
-    // Used for shooter sequence when checking if we are within rolerence to an angle. This does not align the robot.
-    // Record whether at the right heading, so that other commands can check
+   
+    /**
+     * Sets whether the robot is aligned to the target
+     * @param aligned The value for it to be set to. True or false
+     * 
+     */
     public void setWithinRequiredHeading(boolean aligned) 
     {
         this.alignedToTarget = aligned;
@@ -363,12 +374,12 @@ public class Swerve extends SubsystemBase
     }
 
     /**
-     * TODO docs
+     * 
      */
     public static double map(double valueCoord1,
             double startCoord1, double endCoord1,
-            double startCoord2, double endCoord2) {
-
+            double startCoord2, double endCoord2) 
+    {
         double R = (endCoord2 - startCoord2) / (endCoord1 - startCoord1);
         double y = startCoord2 + (valueCoord1 * R) + R;
         return (y);
@@ -438,37 +449,61 @@ public class Swerve extends SubsystemBase
      * @return A matrix representing the confidence of it's pose estimation
      * @author Unknown online repository
      */
-    private Matrix<N3, N1> confidenceCalculator(EstimatedRobotPose estimation) {
+    private Matrix<N3, N1> confidenceCalculator(EstimatedRobotPose estimation) 
+    {
         double smallestDistance = Double.POSITIVE_INFINITY;
-        for (var target : estimation.targetsUsed) {
+        
+        for (var target : estimation.targetsUsed) 
+        {
             var t3d = target.getBestCameraToTarget();
             var distance = Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
             if (distance < smallestDistance)
                 smallestDistance = distance;
         }
+
         double poseAmbiguityFactor = estimation.targetsUsed.size() != 1
                 ? 1 : Math.max
                 (
-                        1,
-                        (estimation.targetsUsed.get(0).getPoseAmbiguity()
-                                + Constants.Vision.POSE_AMBIGUITY_SHIFTER)
-                                * Constants.Vision.POSE_AMBIGUITY_MULTIPLIER);
-        double confidenceMultiplier = Math.max(
-                1,
-                (Math.max(
-                        1,
-                        Math.max(0, smallestDistance - Constants.Vision.NOISY_DISTANCE_METERS)
-                                * Constants.Vision.DISTANCE_WEIGHT)
-                        * poseAmbiguityFactor)
-                        / (1
-                                + ((estimation.targetsUsed.size() - 1) * Constants.Vision.TAG_PRESENCE_WEIGHT)));
+                    1,
+                    (estimation.targetsUsed.get(0).getPoseAmbiguity() + Constants.Vision.POSE_AMBIGUITY_SHIFTER)
+                        * Constants.Vision.POSE_AMBIGUITY_MULTIPLIER
+                );
+        
+                double confidenceMultiplier = Math.max
+                (
+                    1,
+
+                    (
+                        Math.max
+                        (
+                            1,
+
+                            Math.max
+                            (
+                                0, 
+
+                                smallestDistance - Constants.Vision.NOISY_DISTANCE_METERS
+                            ) * Constants.Vision.DISTANCE_WEIGHT
+
+                        ) * poseAmbiguityFactor
+
+                    ) / (1 + ((estimation.targetsUsed.size() - 1) * Constants.Vision.TAG_PRESENCE_WEIGHT))
+                );
 
         return Constants.Vision.VISION_MEASUREMENT_STANDARD_DEVIATIONS.times(confidenceMultiplier);
     }
 
-    public Command makePathFollowingCommand(PathPlannerPath path) {
-
-        return new FollowPathHolonomic(path, this::getEstimatedPose, this::getRobotRelativeSpeeds, this::driveRobotRelative,
+    /**
+     * Takes a path from pathplanner, and turns it into a command to follow that path
+     * 
+     * @param path The pathplanner path to follow
+     * @return The command for following that path
+     * @author Unknown
+     */
+    public Command makePathFollowingCommand(PathPlannerPath path) 
+    {
+        return new FollowPathHolonomic
+        (path, this::getEstimatedPose, this::getRobotRelativeSpeeds, this::driveRobotRelative,
                 PATH_FOLLOWER_CONFIG,
                 () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red
@@ -481,10 +516,14 @@ public class Swerve extends SubsystemBase
                         return alliance.get() == DriverStation.Alliance.Red;
                     }
                     return false;
-                }, this);
+                }, this
+        );
     }
 
-    // lock wheels in x position to resist pushing
+    /**
+     * Lock wheels in x position to resist pushing
+     * @author 5985
+     */
     public void lockWheels() {
     //     double lockRadians = Math.toRadians(45);
     //     for (SwerveModule mod : mSwerveMods) {
@@ -497,8 +536,7 @@ public class Swerve extends SubsystemBase
     //     m_swerveModules[3].set(0.0, lockRadians);
     }
 
-    private Optional<EstimatedRobotPose> visionEstimatedPoseFront, visionEstimatedPoseBack;
-    private EstimatedRobotPose estimatedRobotPose;
+    
 
     @Override
     /**
