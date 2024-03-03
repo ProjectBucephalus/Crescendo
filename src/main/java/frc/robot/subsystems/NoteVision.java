@@ -43,6 +43,9 @@ public class NoteVision extends SubsystemBase {
     private static final String CAMERA_NAME = "NoteCamera";
     private final PhotonCamera m_noteCamera = new PhotonCamera(CAMERA_NAME);
 
+    private final Field2d m_notes = new Field2d();
+    
+
     // relative position of the camera on the robot to the robot center
     // pitch is the Y angle, and it is positive down
     private final Transform3d m_robotToNoteCam = new Transform3d(
@@ -60,6 +63,8 @@ public class NoteVision extends SubsystemBase {
 
         // set the driver mode to false
         m_noteCamera.setDriverMode(false);
+
+        SmartDashboard.putData("Notes Poses", m_notes);
     }
 
     public void updateSimulation(Pose2d pose) {
@@ -187,7 +192,12 @@ public class NoteVision extends SubsystemBase {
             Translation2d p = notes.get(0);
             SmartDashboard.putNumber("noteVision x", p.getX());
             SmartDashboard.putNumber("noteVision y", p.getY());
+            
+            // for plotting on advantage scope
+            m_notes.setRobotPose(notes.get(0).getX(), notes.get(0).getY(), Rotation2d.fromDegrees(0));
+            
         }
+         
     }
 
     private void initializeSimulation() {
