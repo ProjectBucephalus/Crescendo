@@ -22,7 +22,8 @@ import frc.robot.Constants;
  * @author 5985
  * @author Aidan
  */
-public class Vision extends SubsystemBase {
+public class Vision extends SubsystemBase 
+{
     // The camera objects
     public PhotonCamera leftCam;
     public PhotonCamera rightCam;
@@ -61,9 +62,7 @@ public class Vision extends SubsystemBase {
             {
                 SmartDashboard.putBoolean("Using Vision", false);
             }
-
         }
-
     }
 
     /**
@@ -101,7 +100,9 @@ public class Vision extends SubsystemBase {
             SmartDashboard.putBoolean("Using Vision", true);
 
             return true;
-        } else {
+        } 
+        else 
+        {
             return false;
         }
     }
