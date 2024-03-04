@@ -145,7 +145,7 @@ public class Pivot extends SubsystemBase {
      * reasonable real-world angles
      * 
      * @param inputAngle The real-world angle to move the arm to in degrees. 
-     *                   Intake Posative, 
+     *                   Intake Postive, 
      *                   Using limits switches.
      */
     public void moveArmToAngle(double inputAngle) {

@@ -1,8 +1,5 @@
 package frc.robot;
 
-import javax.swing.plaf.BorderUIResource.MatteBorderUIResource;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -14,16 +11,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
-import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
 
 public final class Constants {
 
@@ -47,9 +41,11 @@ public final class Constants {
         /* Names */
         public static final String frontCamName = "FrontCam";
         public static final String backCamName = "BackCam";
-        public static final String noteCameraName = "NoteCam";
+        public static final String noteCameraName = "NoteCamera";
 
         /* Offsets */
+        // relative position of the camera on the robot to the robot center
+        // pitch is the Y angle, and it is positive down
         public static final Transform3d backCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
                 //0.18, -0.21, 0.455,
                 -0.18, -0.21, 0.455,
@@ -58,11 +54,12 @@ public final class Constants {
         public static final Transform3d frontCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
 
                 0, 0, 0,
-                new Rotation3d(0,Units.degreesToRadians(20), Units.degreesToRadians(0)));
+                new Rotation3d(0,Units.degreesToRadians(-20), Units.degreesToRadians(0)));
 
         public static final Transform3d noteCamToRobot = new Transform3d(
-                0, 0, 0.525,
-                new Rotation3d(0, Units.degreesToRadians(45), Units.degreesToRadians(45)));
+                0, 0, 0,
+                new Rotation3d(0, Units.degreesToRadians(32.5), Units.degreesToRadians(180)));
+
 
         public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
         public static final double POSE_AMBIGUITY_SHIFTER = 0.2;

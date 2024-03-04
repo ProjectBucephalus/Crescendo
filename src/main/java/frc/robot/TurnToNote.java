@@ -8,19 +8,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.Utilities.Limelight;
 import frc.robot.subsystems.NoteVision;
 import frc.robot.subsystems.Swerve;
 
 public class TurnToNote extends Command {
     private final Swerve s_Swerve;
     private NoteVision s_NoteVision;
-    private double tx;
-    private final double tuningVal = .29;
 
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
@@ -68,25 +63,27 @@ public class TurnToNote extends Command {
                                     s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getY(), new Rotation2d()))
                                     .getDegrees());
 
-                                    /* Remove the roate by 180 when the camera gets moved */
+            /* Remove the roate by 180 when the camera gets moved */
             turningVal = -Math.copySign(Math.pow(calculateRequiredHeading(new Pose2d(
                     s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getX(),
                     s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getY(),
-                    new Rotation2d())).rotateBy(Rotation2d.fromDegrees(180)).getRadians() * SmartDashboard.getNumber("Radians Times", 0),SmartDashboard.getNumber("To power", 0)), calculateRequiredHeading(new Pose2d(
-                    s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getX(),
-                    s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getY(),
-                    new Rotation2d())).rotateBy(Rotation2d.fromDegrees(180)).getRadians() * 70);
+                    new Rotation2d())).rotateBy(Rotation2d.fromDegrees(180)).getRadians()
+                    * SmartDashboard.getNumber("Radians Times", 0), SmartDashboard.getNumber("To power", 0)),
+                    calculateRequiredHeading(new Pose2d(
+                            s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getX(),
+                            s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getY(),
+                            new Rotation2d())).rotateBy(Rotation2d.fromDegrees(180)).getRadians() * 70);
 
             // tuningVal;
         } catch (Exception e) {
-            /* Sometimes we may loose the note */
+            /* Sometimes we may loose the note don't really want the code to crash :) */
         }
-    
-    // s_Swerve.driveRobotRelative(translation, -turningVal, true, brakeVal);
 
-    /* We set this to true so that we only use this vision drive method to drive. */
-    s_Swerve.setVisionAlignmentBool(true);
-    s_Swerve.visionDrive(translation,turningVal,true,brakeVal);
+        // s_Swerve.driveRobotRelative(translation, -turningVal, true, brakeVal);
+
+        /* We set this to true so that we only use this vision drive method to drive. */
+        s_Swerve.setVisionAlignmentBool(true);
+        s_Swerve.visionDrive(translation, turningVal, true, brakeVal);
 
     }
 

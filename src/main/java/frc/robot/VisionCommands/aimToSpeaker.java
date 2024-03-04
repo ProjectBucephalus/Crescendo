@@ -1,39 +1,38 @@
 package frc.robot.VisionCommands;
 
-import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 
 import org.photonvision.PhotonUtils;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Pivot.PivotPosition;
+import frc.robot.subsystems.Shooter.ShooterState;
 
 public class aimToSpeaker extends Command {
 
     public Swerve s_Swerve;
     public Pivot s_Pivot;
-    private AprilTagFieldLayout fieldLayout;
+    public Shooter s_Shooter;
 
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier brakeSup;
 
     public aimToSpeaker(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup,
-            DoubleSupplier brakeSup, Pivot s_Pivot) {
+            DoubleSupplier brakeSup, Pivot s_Pivot, Shooter s_Shooter) {
         this.s_Swerve = s_Swerve;
         this.s_Pivot = s_Pivot;
+        this.s_Shooter = s_Shooter;
         SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
 
         this.translationSup = translationSup;
@@ -61,6 +60,7 @@ public class aimToSpeaker extends Command {
 
         /* Used for figuring out how we should shoot */
         s_Pivot.setPosition(PivotPosition.SPEAKER);
+        s_Shooter.setShooterState(ShooterState.RUNNING);
 
         // the -4 is purely for backlash adjustment
         s_Pivot.setDesiredPostion(calculatedRequiredShooterAngle());
@@ -81,6 +81,7 @@ public class aimToSpeaker extends Command {
     public void end(boolean end) {
         s_Swerve.setVisionAlignmentBool(false);
         s_Pivot.setPosition(PivotPosition.STOWED);
+        s_Shooter.setShooterState(ShooterState.IDLE);
 
         /*
          * Make sure we do this so that other manual alignment functions work. It should

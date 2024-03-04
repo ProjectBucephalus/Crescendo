@@ -18,9 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,22 +33,16 @@ public class NoteVision extends SubsystemBase {
     private static final double ALLOWED_POSITION_ERROR = .2;
 
     // farthest away we can reliably see a NOTE
-    public static final double MAX_VISIBLE_DISTANCE = 2.0;  // meters
-    
-    // closest we can see a NOTE. Obscured by intake, or below field of view
-    public static final double MIN_VISIBLE_DISTANCE = 0.2;  // meters
+    public static final double MAX_VISIBLE_DISTANCE = 2.0; // meters
 
-    private static final String CAMERA_NAME = "NoteCamera";
+    // closest we can see a NOTE. Obscured by intake, or below field of view
+    public static final double MIN_VISIBLE_DISTANCE = 0.2; // meters
+
+    private static final String CAMERA_NAME = Constants.Vision.noteCameraName;
     private final PhotonCamera m_noteCamera = new PhotonCamera(CAMERA_NAME);
 
+    // For Plotting
     private final Field2d m_notes = new Field2d();
-    
-
-    // relative position of the camera on the robot to the robot center
-    // pitch is the Y angle, and it is positive down
-    private final Transform3d m_robotToNoteCam = new Transform3d(
-            new Translation3d(Units.inchesToMeters(0), 0, Units.inchesToMeters(22.0)),
-            new Rotation3d(0.0, Math.toRadians(15.0), Math.toRadians(180.0)));
 
     // Simulation support
     private VisionSystemSim m_visionSim;
@@ -88,8 +80,8 @@ public class NoteVision extends SubsystemBase {
         for (PhotonTrackedTarget tgt : targets) {
             // this calc assumes pitch angle is positive UP, so flip the camera's pitch
             // note that PV target angles are in degrees
-            double d = Math.abs(m_robotToNoteCam.getZ() /
-                    Math.tan(-m_robotToNoteCam.getRotation().getY() + Math.toRadians(tgt.getPitch())));
+            double d = Math.abs(Constants.Vision.noteCamToRobot.getZ() /
+                    Math.tan(-Constants.Vision.noteCamToRobot.getRotation().getY() + Math.toRadians(tgt.getPitch())));
             double yaw = Math.toRadians(tgt.getYaw());
             double x = d * Math.cos(yaw);
             double y = d * Math.sin(yaw);
@@ -97,6 +89,12 @@ public class NoteVision extends SubsystemBase {
         }
         return positions;
     }
+
+    /*
+     * Shouldn't need to use this. This is for debug. Use the get Notes field
+     * relative function and pass in robot pose and use photonutils get rotation to
+     * pose.
+     */
     public List<Double> getNotesYaw() {
         List<Double> positions = new ArrayList<Double>();
 
@@ -111,17 +109,11 @@ public class NoteVision extends SubsystemBase {
         List<PhotonTrackedTarget> targets = results.getTargets();
 
         for (PhotonTrackedTarget tgt : targets) {
-            // this calc assumes pitch angle is positive UP, so flip the camera's pitch
-            // note that PV target angles are in degrees
-            double d = Math.abs(m_robotToNoteCam.getZ() /
-                    Math.tan(-m_robotToNoteCam.getRotation().getY() + Math.toRadians(tgt.getPitch())));
             double yaw = (tgt.getYaw());
             positions.add(yaw);
         }
         return positions;
     }
-
-    
 
     // get visible NOTEs, in field-centric positions
     public List<Translation2d> getNotes(Pose2d robotPose) {
@@ -134,12 +126,12 @@ public class NoteVision extends SubsystemBase {
         double robotX = robotPose.getX();
         double robotY = robotPose.getY();
         double robotRotation = robotPose.getRotation().getRadians();
-        
+
         for (PhotonTrackedTarget tgt : m_noteCamera.getLatestResult().getTargets()) {
             // this calc assumes pitch angle is positive UP, so flip the camera's pitch
             // note that PV target angles are in degrees
-            double d = Math.abs(m_robotToNoteCam.getZ() /
-                    Math.tan(-m_robotToNoteCam.getRotation().getY() + Math.toRadians(tgt.getPitch())));
+            double d = Math.abs(Constants.Vision.noteCamToRobot.getZ() /
+                    Math.tan(-Constants.Vision.noteCamToRobot.getRotation().getY() + Math.toRadians(tgt.getPitch())));
             double yaw = Math.toRadians(tgt.getYaw());
 
             // the pi is because the camera is on the back
@@ -165,8 +157,8 @@ public class NoteVision extends SubsystemBase {
         for (PhotonTrackedTarget tgt : m_noteCamera.getLatestResult().getTargets()) {
             // this calc assumes pitch angle is positive UP, so flip the camera's pitch
             // note that PV target angles are in degrees
-            double d = Math.abs(m_robotToNoteCam.getZ() /
-                    Math.tan(-m_robotToNoteCam.getRotation().getY() + Math.toRadians(tgt.getPitch())));
+            double d = Math.abs(Constants.Vision.noteCamToRobot.getZ() /
+                    Math.tan(-Constants.Vision.noteCamToRobot.getRotation().getY() + Math.toRadians(tgt.getPitch())));
             double yaw = Math.toRadians(tgt.getYaw());
 
             // the pi is because the camera is on the back
@@ -189,15 +181,10 @@ public class NoteVision extends SubsystemBase {
         List<Translation2d> notes = getNotes();
         SmartDashboard.putNumber("noteVision nFound", notes.size());
         if (notes.size() > 0) {
-            Translation2d p = notes.get(0);
-            SmartDashboard.putNumber("noteVision x", p.getX());
-            SmartDashboard.putNumber("noteVision y", p.getY());
-            
-            // for plotting on advantage scope
-            m_notes.setRobotPose(notes.get(0).getX(), notes.get(0).getY(), Rotation2d.fromDegrees(0));
-            
+            // we can plot robot relative notes but we can just use field relative plotting
+            // with the specific command
         }
-         
+
     }
 
     private void initializeSimulation() {
@@ -221,7 +208,7 @@ public class NoteVision extends SubsystemBase {
 
         PhotonCameraSim cam = new PhotonCameraSim(m_noteCamera, prop);
         cam.setMaxSightRange(Units.feetToMeters(15.0));
-        m_visionSim.addCamera(cam, m_robotToNoteCam);
+        m_visionSim.addCamera(cam, Constants.Vision.noteCamToRobot);
 
         // Add the Auto notes on the field
         TargetModel noteModel = new TargetModel(Units.inchesToMeters(14), Units.inchesToMeters(14),
@@ -239,8 +226,7 @@ public class NoteVision extends SubsystemBase {
                 // Red Stage Notes
                 FieldConstants.RED_NOTE_S_1,
                 FieldConstants.RED_NOTE_S_2,
-                FieldConstants.RED_NOTE_S_3
-                )) {
+                FieldConstants.RED_NOTE_S_3)) {
             m_visionSim.addVisionTargets("note",
                     new VisionTargetSim(new Pose3d(notePose.getX(), notePose.getY(), 0, new Rotation3d()), noteModel));
         }
@@ -249,21 +235,21 @@ public class NoteVision extends SubsystemBase {
     // // --- Routines to plot the vision solutions on a Field2d ---------
 
     // private void clearTagSolutions(Field2d field) {
-    //     if (field == null)
-    //         return;
-    //     field.getObject("tagSolutions").setPoses();
-    //     field.getObject("visionPose").setPoses();
-    //     field.getObject("visionAltPose").setPoses();
-    //     field.getObject("visibleTagPoses").setPoses();
+    // if (field == null)
+    // return;
+    // field.getObject("tagSolutions").setPoses();
+    // field.getObject("visionPose").setPoses();
+    // field.getObject("visionAltPose").setPoses();
+    // field.getObject("visibleTagPoses").setPoses();
     // }
 
     // private void plotPose(Field2d field, String label, Pose2d pose) {
-    //     if (field == null)
-    //         return;
-    //     if (pose == null)
-    //         field.getObject(label).setPoses();
-    //     else
-    //         field.getObject(label).setPose(pose);
+    // if (field == null)
+    // return;
+    // if (pose == null)
+    // field.getObject(label).setPoses();
+    // else
+    // field.getObject(label).setPose(pose);
     // }
 
 }

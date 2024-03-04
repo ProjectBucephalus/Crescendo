@@ -38,6 +38,7 @@ public class CheckPrepStatsAndRumble extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        
         if (s_Pivot.angleWithinTolerance() &&  s_Swerve.getWithinRequiredHeading() && m_controller != null) {
             // Sets rumble
             m_controller.setRumble(RumbleType.kBothRumble, RUMBLE_INTENSITY);
