@@ -158,7 +158,8 @@ public class Swerve extends SubsystemBase
      * @author 364
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) 
-    {
+    {   
+        SmartDashboard.putBoolean("Field Relative?", fieldRelative);
         if (!usingVisionAlignment) 
         {
             SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates

@@ -156,7 +156,7 @@ public class RobotContainer {
         //driver.back()          .onTrue(new InstantCommand(s_Swerve::lockWheels, s_Swerve)); // TODO 
         driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
-        driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+        //driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
 
         /* Pass in codriver for controller to receive rumble */
         driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
