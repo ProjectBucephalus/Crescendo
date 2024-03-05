@@ -19,11 +19,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Utilities.Limelight;
 import frc.robot.VisionCommands.AimToSpeakerNoDrive;
 import frc.robot.VisionCommands.aimToSpeakerSequence;
+import frc.robot.commands.PointAndPathFindCommand;
+import frc.robot.commands.PointToAngle;
 import frc.robot.commands.StabiliserBar;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
@@ -164,22 +167,12 @@ public class RobotContainer {
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
         driver.povRight()      .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         driver.povLeft()       .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
-        // driver.y()             .onTrue(new PointToAngle(s_Swerve, 180));
-        // driver.x()             .onTrue(new PointToAngle(s_Swerve, 60));
-        // driver.b()             .onTrue(new PointToAngle(s_Swerve, -60));
-        // driver.a()             .onTrue(new PointToAngle(s_Swerve, 90));
-        // driver.a()             .whileTrue({
-            
-            
-        //     Pose2d endPos = new Pose2d((new Translation2d(2.0, 2.0)), new Rotation2d(Units.degreesToRadians(90)));
-        //     // We use pathfind to pose flipped so that it flips correctly to the red alliance.
-        //     AutoBuilder.pathfindToPoseFlipped(endPos, new PathConstraints(
-        //         4.0,
-        //         4.0,
-        //         Units.degreesToRadians(360),
-        //         Units.degreesToRadians(540)))
-        //         .schedule();
-        // })););
+       
+        driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp")));
+        driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.RIGHT_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage")));
+        driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.LEFT_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage")));
+        driver.a()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.BACK_STAGE, PathPlannerPath.fromPathFile("Line Up With Back Stage")));
+        
         
         /* Co-Driver Buttons */
 

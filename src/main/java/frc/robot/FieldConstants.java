@@ -1,9 +1,13 @@
+
 package frc.robot;
 
 import java.util.Optional;
 
+import javax.swing.text.Position;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -31,14 +35,15 @@ public class FieldConstants {
 
     public static final Translation2d BLUE_NOTE_S_1 = new Translation2d(NOTE_S_X, 4.26);
     public static final Translation2d BLUE_NOTE_S_2 = new Translation2d(NOTE_S_X, 5.52);
-    public static final Translation2d BLUE_NOTE_S_3 = new Translation2d(NOTE_S_X, 7.00);   
-   
-    // Needed for the Note simulation. 
+    public static final Translation2d BLUE_NOTE_S_3 = new Translation2d(NOTE_S_X, 7.00);
+
+    // Needed for the Note simulation.
     // For Autos, always use BLUE and flipTranslation
     public static final Translation2d RED_NOTE_S_1 = new Translation2d(FIELD_LENGTH - NOTE_S_X, 4.26);
     public static final Translation2d RED_NOTE_S_2 = new Translation2d(FIELD_LENGTH - NOTE_S_X, 5.52);
-    public static final Translation2d RED_NOTE_S_3 = new Translation2d(FIELD_LENGTH - NOTE_S_X, 7.00);   
-   
+    public static final Translation2d RED_NOTE_S_3 = new Translation2d(FIELD_LENGTH - NOTE_S_X, 7.00);
+
+    public static final Translation2d DUMMY_NOTE_WAIT_FLAG = new Translation2d(NOTE_S_X, 0);
 
     public static final Translation2d SPEAKER = new Translation2d(0, 5.54);
 
@@ -58,7 +63,16 @@ public class FieldConstants {
 
     public static final Pose2d ROBOT_START_1 = new Pose2d(1.25, 3.85, Rotation2d.fromDegrees(126.5));
     public static final Pose2d ROBOT_START_2 = new Pose2d(1.3, 5.53, Rotation2d.fromDegrees(180));
-    public static final Pose2d ROBOT_START_3 = new Pose2d(1.25,6.95, Rotation2d.fromDegrees(-131.6));  // same as 228.4
+    public static final Pose2d ROBOT_START_3 = new Pose2d(1.25, 6.95, Rotation2d.fromDegrees(-131.6)); // same as 228.4
+
+    
+    /* Driver pathfinding controlls in teleop */
+    public static final Transform2d AMP = new Transform2d(0, 5.54, Rotation2d.fromDegrees(90));
+    public static final Transform2d BACK_STAGE = new Transform2d(5.85, 4.14, Rotation2d.fromDegrees(180));
+    public static final Transform2d LEFT_STAGE = new Transform2d(4.3, 3, Rotation2d.fromDegrees(-60));
+    public static final Transform2d RIGHT_STAGE = new Transform2d(4.3, 5.0, Rotation2d.fromDegrees(60));
+
+
 
     public static boolean isCenterNote(Translation2d targetNote) {
         return Math.abs(NOTE_C_X - targetNote.getX()) < 0.1;
@@ -91,4 +105,14 @@ public class FieldConstants {
         // Blue or we don't know; return the original position
         return position;
     }
+
+    public static Pose2d transformToPose2d(Transform2d position) {
+        // Converts a Transform2d to a pose.
+        return new Pose2d(position.getTranslation(), position.getRotation());
+    }
+    public static Pose2d translationToPose2d(Translation2d position) {
+        // Converts a Transform2d to a pose.
+        return new Pose2d(position.getX(),position.getY(), position.getAngle());
+    }
+
 }

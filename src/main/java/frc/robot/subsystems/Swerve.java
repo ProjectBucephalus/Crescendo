@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
 import frc.robot.Constants;
-
+import frc.robot.FieldConstants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -404,7 +404,7 @@ public class Swerve extends SubsystemBase
 
     /**
      * Set to true to ignore roatational values from the controller and use values
-     * from vision
+     * from vision drive or driveRobotRelative
      * 
      * @param newVal Set to true to ignore rotational inputs and use roation from
      *               driveRobotRelative(). Set to false to revert.
@@ -564,7 +564,7 @@ public class Swerve extends SubsystemBase
         SmartDashboard.putBoolean("usingVisionAlignment", usingVisionAlignment);
         SmartDashboard.putBoolean("getWithinRequiredHeading", getWithinRequiredHeading());
 
-        SmartDashboard.putNumber("distance to target", PhotonUtils.getDistanceToPose(getEstimatedPose(), new Pose2d(0.2, 5.6, new Rotation2d(0, 0))));
+        SmartDashboard.putNumber("distance to target", PhotonUtils.getDistanceToPose(getEstimatedPose(), FieldConstants.translationToPose2d(FieldConstants.SPEAKER)));
         
 
         // Do this in either robot or subsystem init

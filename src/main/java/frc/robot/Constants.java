@@ -202,7 +202,7 @@ public final class Constants {
         public static final double wheelBase = 0.48;
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
-        /* Used by other commands to check if the auto alignment is sucessfull */
+        /* Used by other commands to check if the auto alignment is finished */
         public static final double ANGLE_TOLERANCE_DEGREES = 10;
 
         /*
@@ -318,8 +318,8 @@ public final class Constants {
     }
 
     public static final class AutoConstants { // TODO
-        public static final double kMaxSpeedMetersPerSecond = 4;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+        public static final double kMaxSpeedMetersPerSecond = 3;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 4;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI; // was pi?
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI; // was pi?
 

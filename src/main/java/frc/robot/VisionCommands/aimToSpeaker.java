@@ -64,10 +64,15 @@ public class aimToSpeaker extends Command {
 
         // the -4 is purely for backlash adjustment
         s_Pivot.setDesiredPostion(calculatedRequiredShooterAngle());
-        //s_Pivot.setDesiredPostion(SmartDashboard.getNumber("Pivot position for array", 0));
+        // s_Pivot.setDesiredPostion(SmartDashboard.getNumber("Pivot position for
+        // array", 0));
 
-        s_Swerve.setWithinRequiredHeading(Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees() - Math.abs(calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getDegrees())) < Constants.Swerve.ANGLE_TOLERANCE_DEGREES);
-        SmartDashboard.putNumber("Is our auto aligned heading aligned?", Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees() - Math.abs(calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getDegrees())));
+        s_Swerve.setWithinRequiredHeading(Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
+                - Math.abs(calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180))
+                        .getDegrees())) < Constants.Swerve.ANGLE_TOLERANCE_DEGREES);
+        SmartDashboard.putNumber("Is our auto aligned heading aligned?",
+                Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
+                        - Math.abs(calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getDegrees())));
         SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
         SmartDashboard.putNumber("calculated shooter angle", calculatedRequiredShooterAngle());
 
@@ -93,7 +98,8 @@ public class aimToSpeaker extends Command {
 
     public Rotation2d calculateRequiredHeading() {
         var pose = s_Swerve.getEstimatedPose();
-        return PhotonUtils.getYawToPose(pose, FieldConstants.flipPose(new Pose2d(FieldConstants.SPEAKER, new Rotation2d(0, 0))));
+        return PhotonUtils.getYawToPose(pose,
+                FieldConstants.flipPose(new Pose2d(FieldConstants.SPEAKER, new Rotation2d(0, 0))));
     }
 
     /**

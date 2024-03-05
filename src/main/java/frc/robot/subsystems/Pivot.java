@@ -161,7 +161,7 @@ public class Pivot extends SubsystemBase {
                         .withLimitForwardMotion(leftDeploySwitch.get())
                         .withLimitForwardMotion(rightDeploySwitch.get())
         );
-        mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true)); 
+        
         // CTREConfigs already has Left and Right use opposite directions
 
     }
@@ -231,9 +231,6 @@ public class Pivot extends SubsystemBase {
         }
     }
 
-    // commented out for safety's sake. same with reference to it in IntakeStowed
-    // file
-
     @Override
     public void periodic() 
     {
@@ -246,22 +243,25 @@ public class Pivot extends SubsystemBase {
         SmartDashboard.putBoolean("rightStowSwitch",       rightStowSwitch.get());
 
         // If either outer limit switch is pressed, calibrates current motor positions as their deployed positions
-        if (leftDeploySwitch.get() || rightDeploySwitch.get()) 
-        {
-            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
-            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
-        }
 
-        // If either inner limit switch is pressed, calibrates current motor positions as their stowed positions
-        if (leftStowSwitch.get() || rightStowSwitch.get()) 
-        {
-            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
-            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
-        }
+        // This causes command scheduler loop overruns for some reason
+        // if (leftDeploySwitch.get() || rightDeploySwitch.get()) 
+        // {
+            
+        //     mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
+        //     mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
+        // }
+
+        // // If either inner limit switch is pressed, calibrates current motor positions as their stowed positions
+        // if (leftStowSwitch.get() || rightStowSwitch.get()) 
+        // {   
+        //     mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
+        //     mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
+        // }
 
 
         // Not being used currently.
-        // TODO Evaluate calibration process
+        
         // if (leftDeploySwitch.get()) {
         //     leftDeployPressed = true;
         // }
