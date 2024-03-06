@@ -76,11 +76,11 @@ public class Pivot extends SubsystemBase {
         // Initialises motor controller objects and configures them
         mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
         mLeftPivot.getConfigurator().apply(CTREConfigs.leftPivotMotorFXConfig);
-        mLeftPivot.getConfigurator().setPosition(0);
+        mLeftPivot.getConfigurator().setPosition(-0.1);
 
         mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
         mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
-        mRightPivot.getConfigurator().setPosition(0);
+        mRightPivot.getConfigurator().setPosition(-0.1);
 
         // Creates list containing all the limit switch flags
         limitSwitchFlags = new boolean[] {
@@ -193,9 +193,9 @@ public class Pivot extends SubsystemBase {
     public double getPivotPos()
     {
         // motor.getPosition() returns rotations: convert to degrees and return average.
-        // return ((mRightPivot.getPosition().getValueAsDouble() * 360)
-        //         + (mLeftPivot.getPosition().getValueAsDouble() * 360)) / 2;
-        return mRightPivot.getPosition().getValueAsDouble();
+        return ((mRightPivot.getPosition().getValueAsDouble() * 360)
+                + (mLeftPivot.getPosition().getValueAsDouble() * 360)) / 2;
+        // return mRightPivot.getPosition().getValueAsDouble();
     }
 
     /** 

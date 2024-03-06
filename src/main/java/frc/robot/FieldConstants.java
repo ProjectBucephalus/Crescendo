@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.swing.text.Position;
 
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -65,14 +67,11 @@ public class FieldConstants {
     public static final Pose2d ROBOT_START_2 = new Pose2d(1.3, 5.53, Rotation2d.fromDegrees(180));
     public static final Pose2d ROBOT_START_3 = new Pose2d(1.25, 6.95, Rotation2d.fromDegrees(-131.6)); // same as 228.4
 
-    
     /* Driver pathfinding controlls in teleop */
     public static final Transform2d AMP = new Transform2d(0, 5.54, Rotation2d.fromDegrees(90));
     public static final Transform2d BACK_STAGE = new Transform2d(5.85, 4.14, Rotation2d.fromDegrees(180));
     public static final Transform2d LEFT_STAGE = new Transform2d(4.3, 3, Rotation2d.fromDegrees(-60));
     public static final Transform2d RIGHT_STAGE = new Transform2d(4.3, 5.0, Rotation2d.fromDegrees(60));
-
-
 
     public static boolean isCenterNote(Translation2d targetNote) {
         return Math.abs(NOTE_C_X - targetNote.getX()) < 0.1;
@@ -110,9 +109,20 @@ public class FieldConstants {
         // Converts a Transform2d to a pose.
         return new Pose2d(position.getTranslation(), position.getRotation());
     }
+
     public static Pose2d translationToPose2d(Translation2d position) {
         // Converts a Transform2d to a pose.
-        return new Pose2d(position.getX(),position.getY(), position.getAngle());
+        return new Pose2d(position.getX(), position.getY(), position.getAngle());
+    }
+
+    public static PathPlannerPath loadPath(String pathName) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+            return path;
+        } catch (Exception e) {
+            DriverStation.reportError(String.format("Unable to load path: %s", pathName), true);
+        }
+        return null;
     }
 
 }
