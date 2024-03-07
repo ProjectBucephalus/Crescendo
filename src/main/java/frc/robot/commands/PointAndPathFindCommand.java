@@ -16,22 +16,22 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
-
 public class PointAndPathFindCommand extends SequentialCommandGroup {
 
     /**
      * Constructs a new PointAndPathFind command group.
      * 
-     * @param s_Swerve   The Swerve subsystem instance.
+     * @param s_Swerve       The Swerve subsystem instance.
      * @param targetLocation The target location to align with. From FieldConstants.
-     * @param path       The predefined path to follow, represented as a
-     *                   PathPlannerPath made in pathplanner.
+     * @param path           The predefined path to follow, represented as a
+     *                       PathPlannerPath made in pathplanner.
      */
     public PointAndPathFindCommand(Swerve s_Swerve, Transform2d targetLocation, PathPlannerPath path) {
 
         // Create the constraints to use while pathfinding. The constraints defined in
         PathConstraints constraints = new PathConstraints(
-                Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
                 Units.degreesToRadians(540), Units.degreesToRadians(720));
 
         addCommands(
@@ -40,14 +40,13 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
                 // if the driver doesn't want to
                 new WaitCommand(1),
                 // Statically run the pathfinding and path following commands
-                Commands.runOnce(() -> {
-                    AutoBuilder.pathfindThenFollowPath(
-                            path,
-                            constraints,
-                            3.0 // Rotation delay distance in meters. This is how far the robot should travel
-                                // before attempting to rotate.
-                    );
-                }));
+
+                AutoBuilder.pathfindThenFollowPath(
+                        path,
+                        constraints,
+                        0 // Rotation delay distance in meters. This is how far the robot should travel
+                          // before attempting to rotate.
+                ));
 
     }
 }
