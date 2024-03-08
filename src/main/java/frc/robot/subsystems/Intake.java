@@ -116,7 +116,7 @@ public class Intake extends SubsystemBase
                 useBeamBreak = false;
                 break;
             case IN:
-                setIndexPosition(IndexerPosition.IN);
+                setIndexPosition(IndexerPosition.OUT);
                 setIntakeSpeed(0.50, false);
                 useBeamBreak = false;
                 break;
