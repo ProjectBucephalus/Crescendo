@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Utilities.Limelight;
 import frc.robot.VisionCommands.AimToSpeakerNoDrive;
 import frc.robot.VisionCommands.aimToSpeakerSequence;
+import frc.robot.commands.GetMulitNote;
 import frc.robot.commands.PointAndPathFindCommand;
 import frc.robot.commands.PointToAngle;
 import frc.robot.commands.StabiliserBar;
@@ -87,18 +89,25 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private final Intake s_Intake = new Intake();
-    private final Pivot s_Pivot = new Pivot();
+    private final Pivot s_Pivot = new Pivot(s_Swerve);
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
     private final NoteVision s_NoteVision = new NoteVision();
 
     private final Limelight m_lime = new Limelight("limelight");
 
-    private final SendableChooser<Command> m_chosenAuto = new SendableChooser<>();
+    private final SendableChooser<String> m_chosenAuto = new SendableChooser<>();
     private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();
 
+    private SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+    public String selectedAuto = "";
+
+    // We use these to check if the robots starting pose has changed in robot disabled periodic and update the starting pos odometry.
+    private Pose2d m_prevInitialPose = new Pose2d();
+
     /* Autonomous */
-    private final SendableChooser<Command> autoChooser;
+    // private final SendableChooser<Command> autoChooser;
     Field2d m_Field = new Field2d();
 
     /**
@@ -118,9 +127,7 @@ public class RobotContainer {
         s_Pivot.setDefaultCommand(new MovePivot(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));
         s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));
 
-        configureButtonBindings();
-
-        NamedCommands.registerCommand("IntakeAndDeployPivot", new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID()));
+        NamedCommands.registerCommand("IntakeAndDeployPivot", new IntakeAndDeployPivot(s_Pivot, s_Intake, null));
         NamedCommands.registerCommand("StopIntakeAndStow", new StopIntakeAndStow(s_Pivot, s_Intake));
         NamedCommands.registerCommand("AimToSpeaker", new AimToSpeakerNoDrive(s_Swerve, s_Pivot));
         NamedCommands.registerCommand("Start Shooter", new ShooterRev(s_Shooter));
@@ -131,11 +138,14 @@ public class RobotContainer {
                 new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER_MANUAL));
         NamedCommands.registerCommand("Stow Pivot", new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
 
+        configureButtonBindings();
+        configureAutos();
+
         // NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
         // NamedCommands.registerCommand("print hello", Commands.print("hello"));
 
         autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+        // SmartDashboard.putData("Auto Chooser", autoChooser);
 
         SmartDashboard.putData(m_Field);
         final var visionTab = Shuffleboard.getTab("Vision");
@@ -217,28 +227,49 @@ public class RobotContainer {
         }));
 
     }
-    // private void configureAutos() {
-    //     // List of start locations
-    //     m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
-    //     m_startLocation.addOption("Center", FieldConstants.ROBOT_START_2);
-    //     m_startLocation.addOption("Amp Side", FieldConstants.ROBOT_START_3);
-    //     SmartDashboard.putData("Start Location", m_startLocation);
+    private void configureAutos() {
+        // List of start locations
+        List<String> autonamesDropdown = Arrays.asList("S1-S2", "S3-S2", "S1-S2-S3", "S3-S2-S1", "S2-S1", "S1-C1", "C4", "C5", "S3-C4-C5", "W" );
 
-    //     String autoName = "C1-C2";
-    //     autoChooser.setDefaultOption(autoName, new GetMultiNoteGeneric(autoName, m_driveTrain, m_noteVision, m_shooter, m_intake));
+        m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
+        m_startLocation.addOption("Center", FieldConstants.ROBOT_START_2);
+        m_startLocation.addOption("Amp Side", FieldConstants.ROBOT_START_3);
 
-    //     autoName = "C2-C1";
-    //     autoChooser.addOption(autoName, new GetMultiNoteGeneric(autoName, m_driveTrain, m_noteVision, m_shooter, m_intake));
+        for (String autoNm : autonamesDropdown) {
+            m_chosenAuto.addOption(autoNm, autoNm);
+        }
 
-    //     List<String> autonamesDropdown = Arrays.asList("S1-S2", "S1-W-S2", "S1-W-W-S2", "S3-S2", "S1-S2-S3", "S3-S2-S1", "S2-S1", "S1-C1", "C4", "C5", "S3-C4-C5" );
+        m_chosenAuto.setDefaultOption("S1-S2", "S1-S2");
 
-    //     for (String autoNm : autonamesDropdown) {
-    //         m_chosenAuto.addOption(autoNm, new GetMultiNoteGeneric(autoNm, m_driveTrain, m_noteVision, m_shooter, m_intake));
-    //     }
-        
-    //     m_chosenAuto.addOption("Test Auto", new NoteAuto(m_driveTrain));
-    //     SmartDashboard.putData("Chosen Auto", m_chosenAuto);
-    // }
+        m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
+
+        SmartDashboard.putData("Start Location", m_startLocation);
+
+        SmartDashboard.putData("m_chosenAuto", m_chosenAuto);
+
+        SmartDashboard.putString("Auto Chooser", selectedAuto);
+
+    }
+
+    public Pose2d getInitialPose() {
+        return FieldConstants.flipPose(m_startLocation.getSelected());
+    }
+
+    public String getAutoPopulator() {
+        return m_chosenAuto.getSelected();
+    }
+
+    public boolean autoHasChanged() {
+        Pose2d initialPose = getInitialPose();
+        // We don't compare poses with "==". That compares object IDs, not value.
+        boolean changed = !initialPose.equals(m_prevInitialPose);
+        m_prevInitialPose = initialPose;
+        return changed;
+    }
+
+    public Swerve getSwerve() {
+        return s_Swerve;
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -247,6 +278,8 @@ public class RobotContainer {
      */
 
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
+        var transforms = FieldConstants.buildNoteList(SmartDashboard.getString("Auto Chooser", "W"));
+        return new GetMulitNote(transforms, s_Swerve, s_NoteVision, s_Shooter, s_Pivot, s_Intake, s_Climber);
     }
+
 }

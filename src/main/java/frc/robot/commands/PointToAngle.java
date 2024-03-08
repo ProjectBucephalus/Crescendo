@@ -34,14 +34,15 @@ public class PointToAngle extends Command {
 
     @Override
     public void execute() {
-        var turningVal = pid.calculate(calculateRequiredHeading().getDegrees());
+        //var turningVal = pid.calculate(s_Swerve.getEstimatedPose().getRotation().getDegrees(), targetRotation);
 
         // TODO look at the tuning of this. Maybe look at implementing a pid controller.
-        s_Swerve.driveRobotRelative(new ChassisSpeeds(0, 0, turningVal));
+        s_Swerve.driveRobotRelative(new ChassisSpeeds(0, 0, calculateRequiredHeading().getDegrees()/10));
     }
 
     @Override
     public void initialize() {
+        pid.reset();
         s_Swerve.setVisionAlignmentBool(true);
     }
 

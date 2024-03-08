@@ -1,6 +1,9 @@
 
 package frc.robot;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.swing.text.Position;
@@ -24,7 +27,6 @@ public class FieldConstants {
 
     // C = center
     // S = stage
-    // M = Midline
 
     private static final double NOTE_C_X = FIELD_LENGTH / 2.0;
     private static final double NOTE_S_X = 2.89;
@@ -72,6 +74,41 @@ public class FieldConstants {
     public static final Transform2d BACK_STAGE = new Transform2d(5.85, 4.14, Rotation2d.fromDegrees(180));
     public static final Transform2d LEFT_STAGE = new Transform2d(4.3, 3, Rotation2d.fromDegrees(-60));
     public static final Transform2d RIGHT_STAGE = new Transform2d(4.3, 5.0, Rotation2d.fromDegrees(60));
+
+    private static final Map<String, Translation2d> s_noteNameMap = new HashMap<>() {
+        {
+            put("C1", FieldConstants.NOTE_C_1);
+            put("C2", FieldConstants.NOTE_C_2);
+            put("C3", FieldConstants.NOTE_C_3);
+            put("C4", FieldConstants.NOTE_C_4);
+            put("C5", FieldConstants.NOTE_C_5);
+
+            put("S1", FieldConstants.BLUE_NOTE_S_1);
+            put("S2", FieldConstants.BLUE_NOTE_S_2);
+            put("S3", FieldConstants.BLUE_NOTE_S_3);
+
+            put("W", FieldConstants.DUMMY_NOTE_WAIT_FLAG);
+        }
+    };
+
+    public static Translation2d[] buildNoteList(String noteSequence) {
+        
+        String[] separateNoteNames = noteSequence.split("\\s*-\\s*");
+        Translation2d[] noteCoordList = new Translation2d[separateNoteNames.length];
+
+        if (noteSequence == "") {
+            separateNoteNames = new String[] { "W" };
+        }
+
+        for (int i = 0; i < separateNoteNames.length; i++) {
+            Translation2d foundNote = s_noteNameMap.get(separateNoteNames[i].toUpperCase());
+            if (foundNote == null) {
+                throw new IllegalArgumentException("note name not found: " + separateNoteNames[i]);
+            }
+            noteCoordList[i] = foundNote;
+        }
+        return noteCoordList;
+    }
 
     public static boolean isCenterNote(Translation2d targetNote) {
         return Math.abs(NOTE_C_X - targetNote.getX()) < 0.1;

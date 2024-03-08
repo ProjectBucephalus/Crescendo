@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import frc.robot.SwerveModule;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.RobotContainer;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -59,6 +60,7 @@ public class Swerve extends SubsystemBase
 
     // Creates an object representing the field in 2d
     private final Field2d m_field = new Field2d();
+    private final Field2d m_Notesfield = new Field2d();
 
     // set to true initially so that if we manually set the angle and dont use any auto functions it will still shoot
     private boolean alignedToTarget = true;
@@ -471,6 +473,15 @@ public class Swerve extends SubsystemBase
 
         return Constants.Vision.VISION_MEASUREMENT_STANDARD_DEVIATIONS.times(confidenceMultiplier);
     }
+
+    /**
+     * Function to extrapolate and interpolate the values needed for the shooter
+     * pivot based on the current reported distance to the target.
+     * 
+     * @return The value in degrees that the pivot needs to angle to to score in the
+     *         speaker.
+     */
+    
 
     /**
      * Takes a path from pathplanner, and turns it into a command to follow that path
