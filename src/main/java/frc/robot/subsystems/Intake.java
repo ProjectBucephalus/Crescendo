@@ -159,14 +159,14 @@ public class Intake extends SubsystemBase
                 break;
         
             case OUT:
-                mIndexer.set(-0.25);
+                mIndexer.set(-0.4);
                 
                 break;
             case STOPPED:
                 mIndexer.set(0.0);
                 break;
             case IN_WITH_BEAM_BREAK:
-                mIndexer.set(-0.25);
+                mIndexer.set(-0.4);
                 break;
             case IN_FOR_SHOOTING:
                 mIndexer.set(1);

@@ -492,22 +492,24 @@ public class Swerve extends SubsystemBase
      */
     public Command makePathFollowingCommand(PathPlannerPath path) 
     {
-        return new FollowPathHolonomic
-        (path, this::getEstimatedPose, this::getRobotRelativeSpeeds, this::driveRobotRelative,
-                PATH_FOLLOWER_CONFIG,
-                () -> {
-                    // Boolean supplier that controls when the path will be mirrored for the red
-                    // alliance
-                    // This will flip the path being followed to the red side of the field.
-                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        // return new FollowPathHolonomic
+        // (path, this::getEstimatedPose, this::getRobotRelativeSpeeds, this::driveRobotRelative,
+        //         PATH_FOLLOWER_CONFIG,
+        //         () -> {
+        //             // Boolean supplier that controls when the path will be mirrored for the red
+        //             // alliance
+        //             // This will flip the path being followed to the red side of the field.
+        //             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
-                }, this
-        );
+        //             var alliance = DriverStation.getAlliance();
+        //             if (alliance.isPresent()) {
+        //                 return alliance.get() == DriverStation.Alliance.Red;
+        //             }
+        //             return false;
+        //         }, this
+        // );
+
+        return AutoBuilder.followPath(path);
     }
 
     /**

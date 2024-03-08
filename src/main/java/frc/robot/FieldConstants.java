@@ -65,9 +65,9 @@ public class FieldConstants {
     public static final Pose2d ROBOT_SHOOT_M_1 = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     public static final Pose2d ROBOT_SHOOT_M_2 = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
 
-    public static final Pose2d ROBOT_START_1 = new Pose2d(1.25, 3.85, Rotation2d.fromDegrees(126.5));
-    public static final Pose2d ROBOT_START_2 = new Pose2d(1.3, 5.53, Rotation2d.fromDegrees(180));
-    public static final Pose2d ROBOT_START_3 = new Pose2d(1.25, 6.95, Rotation2d.fromDegrees(-131.6)); // same as 228.4
+    public static final Pose2d ROBOT_START_1 = new Pose2d(1.25, 3.85, Rotation2d.fromDegrees(-52.56));
+    public static final Pose2d ROBOT_START_2 = new Pose2d(1.3, 5.53, Rotation2d.fromDegrees(0));
+    public static final Pose2d ROBOT_START_3 = new Pose2d(1.25, 6.95, Rotation2d.fromDegrees(-67.52)); // same as 228.4
 
     /* Driver pathfinding controlls in teleop */
     public static final Transform2d AMP = new Transform2d(0, 5.54, Rotation2d.fromDegrees(90));

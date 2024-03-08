@@ -189,14 +189,15 @@ public class RobotContainer {
 
         coDriver               .leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake));
         //coDriver.leftBumper()  .whileTrue(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.IN))).onFalse(getAutonomousCommand());
-        coDriver               .rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake));
-        coDriver               .rightBumper() .whileTrue(new IntakeSpit(s_Intake));
+        coDriver               .rightTrigger().onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
+        coDriver               .rightBumper() .whileTrue(new IntakeSpit(s_Intake)); //just index roller feed in
 
+        // left bumber intake roller feed in
         coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
         coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
         coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
         //coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
-        
+        //d pard right: climber e stop.
         
         coDriver.povLeft()     .whileTrue(new DeployBuddyClimber(s_Climber)).onFalse(new StopBuddyClimber(s_Climber));
         // coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));

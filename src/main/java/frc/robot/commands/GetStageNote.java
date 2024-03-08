@@ -39,15 +39,12 @@ public class GetStageNote extends GetNote {
         addCommands(
                 new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
                 new IntakeAndDeployPivot(s_Pivot, s_Intake, null),
-                new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(getInitialPath()), Set.of(s_Swerve))
-                        .andThen(new WaitCommand(2))
-                        .deadlineWith(
-                                new MonitorForNote(noteVision, () -> s_Swerve.getEstimatedPose(), m_targetNote, this)),
-                new WaitCommand(1.0),
+                new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(getInitialPath()), Set.of(s_Swerve)),
                 new ParallelDeadlineGroup(
                         new GetBeamBreak(s_Intake),
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
+                                new WaitCommand(0.2),
                                 new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter))),
                 new ShootSequence(s_Shooter, s_Intake));
     }
