@@ -86,8 +86,8 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-    private final Intake s_Intake = new Intake();
     private final Pivot s_Pivot = new Pivot();
+    private final Intake s_Intake = new Intake(s_Pivot);
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
     private final NoteVision s_NoteVision = new NoteVision();

@@ -104,6 +104,8 @@ public final class Constants {
         public static final int rightInSwitchID = 2;
         public static final int rightOutSwitchID = 1;
 
+        public static final int beamBreakID = 9;
+
         public static final int mIndexerID = 35;
 
         public static final int mStabilserID = 14;

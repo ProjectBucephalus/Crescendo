@@ -22,7 +22,7 @@ public class Intake extends SubsystemBase
     public VictorSPX mStabilser = new VictorSPX(Constants.Intake.mStabilserID);
 
     // Declaration of the beam break digital input
-    public DigitalInput BeamBreak = new DigitalInput(9);
+    public DigitalInput BeamBreak = new DigitalInput(Constants.Intake.beamBreakID);
 
     // Declaration of a config object, representing configuration settings for a TalonFX
     public TalonFXConfiguration IndexerFXConfig = new TalonFXConfiguration();
@@ -75,8 +75,9 @@ public class Intake extends SubsystemBase
 
     };
 
-    public Intake() 
-    {
+    public Intake(Pivot s_Pivot) 
+    {   
+        this.s_Pivot = s_Pivot;
         // Displays values in Smart Dashboard
         SmartDashboard.putNumber("topShooterSpeed", 1);
         SmartDashboard.putNumber("bottomShooterSpeed", 1);
