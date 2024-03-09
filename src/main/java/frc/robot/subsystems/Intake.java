@@ -31,6 +31,9 @@ public class Intake extends SubsystemBase
     private boolean beamBreakBool = false;
     private boolean useBeamBreak = false;
 
+    // Pivot subsystem
+    private Pivot s_Pivot;
+
     /** 
      * Enum representing the roller status of the Intake 
      * (Spinning inwards, spinning outwards, spinning inwards with beam break control, stopped, or spinning inwards to feed for shooting)
@@ -111,26 +114,30 @@ public class Intake extends SubsystemBase
         switch (status) 
         {
             case IN_FOR_SHOOTING:
-                setIndexPosition(IndexerPosition.IN_FOR_SHOOTING);
-                setIntakeSpeed(1, false);
-                useBeamBreak = false;
+                if ((s_Pivot.getPivotPos() > Constants.Intake.safeToShootOver)) 
+                {
+                    setIndexPosition(IndexerPosition.IN_FOR_SHOOTING);
+                    setIntakeSpeed(1, false);
+                    useBeamBreak = false;
+                }
                 break;
             case IN:
                 setIndexPosition(IndexerPosition.OUT);
                 setIntakeSpeed(0.50, false);
                 useBeamBreak = false;
                 break;
+                
             case OUT:
                 setIndexPosition(IndexerPosition.OUT);
                 setIntakeSpeed(-0.50, false);
                 useBeamBreak = false;
                 break;
             case IN_WITH_BEAM_BREAK:
-                
                 setIndexPosition(IndexerPosition.IN_WITH_BEAM_BREAK);
                 setIntakeSpeed(0.75, true);
                 useBeamBreak = true;
                 break;
+                
             case STOPPED:
                 setIndexPosition(IndexerPosition.STOPPED);
                 setIntakeSpeed(0, false);

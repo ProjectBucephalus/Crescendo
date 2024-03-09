@@ -156,9 +156,12 @@ public final class Constants {
 
         public static final double openLoopRamp = 0.4;
 
-        public static double pivotKP = 35; // 100
-        public static double pivotKI = 5; // 20
-        public static double pivotKD = 1; // 2 
+        public static final double pivotKP = 35; // 100
+        public static final double pivotKI = 5; // 20
+        public static final double pivotKD = 1; // 2 
+
+        /** The pivot position over which it is safe to shoot (i.e., unsafe to shoot under this angle) */
+        public static final int safeToShootOver = -20;
 
     }
 
