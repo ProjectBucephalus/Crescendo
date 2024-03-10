@@ -37,11 +37,19 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.BaseUnits;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class Swerve extends SubsystemBase 
 {
@@ -86,6 +94,51 @@ public class Swerve extends SubsystemBase
 
     private Optional<EstimatedRobotPose> visionEstimatedPoseFront, visionEstimatedPoseBack;
     private EstimatedRobotPose estimatedRobotPose;
+
+//         // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+//     private final MutableMeasure<Voltage> m_appliedVoltage = mutable(BaseUnits.Voltage.of(0));
+//     // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+//     private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+//     // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+//     private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+
+
+//     // Create a new SysId routine for characterizing the drive.
+//   private final SysIdRoutine m_sysIdRoutine =
+//       new SysIdRoutine(
+//           // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+//           new SysIdRoutine.Config(),
+//           new SysIdRoutine.Mechanism(
+//               // Tell SysId how to plumb the driving voltage to the motors.
+//               (Measure<Voltage> volts) -> {
+//                 m_leftMotor.setVoltage(volts.in(Volts));
+//                 m_rightMotor.setVoltage(volts.in(Volts));
+//               },
+//               // Tell SysId how to record a frame of data for each motor on the mechanism being
+//               // characterized.
+//               log -> {
+//                 // Record a frame for the left motors.  Since these share an encoder, we consider
+//                 // the entire group to be one motor.
+//                 log.motor("drive-left")
+//                     .voltage(
+//                         m_appliedVoltage.mut_replace(
+//                             m_leftMotor.get() * RobotController.getBatteryVoltage(), Volts))
+//                     .linearPosition(m_distance.mut_replace(m_leftEncoder.getDistance(), Meters))
+//                     .linearVelocity(
+//                         m_velocity.mut_replace(m_leftEncoder.getRate(), MetersPerSecond));
+//                 // Record a frame for the right motors.  Since these share an encoder, we consider
+//                 // the entire group to be one motor.
+//                 log.motor("drive-right")
+//                     .voltage(
+//                         m_appliedVoltage.mut_replace(
+//                             m_rightMotor.get() * RobotController.getBatteryVoltage(), Volts))
+//                     .linearPosition(m_distance.mut_replace(m_rightEncoder.getDistance(), Meters))
+//                     .linearVelocity(
+//                         m_velocity.mut_replace(m_rightEncoder.getRate(), MetersPerSecond));
+//               },
+//               // Tell SysId to make generated commands require this subsystem, suffix test state in
+//               // WPILog with this subsystem's name ("drive")
+//               this));
 
     public Swerve() {
         // Define and initialise gyro, as well as applying config
@@ -189,6 +242,24 @@ public class Swerve extends SubsystemBase
             }
         }
     }
+
+    //     /**
+    //  * Returns a command that will execute a quasistatic test in the given direction.
+    //  *
+    //  * @param direction The direction (forward or reverse) to run the test in
+    //  */
+    // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    //     return m_sysIdRoutine.quasistatic(direction);
+    // }
+
+    // /**
+    //  * Returns a command that will execute a dynamic test in the given direction.
+    //  *
+    //  * @param direction The direction (forward or reverse) to run the test in
+    //  */
+    // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    //     return m_sysIdRoutine.dynamic(direction);
+    // }
 
     /**
      * Swerve magic

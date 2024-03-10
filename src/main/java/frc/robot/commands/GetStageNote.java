@@ -44,7 +44,7 @@ public class GetStageNote extends GetNote {
                         new GetBeamBreak(s_Intake),
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
-                                new WaitCommand(0.2),
+                                new WaitCommand(0.1),
                                 new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter))),
                 new ShootSequence(s_Shooter, s_Intake));
     }
