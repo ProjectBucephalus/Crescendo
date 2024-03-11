@@ -22,11 +22,9 @@ public class IntakeSpit extends Command {
         s_Intake.setIntakeStatus(IntakeStatus.OUT);
     }
 
-    /**
-     * stops the intake
-     * @param interrupted
-     */
-    public void end(boolean interrupted) {
-        s_Intake.setIntakeStatus(IntakeStatus.STOPPED);
+
+    @Override
+    public boolean isFinished() {
+        return true;
     }
 }
