@@ -43,13 +43,14 @@ public class Pivot extends SubsystemBase {
 
     public DigitalInput limitSwitches[];
 
-    boolean leftDeployPressed = false;
-    boolean leftStowPressed = false;
-    boolean rightDeployPressed = false;
-    boolean rightStowPressed = false;
+    boolean deployPressed = false;
+    boolean stowPressed = false;
 
     private Swerve s_Swerve;
     private Pose2d pose;
+
+    // Sets the offset of the pivot so that if the limit switches are pressed 
+    private double positionOffset = 0;
 
     /**
      * Set to false on robot init. This is set to true once any limit is hit to
@@ -89,22 +90,6 @@ public class Pivot extends SubsystemBase {
         mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
         mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
         mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
-
-        // Creates list containing all the limit switch flags
-        limitSwitchFlags = new boolean[] {
-                leftDeployPressed,
-                leftStowPressed,
-                rightDeployPressed,
-                rightStowPressed
-        };
-
-        // Creates list containing all the limit switch objects
-        limitSwitches = new DigitalInput[] {
-                leftDeploySwitch,
-                leftStowSwitch,
-                rightDeploySwitch,
-                rightStowSwitch
-        };
 
     }
 
@@ -166,7 +151,7 @@ public class Pivot extends SubsystemBase {
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
         // double motorAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
         mLeftPivot.setControl(
-                anglePosition.withPosition((inputAngle / 360))
+                anglePosition.withPosition((inputAngle / 360)-positionOffset)
 
         // .withLimitReverseMotion(leftStowSwitch.get())
         // .withLimitReverseMotion(rightStowSwitch.get())
@@ -229,9 +214,8 @@ public class Pivot extends SubsystemBase {
      * @author Alec
      */
     public void setArmMotorSpeeds(double speed) {
-        if ((speed < 0 && !leftDeploySwitch.get() && !rightDeploySwitch.get())
-                ||
-                (speed > 0 && !leftStowSwitch.get() && !rightStowSwitch.get())) {
+        if ((speed < 0 && !leftStowSwitch.get() && !rightStowSwitch.get())
+                || (speed > 0 && !leftDeploySwitch.get() && !rightDeploySwitch.get())) {
             mLeftPivot.set(speed);
             // mRightPivot.set(speed); // mRightPivot is set as reversed follower of
             // mLeftPivot
@@ -258,19 +242,34 @@ public class Pivot extends SubsystemBase {
         // as their deployed positions
 
         // This causes command scheduler loop overruns for some reason
-        // if (leftDeploySwitch.get() || rightDeploySwitch.get())
-        // {
+        if ((leftDeploySwitch.get() || rightDeploySwitch.get()) && !deployPressed) {
+            //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
+            deployPressed = true;
+            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
+            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
+        }
+        else if (!leftDeploySwitch.get() && !rightDeploySwitch.get()) {
+            //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
+            deployPressed = false;
+        }
 
-        // mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
-        // mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
-        // }
+        if ((leftStowSwitch.get() || rightStowSwitch.get()) && !stowPressed) {
+            //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
+            stowPressed = true;
+            mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
+            mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
+        }
+        else if (!leftStowSwitch.get() && !rightStowSwitch.get()) {
+            //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
+            stowPressed = false;
+        }
 
-        // // If either inner limit switch is pressed, calibrates current motor
+        // If either inner limit switch is pressed, calibrates current motor
         // positions as their stowed positions
-        // if (leftStowSwitch.get() || rightStowSwitch.get())
-        // {
-        // mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
-        // mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
+        // if (leftStowSwitch.get() || rightStowSwitch.get()) {
+            //positionOffset = (Constants.Intake.pivotStowPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
+            // mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
+            // mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
         // }
 
         // Not being used currently.
