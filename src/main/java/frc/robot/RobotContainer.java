@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Utilities.Limelight;
 import frc.robot.VisionCommands.AimToSpeakerNoDrive;
@@ -190,9 +192,9 @@ public class RobotContainer {
 
         coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake));
         coDriver.rightTrigger().onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
-        coDriver.rightBumper() .whileTrue(new IntakeSpit(s_Intake)); //just index roller feed in
+        coDriver.rightBumper() .onTrue(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.IN))).onFalse(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.STOPPED)));
 
-        coDriver.leftBumper()  .onTrue(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.IN))).onFalse(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.STOPPED)));
+        coDriver.leftBumper()  .onTrue(new IntakeSuck(s_Intake).andThen(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.OUT)))).onFalse(new IntakeStop(s_Intake)); 
         coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
         coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
         coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
