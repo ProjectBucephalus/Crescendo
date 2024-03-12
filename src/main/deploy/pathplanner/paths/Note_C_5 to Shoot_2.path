@@ -39,11 +39,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -167.22,
+    "rotation": 21.1121143643893,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "note to shoot",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

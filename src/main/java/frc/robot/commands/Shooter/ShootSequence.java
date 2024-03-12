@@ -52,8 +52,8 @@ public class ShootSequence extends Command {
             s_Shooter.setShooterState(ShooterState.RUNNING);
 
             // Total time allowed for the shooter to spin up and shoot
-            SHOOT_TIME = 2; // seconds
-            SHOOT_SPIN_UP_TIME = 1.3; // seconds
+            SHOOT_TIME = 1; // seconds
+            SHOOT_SPIN_UP_TIME = 0; // seconds
         } else if (s_Shooter.getShootPosition() == ShootPosition.AMP) {
             // amp shot
             SHOOT_TIME = 1.5; // seconds
@@ -103,6 +103,6 @@ public class ShootSequence extends Command {
      */
     @Override
     public boolean isFinished() {
-        return (m_timer.hasElapsed(SHOOT_TIME) || s_Intake.getBeamBreak()) ;
+        return (m_timer.hasElapsed(SHOOT_TIME) || s_Intake.getBeamBreak());
     }
 }

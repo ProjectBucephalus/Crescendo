@@ -24,8 +24,6 @@ public class Intake extends SubsystemBase
     // Declaration of the beam break digital input
     public DigitalInput BeamBreak = new DigitalInput(9);
 
-    // Declaration of a config object, representing configuration settings for a TalonFX
-    public TalonFXConfiguration IndexerFXConfig = new TalonFXConfiguration();
 
     // Booleans regarding the beam braek
     private boolean beamBreakBool = false;
@@ -77,13 +75,6 @@ public class Intake extends SubsystemBase
         // Displays values in Smart Dashboard
         SmartDashboard.putNumber("topShooterSpeed", 1);
         SmartDashboard.putNumber("bottomShooterSpeed", 1);
-
-        // Sets values in the config object
-        IndexerFXConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = Constants.Swerve.openLoopRamp;
-        IndexerFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = Constants.Swerve.openLoopRamp;
-        
-        // Applies the config object to the Indexer motor
-        mIndexer.getConfigurator().apply(IndexerFXConfig);
         
         // SmartDashboard.putNumber("pivotPosition", 1.2);
     }
@@ -159,14 +150,14 @@ public class Intake extends SubsystemBase
                 break;
         
             case OUT:
-                mIndexer.set(-0.25);
+                mIndexer.set(-0.4);
                 
                 break;
             case STOPPED:
                 mIndexer.set(0.0);
                 break;
             case IN_WITH_BEAM_BREAK:
-                mIndexer.set(-0.25);
+                mIndexer.set(-0.4);
                 break;
             case IN_FOR_SHOOTING:
                 mIndexer.set(1);
