@@ -11,6 +11,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
@@ -35,17 +36,19 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
                 Units.degreesToRadians(540), Units.degreesToRadians(720));
 
         addCommands(
+                new InstantCommand(()->s_Swerve.setVisionAlignmentBool(true)),
                 new PointToAngle(s_Swerve, targetLocation).withTimeout(3),
                 // Wait for the robot to align before pathfinding so the robot doesn't pathfind
                 // if the driver doesn't want to
-                new WaitCommand(1),
-                // Statically run the pathfinding and path following commands
+                new WaitCommand(0.5),
+                
 
-                AutoBuilder.pathfindThenFollowPath(
-                        path,
-                        constraints,
-                        0 // Rotation delay distance in meters. This is how far the robot should travel
-                          // before attempting to rotate.
+                // the driver should be quite close before aligning so no need to path find to pose.
+                // AutoBuilder.pathfindToPose(
+                //         path.getStartingDifferentialPose(),  constraints
+                // ),
+                AutoBuilder.followPath(
+                        path
                 ));
 
     }

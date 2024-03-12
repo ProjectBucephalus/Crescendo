@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -156,7 +157,8 @@ public final class Constants {
 
         public static final double openLoopRamp = 0.4;
 
-        public static double pivotKP = 35; // 100
+
+        public static double pivotKP = 45; // 100
         public static double pivotKI = 5; // 20
         public static double pivotKD = 1; // 2 
 
@@ -318,12 +320,12 @@ public final class Constants {
     }
 
     public static final class AutoConstants { // TODO
-        public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 4;
+        public static final double kMaxSpeedMetersPerSecond = 2;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI; // was pi?
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI; // was pi?
 
-        public static final double kPXController = 1;
+        public static final double kPXController = 1; // 2.9
         public static final double kPYController = 1;
         public static final double kPThetaController = 1;
 

@@ -27,8 +27,9 @@ public class MonitorForNote extends Command {
     private Translation2d m_notePosition;
     private int m_missedNoteCount;
     private double m_distanceToNote;
- 
-    public MonitorForNote(NoteVision noteVision, Supplier<Pose2d> poseProvider, Translation2d blueNotePosition, Command commandToCancel) {
+
+    public MonitorForNote(NoteVision noteVision, Supplier<Pose2d> poseProvider, Translation2d blueNotePosition,
+            Command commandToCancel) {
         m_poseProvider = poseProvider;
         m_blueNotePosition = blueNotePosition;
         m_noteVision = noteVision;
@@ -44,18 +45,22 @@ public class MonitorForNote extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        
+
         Pose2d robotPose = m_poseProvider.get();
         m_distanceToNote = robotPose.getTranslation().getDistance(m_notePosition);
 
-        if (m_distanceToNote >= NoteVision.MIN_VISIBLE_DISTANCE && m_distanceToNote <= NoteVision.MAX_VISIBLE_DISTANCE) {
-            if (m_noteVision.checkForNote(robotPose, m_notePosition)) 
+        if (m_distanceToNote >= NoteVision.MIN_VISIBLE_DISTANCE
+                && m_distanceToNote <= NoteVision.MAX_VISIBLE_DISTANCE) {
+            if (m_noteVision.checkForNote(robotPose, m_notePosition)) {
                 m_missedNoteCount = 0;
-            else
+            } else {
                 m_missedNoteCount++;
-        }
-        else
+            }
+
+        } else {
             m_missedNoteCount = 0;
+        }
+
     }
 
     // Called once the command ends or is interrupted.
@@ -72,11 +77,11 @@ public class MonitorForNote extends Command {
             return true;
         }
 
-        // if we are in vision range of the NOTE and have not seen it for N cycles, 
-        //  abort this command group
+        // if we are in vision range of the NOTE and have not seen it for N cycles,
+        // abort this command group
         if (m_missedNoteCount >= NUM_SUCCESSIVE_FAILURES) {
             System.out.println("MonitorForNote cancelling command. distance=" + m_distanceToNote);
-            if (m_commandToCancel != null) 
+            if (m_commandToCancel != null)
                 CommandScheduler.getInstance().cancel(m_commandToCancel);
             return true;
         }

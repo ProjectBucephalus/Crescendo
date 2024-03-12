@@ -114,4 +114,6 @@ public class Shooter extends SubsystemBase
         SmartDashboard.putString("Where am I shooting", getShootPosition().name());
         SmartDashboard.putString("Current State of Motors for sim", getShootPosition().name());
     }
+
+    
 }
