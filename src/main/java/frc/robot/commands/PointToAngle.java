@@ -31,7 +31,6 @@ public class PointToAngle extends Command {
     public PointToAngle(Swerve s_Swerve, Transform2d target) {
         this.s_Swerve = s_Swerve;
         targetRotation = target.getRotation().getDegrees();
-
     }
 
     @Override
@@ -78,8 +77,7 @@ public class PointToAngle extends Command {
 
     @Override
     public boolean isFinished() {
-        // return (Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
-        //         - Math.abs(calculateRequiredHeading())) < Constants.Swerve.ANGLE_TOLERANCE_DEGREES);
-        return false;
+        return (Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
+                 - Math.abs(calculateRequiredHeading())) < Constants.Swerve.ANGLE_TOLERANCE_DEGREES);
     }
 }

@@ -39,10 +39,10 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
 
         addCommands(
                 new InstantCommand(()->s_Swerve.setVisionAlignmentBool(true)),
-                new PointToAngle(s_Swerve, targetLocation).withTimeout(3),
                 // Wait for the robot to align before pathfinding so the robot doesn't pathfind
                 // if the driver doesn't want to
-                new WaitCommand(0.5),
+                new WaitCommand(0.5
+                ),
                 AutoBuilder.pathfindToPose(
                         path.getStartingDifferentialPose(),  constraints
                 ),
