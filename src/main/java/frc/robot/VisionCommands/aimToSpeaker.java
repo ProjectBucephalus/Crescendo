@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.SwerveConstants;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
@@ -53,7 +54,7 @@ public class aimToSpeaker extends Command {
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double brakeVal = MathUtil.applyDeadband(brakeSup.getAsDouble(), Constants.stickDeadband);
-        Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed);
+        Translation2d translation = new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed);
 
         s_Swerve.visionDrive(translation,
                 (calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getRadians()) * 70, true, brakeVal);
@@ -71,7 +72,7 @@ public class aimToSpeaker extends Command {
 
         s_Swerve.setWithinRequiredHeading(Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
                 - Math.abs(calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180))
-                        .getDegrees())) < Constants.Swerve.ANGLE_TOLERANCE_DEGREES);
+                        .getDegrees())) < SwerveConstants.ANGLE_TOLERANCE_DEGREES);
         SmartDashboard.putNumber("Is our auto aligned heading aligned?",
                 Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
                         - Math.abs(calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getDegrees())));

@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.IDConstants;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 /**
@@ -17,9 +19,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 public class Intake extends SubsystemBase 
 {
     // Declarations of all the motor controllers
-    public TalonFX mIntake = new TalonFX(Constants.Intake.mIntakeID);
-    public TalonFX mIndexer = new TalonFX(Constants.Intake.mIndexerID);
-    public VictorSPX mStabilser = new VictorSPX(Constants.Intake.mStabilserID);
+    public TalonFX mIntake = new TalonFX(IDConstants.Intooter.Intake.mIntakeID);
+    public TalonFX mIndexer = new TalonFX(IDConstants.Intooter.Intake.mIndexerID);
+    public VictorSPX mStabilser = new VictorSPX(IDConstants.Climber.mStabiliserID);
 
     // Declaration of the beam break digital input
     public DigitalInput BeamBreak = new DigitalInput(9);
