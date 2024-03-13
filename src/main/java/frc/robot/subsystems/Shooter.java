@@ -62,24 +62,22 @@ public class Shooter extends SubsystemBase
         
         switch (state) {
             case RUNNING:
-                driveDutyCycle.Output = 0.5;
+                driveDutyCycle.Output = Constants.Shooter.maxBottomShooterSpeed;
                 mBottomShooter.setControl(driveDutyCycle);                
 
-                driveDutyCycle.Output = 0.5;
+                driveDutyCycle.Output = Constants.Shooter.maxTopShooterSpeed;
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case STOPPED:
                 driveDutyCycle.Output = 0;
                 mBottomShooter.setControl(driveDutyCycle);
-
-                driveDutyCycle.Output = 0;
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case IDLE:
-                driveDutyCycle.Output = -0.3;
+                driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
 
-                driveDutyCycle.Output = -0.3;
+                driveDutyCycle.Output = -0;
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             default:
