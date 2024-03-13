@@ -26,11 +26,6 @@ public final class Constants {
 
     public static final double stickDeadband = 0.3;
 
-    /* Shooter Constants */
-    public static final double shooterAngleOffset = 15;
-    public static final double horizontalShooterAngle = 20;
-    public static final double mFlapMaxCurrent = 40;
-
     /* CAN IDs */
     public static final int pigeonID = 53;
 
@@ -168,13 +163,12 @@ public final class Constants {
         public static final int mTopShooterID = 15;
         public static final int mBottomShooterID = 23;
 
-        public static final double maxTopShooterSpeed = 0.8;
-        public static final double maxBottomShooterSpeed = 0.8; // AMP TOP: 0.450000 bottom: 0.05
+        public static final double maxTopShooterSpeed = 1;
+        public static final double maxBottomShooterSpeed = 1; // AMP TOP: 0.450000 bottom: 0.05
 
-        public static final double shooterIdleSpeed = 0.5;
+        public static final double shooterIdleSpeed = 0.25;
 
         public static final double horizontalShooterAngle = 20;
-        public static final double mFlapMaxCurrent = 40;
 
         public static final double openLoopRamp = 0;
     }
