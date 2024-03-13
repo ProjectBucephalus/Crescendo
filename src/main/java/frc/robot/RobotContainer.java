@@ -35,6 +35,8 @@ import frc.robot.commands.StabiliserBar;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
 import frc.robot.commands.BuddyClimb.StopBuddyClimber;
+import frc.robot.commands.Climber.ClimberExtend;
+import frc.robot.commands.Climber.ClimberRetract;
 import frc.robot.commands.Climber.LockClimber;
 import frc.robot.commands.Climber.MoveClimber;
 import frc.robot.commands.Climber.UnlockClimber;
@@ -55,6 +57,7 @@ import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Climber.ClimberPosition;
 import frc.robot.subsystems.Intake.IndexerPosition;
 import frc.robot.subsystems.Intake.StabiliserPos;
 
@@ -177,10 +180,12 @@ public class RobotContainer {
        
         /* Pass in driver for controller to receive rumble when note in intake*/
         driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake).andThen(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED)));
-        driver.povUp()         .onTrue(new UnlockClimber());
-        driver.povDown()       .onTrue(new LockClimber(s_Climber));
+        
         driver.povRight()      .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         driver.povLeft()       .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
+
+        driver.povUp()         .onTrue(new UnlockClimber(s_Climber));
+        driver.povDown()       .onTrue(new LockClimber(s_Climber));
        
         driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp")));
         driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.RIGHT_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage")));
@@ -199,15 +204,17 @@ public class RobotContainer {
         coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
         coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
         //coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
-        //d pard right: climber e stop.
         
-        coDriver.povLeft()     .whileTrue(new DeployBuddyClimber(s_Climber)).onFalse(new StopBuddyClimber(s_Climber));
-        // coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
+        coDriver.povLeft()     .onTrue(new DeployBuddyClimber(s_Climber)).onFalse(new StopBuddyClimber(s_Climber));
+
         // coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
+        // coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
+        coDriver.povRight()    .onTrue(new InstantCommand(() -> s_Climber.setClimberPosition(ClimberPosition.STOPPED)));
+        
         
         SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
             Pose2d currentPose = s_Swerve.getEstimatedPose();
-
+            
             // The rotation component in these poses represents the direction of travel
             //Pose2d startPos = new Pose2d(currentPose.getTranslation(), currentPose.getRotation());
             Pose2d startPos = currentPose;
@@ -218,7 +225,7 @@ public class RobotContainer {
             PathPlannerPath path = new PathPlannerPath(
                     bezierPoints,
                     new PathConstraints(
-                            4.0, 4.0,
+                            2.5, 2,
                             Units.degreesToRadians(360), Units.degreesToRadians(540)),
                     new GoalEndState(0.0, endPos.getRotation()));
 

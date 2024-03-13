@@ -1,7 +1,15 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -17,8 +25,32 @@ public class Climber extends SubsystemBase
     public TalonFX mRightClimber = new TalonFX(Constants.Climber.mRightClimbID);
     public TalonFX mBuddyClimb = new TalonFX(Constants.Intake.mBuddyClimbID);
 
-    public Climber() 
-    {}
+    public DigitalInput leftClimberSwitch = new DigitalInput(5);
+    public DigitalInput rightClimberSwitch = new DigitalInput(6);
+    
+    public static TalonFXConfiguration leftClimbMotorFXConfig = new TalonFXConfiguration();
+    public static TalonFXConfiguration rightClimbMotorFXConfig = new TalonFXConfiguration();
+
+    private final PositionVoltage anglePosition = new PositionVoltage(0);
+
+    public boolean isLocked = true;
+    public boolean leftCalibrated = true;
+    public boolean rightCalibrated = true;
+
+    public Climber() {
+        leftClimbMotorFXConfig.Slot0.kP = 100;
+        leftClimbMotorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        leftClimbMotorFXConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;  
+        mLeftClimber.getConfigurator().apply(leftClimbMotorFXConfig);
+        mLeftClimber.getConfigurator().setPosition(0);
+
+        rightClimbMotorFXConfig.Slot0.kP = 100;
+        rightClimbMotorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;  
+        rightClimbMotorFXConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;        
+        mRightClimber.getConfigurator().apply(rightClimbMotorFXConfig);
+        mRightClimber.getConfigurator().setPosition(0);
+    }
+    
 
     /** 
      * Enum representing the position of the climber 
@@ -28,7 +60,8 @@ public class Climber extends SubsystemBase
     {
         UP,
         DOWN,
-    }
+        STOPPED
+    };
 
     /** 
      * Enum representing the status of the RoboWrangler (Spinning/Not spinning)
@@ -48,19 +81,17 @@ public class Climber extends SubsystemBase
     {
         LOCKED,
         UNLOCKED
-    }
-
-    private ClimberStatus climberStatus; // Unused
-    private ClimberPosition climberPosition; // Unused
+    };
 
     /** 
-     * Sets the speeds of both climber sides, accounting for inversion
+     * Sets the position of both climbers.
      * @author 5985
      */
-    public void setSpeed(double speed) 
+    public void setPosition(double pos) 
     {
-        mLeftClimber.set(speed);
-        mRightClimber.set(-speed);
+        
+        mLeftClimber.setControl(anglePosition.withPosition(pos));
+        mLeftClimber.setControl(anglePosition.withPosition(pos));
     }
 
     /** 
@@ -68,15 +99,19 @@ public class Climber extends SubsystemBase
      * @param pos An instance of the ClimberPosition enum
      * @author 5985
      */
-    public void setPosition(ClimberPosition pos) 
+    public void setClimberPosition(ClimberPosition pos) 
     {
         switch (pos) 
         {
             case UP:
-                
+                setPosition(Constants.Climber.climberUpPos);
                 break;
             case DOWN:
-                
+                setPosition(Constants.Climber.climberDownPos);
+                break;
+            case STOPPED:
+                mLeftClimber.set(0);
+                mRightClimber.set(0);
                 break;
             default:
                 break;
@@ -93,10 +128,10 @@ public class Climber extends SubsystemBase
         switch (status) 
         {
             case LOCKED:
-                
+                isLocked = true;
                 break;
             case UNLOCKED:
-                
+                isLocked = false;
                 break;
             default:
                 break;
@@ -123,6 +158,16 @@ public class Climber extends SubsystemBase
         }
     }
 
+
+    public boolean getLeftLimit() {
+        return leftClimberSwitch.get();
+    }
+
+
+    public boolean getRightLimit() {
+        return rightClimberSwitch.get();
+    }
+
     /**
      * Gets the position of the climber in radians
      * @return The position of the climber in radians
@@ -130,8 +175,37 @@ public class Climber extends SubsystemBase
      */
     public double getPosition() 
     {
-        SmartDashboard.putNumber("ClimberPosition", mLeftClimber.getPosition().getValueAsDouble());
         return (mLeftClimber.getPosition().getValueAsDouble());
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("leftClimberPosition", mLeftClimber.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("rightClimberPosition", mRightClimber.getPosition().getValueAsDouble());
+
+        SmartDashboard.putNumber("leftClimberSwitch", mLeftClimber.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("RightClimberSwitch", mRightClimber.getPosition().getValueAsDouble());
+        
+        SmartDashboard.putBoolean("Climber Locked?", isLocked);
+
+        if (isLocked) {
+            setPosition(0);
+        }
+
+        if (getLeftLimit() && !leftCalibrated) {
+            mLeftClimber.getConfigurator().setPosition(0);
+            leftCalibrated = true;
+        } else if (!getLeftLimit()) {
+            leftCalibrated = false;
+        }
+
+        if (getRightLimit() && !rightCalibrated) {
+            mRightClimber.getConfigurator().setPosition(0);
+            rightCalibrated = true;
+        } else if (!getRightLimit()) {
+            rightCalibrated = false;
+        }
+        
     }
 
     

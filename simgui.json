@@ -20,7 +20,9 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Notes Poses": "Field2d",
       "/SmartDashboard/On-the-fly path": "Command",
-      "/SmartDashboard/VisionSystemSim-NoteVision/Sim Field": "Field2d"
+      "/SmartDashboard/Start Location": "String Chooser",
+      "/SmartDashboard/VisionSystemSim-NoteVision/Sim Field": "Field2d",
+      "/SmartDashboard/m_chosenAuto": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Field": {

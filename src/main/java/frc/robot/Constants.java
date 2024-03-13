@@ -158,7 +158,7 @@ public final class Constants {
         public static final double openLoopRamp = 0.4;
 
 
-        public static double pivotKP = 45; // 100
+        public static double pivotKP = 55; // 100
         public static double pivotKI = 5; // 20
         public static double pivotKD = 1; // 2 
 
@@ -187,6 +187,7 @@ public final class Constants {
         public static final double maxExtensionSpoolRotations = 3.2;
         public static final double motorToSpoolGearRatio = 100;
         public static final double climberDownPos = 0;
+        public static final double climberUpPos = 0;
 
     }
 
