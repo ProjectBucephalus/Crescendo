@@ -181,7 +181,7 @@ public final class Constants {
         public static final double maxExtensionSpoolRotations = 3.2;
         public static final double motorToSpoolGearRatio = 100;
         public static final double climberDownPos = 0;
-        public static final double climberUpPos = 0;
+        public static final double climberUpPos = maxExtensionSpoolRotations * motorToSpoolGearRatio;
 
     }
 

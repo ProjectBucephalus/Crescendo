@@ -91,7 +91,7 @@ public class Climber extends SubsystemBase
     {
         
         mLeftClimber.setControl(anglePosition.withPosition(pos));
-        mLeftClimber.setControl(anglePosition.withPosition(pos));
+        mRightClimber.setControl(anglePosition.withPosition(pos));
     }
 
     /** 
@@ -183,8 +183,8 @@ public class Climber extends SubsystemBase
         SmartDashboard.putNumber("leftClimberPosition", mLeftClimber.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("rightClimberPosition", mRightClimber.getPosition().getValueAsDouble());
 
-        SmartDashboard.putNumber("leftClimberSwitch", mLeftClimber.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("RightClimberSwitch", mRightClimber.getPosition().getValueAsDouble());
+        SmartDashboard.putBoolean("leftClimberSwitch", getLeftLimit());
+        SmartDashboard.putBoolean("RightClimberSwitch", getRightLimit());
         
         SmartDashboard.putBoolean("Climber Locked?", isLocked);
 
