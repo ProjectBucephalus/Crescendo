@@ -45,8 +45,8 @@ public class GetStageNote extends GetNote {
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
                                 new WaitCommand(0.1),
-                                new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter))),
-                new ShootSequence(s_Shooter, s_Intake));
+                                new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve))),
+                new ShootSequence(s_Shooter, s_Intake, s_Swerve));
     }
 
     private PathPlannerPath getInitialPath() {

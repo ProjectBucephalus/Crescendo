@@ -163,10 +163,10 @@ public final class Constants {
         public static final int mTopShooterID = 15;
         public static final int mBottomShooterID = 23;
 
-        public static final double maxTopShooterSpeed = 1;
-        public static final double maxBottomShooterSpeed = 1; // AMP TOP: 0.450000 bottom: 0.05
+        public static final double runningTopShooterSpeed = 1;
+        public static final double runningBottomShooterSpeed = 1; // AMP TOP: 0.450000 bottom: 0.05
 
-        public static final double shooterIdleSpeed = 0.25;
+        public static final double shooterIdleSpeed = 0.5;
 
         public static final double horizontalShooterAngle = 20;
 

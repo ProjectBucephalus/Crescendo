@@ -66,8 +66,8 @@ public class GetCentreNote extends GetNote {
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
                                 s_Swerve.makePathFollowingCommand(m_returnPath)
-                                        .andThen(new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter)))),
-                new ShootSequence(s_Shooter, s_Intake));
+                                        .andThen(new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve)))),
+                new ShootSequence(s_Shooter, s_Intake, s_Swerve));
     }
 
     private PathPlannerPath getInitialPath() {

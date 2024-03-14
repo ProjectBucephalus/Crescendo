@@ -22,7 +22,7 @@ public class GetMulitNote extends SequentialCommandGroup {
             Shooter s_Shooter, Pivot s_Pivot, Intake s_Intake, Climber s_Climber) {
 
         // Shoot the preloaded note.
-        addCommands(new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter));
+        addCommands(new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve));
         
 
         // add all the fetching+shooting NOTE blocks

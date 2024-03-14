@@ -195,7 +195,7 @@ public class RobotContainer {
         
         /* Co-Driver Buttons */
 
-        coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake));
+        coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
         coDriver.rightTrigger().onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
         coDriver.rightBumper() .onTrue(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.IN))).onFalse(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.STOPPED)));
 

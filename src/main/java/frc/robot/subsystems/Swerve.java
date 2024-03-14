@@ -488,6 +488,17 @@ public class Swerve extends SubsystemBase
     }
 
     /**
+     * Returns true if we are currently auto aligning. 
+     * 
+     * @return if we are auto aligning.
+     */
+    public boolean getVisionAlignmentBool() 
+    {
+        return usingVisionAlignment;
+    }
+
+
+    /**
      * Gets the current speed of the robot
      * @return A ChassisSpeeds object representing the current speed of the robot chassis
      * @author Unknown
