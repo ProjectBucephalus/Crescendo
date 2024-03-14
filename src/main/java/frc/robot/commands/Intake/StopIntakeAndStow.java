@@ -2,11 +2,12 @@ package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
 
 /**
- * intake stow command
+ * Intake stow command
  * @author 5985
  */
 public class StopIntakeAndStow extends Command {
@@ -28,7 +29,7 @@ public class StopIntakeAndStow extends Command {
     @Override
     public void execute() {
         s_Pivot.setPosition(PivotPosition.STOWED);
-        s_Intake.setIntakeSpeed(0);
+        s_Intake.setIntakeStatus(IntakeStatus.STOPPED);
     }
 
     // Called once the command ends or is interrupted.
