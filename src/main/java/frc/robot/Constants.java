@@ -124,6 +124,12 @@ public final class Constants {
         public static double angleKP;
         public static double angleKI;
         public static double angleKD;
+
+        public static final double pivotKP = 0.3;
+        public static final double pivotKI = 0;
+        public static final double pivotKD = 0.03;
+        public static final double pivotKG = 0.5;
+
         public static final int pivotCurrentLimit = 38;
         public static final int pivotCurrentThreshold = 65;
         public static final double pivotCurrentThresholdTime = 0.1;
@@ -133,9 +139,9 @@ public final class Constants {
         public static final double openLoopRamp = 0.4;
 
 
-        public static double pivotKP = 45; // 100
-        public static double pivotKI = 5; // 20
-        public static double pivotKD = 1; // 2 
+        //public static double pivotKP = 45; // 100
+        //public static double pivotKI = 5; // 20
+        //public static double pivotKD = 1; // 2 
 
     }
 
