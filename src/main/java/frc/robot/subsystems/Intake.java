@@ -62,7 +62,7 @@ public class Intake extends SubsystemBase
      * (Stopped, spinning inwards, spinning outwards, spinning inwards with beam break control, or spinning inwards to feed for shooting)
      * @author 5985
      */
-    public enum IndexerPosition 
+    public enum IndexerState 
     {
         STOPPED,
         IN,
@@ -104,28 +104,28 @@ public class Intake extends SubsystemBase
         switch (status) 
         {
             case IN_FOR_SHOOTING:
-                setIndexPosition(IndexerPosition.IN_FOR_SHOOTING);
+                setIndexerState(IndexerState.IN_FOR_SHOOTING);
                 setIntakeSpeed(1, false);
                 useBeamBreak = false;
                 break;
             case IN:
-                setIndexPosition(IndexerPosition.IN);
+                setIndexerState(IndexerState.IN);
                 setIntakeSpeed(0.50, false);
                 useBeamBreak = false;
                 break;
             case OUT:
-                setIndexPosition(IndexerPosition.OUT);
+                setIndexerState(IndexerState.OUT);
                 setIntakeSpeed(-0.50, false);
                 useBeamBreak = false;
                 break;
             case IN_WITH_BEAM_BREAK:
                 
-                setIndexPosition(IndexerPosition.IN_WITH_BEAM_BREAK);
+                setIndexerState(IndexerState.IN_WITH_BEAM_BREAK);
                 setIntakeSpeed(0.75, true);
                 useBeamBreak = true;
                 break;
             case STOPPED:
-                setIndexPosition(IndexerPosition.STOPPED);
+                setIndexerState(IndexerState.STOPPED);
                 setIntakeSpeed(0, false);
                 useBeamBreak = false;
                 break;
@@ -141,7 +141,7 @@ public class Intake extends SubsystemBase
      * @author 5985
      * @author Aidan
      */
-    public void setIndexPosition(IndexerPosition pos) 
+    public void setIndexerState(IndexerState pos) 
     {
         SmartDashboard.putString("indexer Status", pos.name());
         switch (pos) 

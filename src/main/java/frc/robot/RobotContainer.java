@@ -57,7 +57,7 @@ import frc.robot.subsystems.Pivot.PivotPosition;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Climber.ClimberPosition;
-import frc.robot.subsystems.Intake.IndexerPosition;
+import frc.robot.subsystems.Intake.IndexerState;
 import frc.robot.subsystems.Intake.StabiliserPos;
 
 /**
@@ -194,9 +194,9 @@ public class RobotContainer {
 
         coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
         coDriver.rightTrigger().onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
-        coDriver.rightBumper() .onTrue(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.IN))).onFalse(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.STOPPED)));
+        coDriver.rightBumper() .onTrue(new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.IN))).onFalse(new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.STOPPED)));
 
-        coDriver.leftBumper()  .onTrue(new IntakeSuck(s_Intake).andThen(new InstantCommand(() -> s_Intake.setIndexPosition(IndexerPosition.OUT)))).onFalse(new IntakeStop(s_Intake)); 
+        coDriver.leftBumper()  .onTrue(new IntakeSuck(s_Intake).andThen(new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.OUT)))).onFalse(new IntakeStop(s_Intake)); 
         coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
         coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
         coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));

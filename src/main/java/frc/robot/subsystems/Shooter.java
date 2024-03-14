@@ -78,7 +78,7 @@ public class Shooter extends SubsystemBase
                 driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
 
-                driveDutyCycle.Output = -0;
+                driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             default:
