@@ -29,10 +29,10 @@ public class Pivot extends SubsystemBase {
     // // not implimented yet, and may not be calibrated yet
 
     // limit switches
-    public DigitalInput leftDeploySwitch = new DigitalInput(IDConstants.Intooter.Pivot.leftOutSwitchID);
-    public DigitalInput leftStowSwitch = new DigitalInput(IDConstants.Intooter.Pivot.leftInSwitchID);
-    public DigitalInput rightDeploySwitch = new DigitalInput(IDConstants.Intooter.Pivot.rightOutSwitchID);
-    public DigitalInput rightStowSwitch = new DigitalInput(IDConstants.Intooter.Pivot.rightInSwitchID);
+    /**Normally Open / True = safe*/ public DigitalInput leftDeploySwitch = new DigitalInput(IDConstants.Intooter.Pivot.leftOutSwitchID);
+    /**Normally Open / True = safe*/ public DigitalInput leftStowSwitch = new DigitalInput(IDConstants.Intooter.Pivot.leftInSwitchID);
+    /**Normally Open / True = safe*/ public DigitalInput rightDeploySwitch = new DigitalInput(IDConstants.Intooter.Pivot.rightOutSwitchID);
+    /**Normally Open / True = safe*/ public DigitalInput rightStowSwitch = new DigitalInput(IDConstants.Intooter.Pivot.rightInSwitchID);
     // limits as checked during calibration, to account for encoder drift
     double intakeStowLimitPos;
     double intakeDeployLimitPos;
@@ -154,11 +154,11 @@ public class Pivot extends SubsystemBase {
         mLeftPivot.setControl(
                 anglePosition.withPosition((inputAngle / 360)-positionOffset)
 
-        // .withLimitReverseMotion(leftStowSwitch.get())
-        // .withLimitReverseMotion(rightStowSwitch.get())
+        .withLimitReverseMotion(!leftStowSwitch.get())
+        .withLimitReverseMotion(!rightStowSwitch.get())
 
-        // .withLimitForwardMotion(leftDeploySwitch.get())
-        // .withLimitForwardMotion(rightDeploySwitch.get())
+        .withLimitForwardMotion(!leftDeploySwitch.get())
+        .withLimitForwardMotion(!rightDeploySwitch.get())
         );
         mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true));
         // CTREConfigs already has Left and Right use opposite directions
@@ -215,8 +215,8 @@ public class Pivot extends SubsystemBase {
      * @author Alec
      */
     public void setArmMotorSpeeds(double speed) {
-        if ((speed < 0 && !leftStowSwitch.get() && !rightStowSwitch.get())
-                || (speed > 0 && !leftDeploySwitch.get() && !rightDeploySwitch.get())) {
+        if ((speed < 0 && leftStowSwitch.get() && rightStowSwitch.get())
+                || (speed > 0 && leftDeploySwitch.get() && rightDeploySwitch.get())) {
             mLeftPivot.set(speed);
             // mRightPivot.set(speed); // mRightPivot is set as reversed follower of
             // mLeftPivot
@@ -243,24 +243,24 @@ public class Pivot extends SubsystemBase {
         // as their deployed positions
 
         // This causes command scheduler loop overruns for some reason
-        if ((leftDeploySwitch.get() || rightDeploySwitch.get()) && !deployPressed) {
+        if ((!leftDeploySwitch.get() || !rightDeploySwitch.get()) && !deployPressed) {
             //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
             deployPressed = true;
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
-        else if (!leftDeploySwitch.get() && !rightDeploySwitch.get()) {
+        else if (leftDeploySwitch.get() && rightDeploySwitch.get()) {
             //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
             deployPressed = false;
         }
 
-        if ((leftStowSwitch.get() || rightStowSwitch.get()) && !stowPressed) {
+        if ((!leftStowSwitch.get() || !rightStowSwitch.get()) && !stowPressed) {
             //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
             stowPressed = true;
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
         }
-        else if (!leftStowSwitch.get() && !rightStowSwitch.get()) {
+        else if (leftStowSwitch.get() && rightStowSwitch.get()) {
             //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
             stowPressed = false;
         }
@@ -274,6 +274,7 @@ public class Pivot extends SubsystemBase {
         // }
 
         // Not being used currently.
+        // When fixing, be sure to invert switches to current setup
 
         // if (leftDeploySwitch.get()) {
         // leftDeployPressed = true;
