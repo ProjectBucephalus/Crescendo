@@ -64,7 +64,7 @@ public class Shooter extends SubsystemBase
         switch (state) {
             case RUNNING:
                 driveDutyCycle.Output = Constants.Shooter.runningBottomShooterSpeed;
-                mBottomShooter.setControl(driveDutyCycle);                
+                mBottomShooter.setControl(driveDutyCycle);
 
                 driveDutyCycle.Output = Constants.Shooter.runningTopShooterSpeed;
                 mTopShooter.setControl(driveDutyCycle);

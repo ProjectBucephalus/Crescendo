@@ -192,7 +192,7 @@ public class RobotContainer {
         
         /* Co-Driver Buttons */
 
-        coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
+        coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve)).onFalse(new ShooterIdle(s_Shooter));
         coDriver.rightTrigger().onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
         coDriver.rightBumper() .onTrue(new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.IN))).onFalse(new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.STOPPED)));
 
@@ -204,8 +204,8 @@ public class RobotContainer {
         
         coDriver.povLeft()     .onTrue(new DeployBuddyClimber(s_Climber)).onFalse(new StopBuddyClimber(s_Climber));
 
-        // coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
-        // coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
+        coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
+        coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
         coDriver.povRight()    .onTrue(new InstantCommand(() -> s_Climber.setClimberPosition(ClimberPosition.STOPPED)));
         
         

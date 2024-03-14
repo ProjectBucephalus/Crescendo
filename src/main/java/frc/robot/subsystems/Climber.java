@@ -146,10 +146,10 @@ public class Climber extends SubsystemBase
             double LSpeed = leftSpeed;
             double RSpeed = rightSpeed;
 
-            if (leftSpeed < 0 && (mLeftClimber.getPosition().getValueAsDouble() <= 0 || leftClimberSwitch.get()))
+            if (leftSpeed < 0 && (/*mLeftClimber.getPosition().getValueAsDouble() <= 0 ||*/ !leftClimberSwitch.get()))
                 {LSpeed = 0;}
-                
-            if (RSpeed < 0 && (mRightClimber.getPosition().getValueAsDouble() <= 0 || rightClimberSwitch.get()))
+
+            if (RSpeed < 0 && (/*mRightClimber.getPosition().getValueAsDouble() <= 0 ||*/ !rightClimberSwitch.get()))
                 {RSpeed = 0;}
             
             if (LSpeed > 0 && mLeftClimber.getPosition().getValueAsDouble() >= Constants.Climber.maxRevolutions)
@@ -237,7 +237,9 @@ public class Climber extends SubsystemBase
 
         if (isLocked) 
         {
-            setPosition(0);
+            //setPosition(0);
+            mLeftClimber.set(0);
+            mRightClimber.set(0);
         }
 
         if (getLeftLimit() && !leftCalibrated) 
