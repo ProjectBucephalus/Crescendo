@@ -91,10 +91,10 @@ public class Climber extends SubsystemBase
      */
     public void setPosition(double pos) 
     {   
-        mLeftClimber.setControl(anglePosition.withPosition(pos))
-                .withLimitReverseMotion(leftClimberSwitch.get());
-        mRightClimber.setControl(anglePosition.withPosition(pos))
-                .withLimitReverseMotion(rightClimberSwitch.get());
+        mLeftClimber.setControl(anglePosition.withPosition(pos)
+                .withLimitReverseMotion(leftClimberSwitch.get()));
+        mRightClimber.setControl(anglePosition.withPosition(pos)
+                .withLimitReverseMotion(rightClimberSwitch.get()));
     }
 
     /** 
