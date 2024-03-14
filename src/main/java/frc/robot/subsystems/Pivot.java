@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.IDConstants;
 import frc.robot.CTREConfigs;
 
 public class Pivot extends SubsystemBase {
@@ -22,16 +23,16 @@ public class Pivot extends SubsystemBase {
 
     private final PositionVoltage anglePosition = new PositionVoltage(0);
 
-    public TalonFX mBuddyClimb = new TalonFX(Constants.Intake.mBuddyClimbID);
+    public TalonFX mBuddyClimb = new TalonFX(IDConstants.Climber.mBuddyClimbID);
 
     // public ArmFeedforward feedforward = new ArmFeedforward(0.9, 0.45, 0.82, 0);
     // // not implimented yet, and may not be calibrated yet
 
     // limit switches
-    public DigitalInput leftDeploySwitch = new DigitalInput(Constants.Intake.leftOutSwitchID);
-    public DigitalInput leftStowSwitch = new DigitalInput(Constants.Intake.leftInSwitchID);
-    public DigitalInput rightDeploySwitch = new DigitalInput(Constants.Intake.rightOutSwitchID);
-    public DigitalInput rightStowSwitch = new DigitalInput(Constants.Intake.rightInSwitchID);
+    public DigitalInput leftDeploySwitch = new DigitalInput(IDConstants.Intooter.Pivot.leftOutSwitchID);
+    public DigitalInput leftStowSwitch = new DigitalInput(IDConstants.Intooter.Pivot.leftInSwitchID);
+    public DigitalInput rightDeploySwitch = new DigitalInput(IDConstants.Intooter.Pivot.rightOutSwitchID);
+    public DigitalInput rightStowSwitch = new DigitalInput(IDConstants.Intooter.Pivot.rightInSwitchID);
     // limits as checked during calibration, to account for encoder drift
     double intakeStowLimitPos;
     double intakeDeployLimitPos;
@@ -83,11 +84,11 @@ public class Pivot extends SubsystemBase {
         SmartDashboard.putNumber("ampPosition", -60);
 
         // Initialises motor controller objects and configures them
-        mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
+        mLeftPivot = new TalonFX(IDConstants.Intooter.Pivot.mLeftPivotID);
         mLeftPivot.getConfigurator().apply(CTREConfigs.leftPivotMotorFXConfig);
         mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
 
-        mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
+        mRightPivot = new TalonFX(IDConstants.Intooter.Pivot.mRightPivotID);
         mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
         mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
 

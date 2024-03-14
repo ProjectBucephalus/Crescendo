@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Utilities.Limelight;
 import frc.robot.VisionCommands.AimToSpeakerNoDrive;
 import frc.robot.VisionCommands.aimToSpeakerSequence;
 import frc.robot.commands.GetMulitNote;
@@ -99,8 +98,6 @@ public class RobotContainer {
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
     private final NoteVision s_NoteVision = new NoteVision();
-
-    private final Limelight m_lime = new Limelight("limelight");
 
     private final SendableChooser<String> m_chosenAuto = new SendableChooser<>();
     private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();

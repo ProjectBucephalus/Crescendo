@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.IDConstants;
 
 public class Shooter extends SubsystemBase 
 {
@@ -13,8 +14,8 @@ public class Shooter extends SubsystemBase
     private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
 
 
-    public TalonFX mTopShooter = new TalonFX(Constants.Shooter.mTopShooterID);
-    public TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
+    public TalonFX mTopShooter = new TalonFX(IDConstants.Intooter.Shooter.mTopShooterID);
+    public TalonFX mBottomShooter = new TalonFX(IDConstants.Intooter.Shooter.mBottomShooterID);
 
     // Sets the starting shooter aiming position to the speaker
     private ShootPosition shooterMode = ShootPosition.SPEAKER;

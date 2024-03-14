@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.IDConstants;
 
 /**
  * The Subsystem for the climber. Handles all climber movements as well as the RoboWrangler/Buddy Climber
@@ -21,9 +22,9 @@ import frc.robot.Constants;
 public class Climber extends SubsystemBase 
 {
     // Declarations of all the motor controllers
-    public TalonFX mLeftClimber = new TalonFX(Constants.Climber.mLeftClimbID);
-    public TalonFX mRightClimber = new TalonFX(Constants.Climber.mRightClimbID);
-    public TalonFX mBuddyClimb = new TalonFX(Constants.Intake.mBuddyClimbID);
+    public TalonFX mLeftClimber = new TalonFX(IDConstants.Climber.mLeftClimbID);
+    public TalonFX mRightClimber = new TalonFX(IDConstants.Climber.mRightClimbID);
+    public TalonFX mBuddyClimb = new TalonFX(IDConstants.Climber.mBuddyClimbID);
 
     public DigitalInput leftClimberSwitch = new DigitalInput(5);
     public DigitalInput rightClimberSwitch = new DigitalInput(6);
@@ -91,7 +92,7 @@ public class Climber extends SubsystemBase
     {
         
         mLeftClimber.setControl(anglePosition.withPosition(pos));
-        mLeftClimber.setControl(anglePosition.withPosition(pos));
+        mRightClimber.setControl(anglePosition.withPosition(pos));
     }
 
     /** 
@@ -183,8 +184,8 @@ public class Climber extends SubsystemBase
         SmartDashboard.putNumber("leftClimberPosition", mLeftClimber.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("rightClimberPosition", mRightClimber.getPosition().getValueAsDouble());
 
-        SmartDashboard.putNumber("leftClimberSwitch", mLeftClimber.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("RightClimberSwitch", mRightClimber.getPosition().getValueAsDouble());
+        SmartDashboard.putBoolean("leftClimberSwitch", getLeftLimit());
+        SmartDashboard.putBoolean("RightClimberSwitch", getRightLimit());
         
         SmartDashboard.putBoolean("Climber Locked?", isLocked);
 

@@ -3,7 +3,9 @@ package frc.robot.subsystems;
 import frc.robot.SwerveModule;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.IDConstants;
 import frc.robot.RobotContainer;
+import frc.robot.SwerveConstants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -81,7 +83,7 @@ public class Swerve extends SubsystemBase
     private final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
             new PIDConstants(Constants.AutoConstants.kPXController),
             new PIDConstants(Constants.AutoConstants.kPYController), Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-            Constants.Swerve.trackWidth, new ReplanningConfig());
+            SwerveConstants.trackWidth, new ReplanningConfig());
 
     /** List of swerve module motors */
     public SwerveModule[] mSwerveMods;
@@ -142,22 +144,22 @@ public class Swerve extends SubsystemBase
 
     public Swerve() {
         // Define and initialise gyro, as well as applying config
-        gyro = new Pigeon2(Constants.pigeonID);
+        gyro = new Pigeon2(IDConstants.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
 
         // Define and initialise list of swerve modules
         mSwerveMods = new SwerveModule[] {
-                new SwerveModule(0, Constants.Swerve.Mod0.constants),
-                new SwerveModule(1, Constants.Swerve.Mod1.constants),
-                new SwerveModule(2, Constants.Swerve.Mod2.constants),
-                new SwerveModule(3, Constants.Swerve.Mod3.constants)
+                new SwerveModule(0, SwerveConstants.Mod0.constants),
+                new SwerveModule(1, SwerveConstants.Mod1.constants),
+                new SwerveModule(2, SwerveConstants.Mod2.constants),
+                new SwerveModule(3, SwerveConstants.Mod3.constants)
         };
 
         // Define and initialise pose estimator
-        swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
+        swerveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
         poseEstimator = new SwerveDrivePoseEstimator(
-                Constants.Swerve.swerveKinematics,
+                SwerveConstants.swerveKinematics,
                 getGyroYaw(),
                 getModulePositions(),
                 new Pose2d(),
@@ -216,7 +218,7 @@ public class Swerve extends SubsystemBase
     {
         if (!usingVisionAlignment) 
         {
-            SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates
+            SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates
             (
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds
                 (
@@ -234,7 +236,7 @@ public class Swerve extends SubsystemBase
             );
             
             SwerveDriveKinematics.desaturateWheelSpeeds
-                (swerveModuleStates, Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
+                (swerveModuleStates, SwerveConstants.maxSpeed * (map(brakeVal, 0, 1, SwerveConstants.brakeIntensity, 1)));
             
             for (SwerveModule mod : mSwerveMods) 
             {
@@ -272,7 +274,7 @@ public class Swerve extends SubsystemBase
      */
     public void visionDrive(Translation2d translation, double rotation, boolean isOpenLoop, double brakeVal) 
     {
-        SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates
+        SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates
         (
             ChassisSpeeds.fromFieldRelativeSpeeds
             (
@@ -283,7 +285,7 @@ public class Swerve extends SubsystemBase
             )
         );
         SwerveDriveKinematics.desaturateWheelSpeeds
-            (swerveModuleStates, Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
+            (swerveModuleStates, SwerveConstants.maxSpeed * (map(brakeVal, 0, 1, SwerveConstants.brakeIntensity, 1)));
         for (SwerveModule mod : mSwerveMods) 
         {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
@@ -301,12 +303,12 @@ public class Swerve extends SubsystemBase
      */
     public void ChoreoDrive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) 
     {
-        var swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates
+        var swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates
         (
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rot)
         );
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
         for (SwerveModule mod : mSwerveMods) 
         {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], true);
@@ -321,7 +323,7 @@ public class Swerve extends SubsystemBase
      */
     public void setModuleStates(SwerveModuleState[] desiredStates) 
     {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.maxSpeed);
 
         for (SwerveModule mod : mSwerveMods) 
         {
@@ -505,7 +507,7 @@ public class Swerve extends SubsystemBase
      */
     public ChassisSpeeds getRobotRelativeSpeeds() 
     {
-        return Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
+        return SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
     /**
@@ -518,7 +520,7 @@ public class Swerve extends SubsystemBase
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
-        SwerveModuleState[] targetStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(targetSpeeds);
+        SwerveModuleState[] targetStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
         setModuleStates(targetStates);
     }
 

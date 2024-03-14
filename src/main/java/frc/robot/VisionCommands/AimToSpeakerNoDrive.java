@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.SwerveConstants;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Pivot.PivotPosition;
@@ -31,7 +32,7 @@ public class AimToSpeakerNoDrive extends Command {
 
     @Override
     public void execute() {
-        Translation2d translation = new Translation2d(0, 0).times(Constants.Swerve.maxSpeed);
+        Translation2d translation = new Translation2d(0, 0).times(SwerveConstants.maxSpeed);
         s_Swerve.drive(translation, (calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getRadians()) * 70, false, true, 0.0);
         s_Pivot.setPosition(PivotPosition.SPEAKER);
         s_Pivot.setDesiredPostion(-calculatedRequiredShooterAngle());
