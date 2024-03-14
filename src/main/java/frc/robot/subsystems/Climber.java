@@ -61,7 +61,8 @@ public class Climber extends SubsystemBase
     {
         UP,
         DOWN,
-        STOPPED
+        STOPPED,
+        MANUAL
     };
 
     /** 
@@ -118,6 +119,8 @@ public class Climber extends SubsystemBase
                     mLeftClimber.set(0);
                     mRightClimber.set(0);
                     break;
+                case MANUAL:
+                    break;
                 default:
                     break;
             }
@@ -126,6 +129,37 @@ public class Climber extends SubsystemBase
         {
             mLeftClimber.set(0);
             mRightClimber.set(0);
+        }
+    }
+
+    public void climberManual(double speed)
+    {
+        climberManual(speed, speed);
+    }
+
+    public void climberManual(double leftSpeed, double rightSpeed)
+    {
+        if (!isLocked)
+        {
+            setClimberPosition(ClimberPosition.MANUAL);
+
+            double LSpeed = leftSpeed;
+            double RSpeed = rightSpeed;
+
+            if (leftSpeed < 0 && (mLeftClimber.getPosition().getValueAsDouble() <= 0 || leftClimberSwitch.get()))
+                {LSpeed = 0;}
+                
+            if (RSpeed < 0 && (mRightClimber.getPosition().getValueAsDouble() <= 0 || rightClimberSwitch.get()))
+                {RSpeed = 0;}
+            
+            if (LSpeed > 0 && mLeftClimber.getPosition().getValueAsDouble() >= Constants.Climber.maxRevolutions)
+                {LSpeed = 0;}
+
+            if (RSpeed > 0 && mRightClimber.getPosition().getValueAsDouble() >= Constants.Climber.maxRevolutions)
+                {RSpeed = 0;}
+            
+            mLeftClimber.set(LSpeed);
+            mRightClimber.set(RSpeed);
         }
     }
     
