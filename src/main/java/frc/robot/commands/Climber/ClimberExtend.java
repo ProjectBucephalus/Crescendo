@@ -10,11 +10,12 @@ import frc.robot.subsystems.Climber.ClimberPosition;
  * 
  * @author 5985
  */
-public class ClimberExtend extends Command {
-
+public class ClimberExtend extends Command 
+{
     public Climber s_Climber;
 
-    public ClimberExtend(Climber s_Climber) {
+    public ClimberExtend(Climber s_Climber) 
+    {
         this.s_Climber = s_Climber;
         addRequirements(s_Climber);
     }
@@ -23,7 +24,8 @@ public class ClimberExtend extends Command {
 
     }
 
-    public void execute() {
+    public void execute() 
+    {
         s_Climber.setClimberPosition(ClimberPosition.UP);
     }
 

@@ -86,13 +86,15 @@ public class Climber extends SubsystemBase
 
     /** 
      * Sets the position of both climbers.
+     * @param pos The rotations of the climber motor. 0 is stow, ~30 is extended
      * @author 5985
      */
     public void setPosition(double pos) 
-    {
-        
-        mLeftClimber.setControl(anglePosition.withPosition(pos));
-        mRightClimber.setControl(anglePosition.withPosition(pos));
+    {   
+        mLeftClimber.setControl(anglePosition.withPosition(pos))
+                .withLimitReverseMotion(leftClimberSwitch.get());
+        mRightClimber.setControl(anglePosition.withPosition(pos))
+                .withLimitReverseMotion(rightClimberSwitch.get());
     }
 
     /** 
@@ -102,20 +104,28 @@ public class Climber extends SubsystemBase
      */
     public void setClimberPosition(ClimberPosition pos) 
     {
-        switch (pos) 
+        if (!isLocked)
         {
-            case UP:
-                setPosition(Constants.Climber.climberUpPos);
-                break;
-            case DOWN:
-                setPosition(Constants.Climber.climberDownPos);
-                break;
-            case STOPPED:
-                mLeftClimber.set(0);
-                mRightClimber.set(0);
-                break;
-            default:
-                break;
+            switch (pos) 
+            {
+                case UP:
+                    setPosition(Constants.Climber.climberUpPos);
+                    break;
+                case DOWN:
+                    setPosition(Constants.Climber.climberDownPos);
+                    break;
+                case STOPPED:
+                    mLeftClimber.set(0);
+                    mRightClimber.set(0);
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            mLeftClimber.set(0);
+            mRightClimber.set(0);
         }
     }
     
@@ -137,6 +147,7 @@ public class Climber extends SubsystemBase
             default:
                 break;
         }
+        //setClimberPosition(ClimberPosition.STOPPED);
     }
 
     /** 
@@ -180,7 +191,8 @@ public class Climber extends SubsystemBase
     }
 
     @Override
-    public void periodic() {
+    public void periodic() 
+    {
         SmartDashboard.putNumber("leftClimberPosition", mLeftClimber.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("rightClimberPosition", mRightClimber.getPosition().getValueAsDouble());
 
@@ -189,25 +201,31 @@ public class Climber extends SubsystemBase
         
         SmartDashboard.putBoolean("Climber Locked?", isLocked);
 
-        if (isLocked) {
+        if (isLocked) 
+        {
             setPosition(0);
         }
 
-        if (getLeftLimit() && !leftCalibrated) {
+        if (getLeftLimit() && !leftCalibrated) 
+        {
             mLeftClimber.getConfigurator().setPosition(0);
             leftCalibrated = true;
-        } else if (!getLeftLimit()) {
+            mLeftClimber.set(0);
+        } 
+        else if (!getLeftLimit() && leftCalibrated) 
+        {
             leftCalibrated = false;
         }
 
-        if (getRightLimit() && !rightCalibrated) {
+        if (getRightLimit() && !rightCalibrated) 
+        {
             mRightClimber.getConfigurator().setPosition(0);
             rightCalibrated = true;
-        } else if (!getRightLimit()) {
+            mRightClimber.set(0);
+        } 
+        else if (!getRightLimit() && rightCalibrated) 
+        {
             rightCalibrated = false;
         }
-        
     }
-
-    
 }

@@ -10,11 +10,13 @@ import frc.robot.subsystems.Climber.ClimberPosition;
  * 
  * @author 5985
  */
-public class ClimberRetract extends Command {
+public class ClimberRetract extends Command 
+{
 
     public Climber s_Climber;
 
-    public ClimberRetract(Climber s_Climber) {
+    public ClimberRetract(Climber s_Climber) 
+    {
         this.s_Climber = s_Climber;
         addRequirements(s_Climber);
     }
@@ -22,7 +24,8 @@ public class ClimberRetract extends Command {
     public void initialize() {
     }
 
-    public void execute() {
+    public void execute() 
+    {
         s_Climber.setClimberPosition(ClimberPosition.DOWN);
         // // Retracts until below minimum climber position
         // if (s_Climber.getPosition() > Constants.Climber.climberDownPos)
