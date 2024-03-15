@@ -125,7 +125,7 @@ public final class Constants {
         public static double angleKI;
         public static double angleKD;
 
-        public static final double pivotKP = 55;
+        public static final double pivotKP = 60;
         public static final double pivotKI = 4;
         public static final double pivotKD = 1;
 
@@ -135,7 +135,7 @@ public final class Constants {
         public static final boolean pivotEnableCurrentLimit = false;
         public static final double pivotManualGain = 0.25;
 
-        public static final double openLoopRamp = 0.4;
+        public static final double openLoopRamp = 0.8;
 
 
         //public static double pivotKP = 45; // 100
