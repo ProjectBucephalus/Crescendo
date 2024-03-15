@@ -39,7 +39,7 @@ public class Pivot extends SubsystemBase {
     double intakeStowLimitPos;
     double intakeDeployLimitPos;
 
-    double desiredAngle = 0;
+    double desiredAngle = -40;
 
     // Limit Switches for backlash
     boolean limitSwitchFlags[];
