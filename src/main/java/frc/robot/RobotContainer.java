@@ -47,6 +47,7 @@ import frc.robot.commands.Intake.MovePivot;
 import frc.robot.commands.Intake.MovePivotToPosition;
 import frc.robot.commands.Intake.StopIntakeAndStow;
 import frc.robot.commands.Shooter.ShootSequence;
+import frc.robot.commands.Shooter.ShooterFeed;
 import frc.robot.commands.Shooter.ShooterIdle;
 import frc.robot.commands.Shooter.ShooterRev;
 import frc.robot.subsystems.Climber;
@@ -189,11 +190,11 @@ public class RobotContainer {
         
         /* Co-Driver Buttons */
 
-        coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve)).onFalse(new ShooterIdle(s_Shooter));
+        coDriver.leftTrigger() .onTrue(new ShooterFeed(s_Intake)).onFalse(new ShooterIdle(s_Shooter));
+        coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)); 
         coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake));
         coDriver.rightBumper() .onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
 
-        coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)); 
         coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
         coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
         coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
