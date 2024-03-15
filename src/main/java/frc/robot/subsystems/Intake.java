@@ -115,7 +115,7 @@ public class Intake extends SubsystemBase
                 break;
             case OUT:
                 setIndexerState(IndexerState.OUT);
-                setIntakeSpeed(-0.50, false);
+                setIntakeSpeed(-0.35, false);
                 useBeamBreak = false;
                 break;
             case IN_WITH_BEAM_BREAK:
@@ -152,7 +152,7 @@ public class Intake extends SubsystemBase
                 break;
         
             case OUT:
-                mIndexer.set(-0.4);
+                mIndexer.set(-0.35);
                 
                 break;
             case STOPPED:
