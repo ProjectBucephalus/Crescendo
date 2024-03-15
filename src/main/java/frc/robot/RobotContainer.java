@@ -177,9 +177,6 @@ public class RobotContainer {
        
         /* Pass in driver for controller to receive rumble when note in intake*/
         driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())).onFalse(new StopIntakeAndStow(s_Pivot, s_Intake).andThen(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED)));
-        
-        driver.povRight()      .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
-        driver.povLeft()       .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
 
         driver.povUp()         .onTrue(new UnlockClimber(s_Climber));
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
@@ -193,14 +190,17 @@ public class RobotContainer {
         /* Co-Driver Buttons */
 
         coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve)).onFalse(new ShooterIdle(s_Shooter));
-        coDriver.rightTrigger().onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
-        coDriver.rightBumper() .onTrue(new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.IN))).onFalse(new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.STOPPED)));
+        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake));
+        coDriver.rightBumper() .onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
 
-        coDriver.leftBumper()  .onTrue(new IntakeSuck(s_Intake).andThen(new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.OUT)))).onFalse(new IntakeStop(s_Intake)); 
+        coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)); 
         coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
         coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
         coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
         //coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
+
+        coDriver.back()        .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
+        coDriver.start()       .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         
         coDriver.povLeft()     .onTrue(new DeployBuddyClimber(s_Climber)).onFalse(new StopBuddyClimber(s_Climber));
 
