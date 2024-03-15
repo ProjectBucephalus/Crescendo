@@ -34,9 +34,9 @@ public final class Constants {
 
     public static final class Vision {
         /* Names */
-        public static final String frontCamName = "FrontCam";
+        public static final String frontCamName = "DriveBaseCam";
         public static final String backCamName = "BackCam";
-        public static final String noteCameraName = "NoteCamera";
+        public static final String noteCameraName = "IntakeCam";
 
         /* Offsets */
         // relative position of the camera on the robot to the robot center
