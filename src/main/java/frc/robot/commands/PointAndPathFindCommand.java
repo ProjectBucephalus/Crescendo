@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -13,6 +15,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
@@ -27,7 +30,9 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
      * @param path           The predefined path to follow, represented as a
      *                       PathPlannerPath made in pathplanner.
      */
-    public PointAndPathFindCommand(Swerve s_Swerve, Transform2d targetLocation, PathPlannerPath path) {
+
+     
+    public PointAndPathFindCommand(Swerve s_Swerve, Transform2d targetLocation, PathPlannerPath path, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotatSup) {
 
         // Create the constraints to use while pathfinding. The constraints defined in
         PathConstraints constraints = new PathConstraints(
@@ -40,7 +45,7 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
                 new PointToAngle(s_Swerve, targetLocation).withTimeout(3),
                 // Wait for the robot to align before pathfinding so the robot doesn't pathfind
                 // if the driver doesn't want to
-                new WaitCommand(0.5),
+                //new WaitCommand(0.5),
                 
 
                 // the driver should be quite close before aligning so no need to path find to pose.
