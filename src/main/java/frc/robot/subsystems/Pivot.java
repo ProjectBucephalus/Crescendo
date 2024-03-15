@@ -192,6 +192,19 @@ public class Pivot extends SubsystemBase {
         pivotPDGCycle();
     }
 
+    private double pivotResCalculate(double angle) 
+    {
+        if (angle > 0) 
+        {
+            return Math.max(0, 2 * (angle - Constants.Intake.pivotResDeployThreshold));
+        }
+        else
+        {
+            return Math.min(0, 2 * (angle + Constants.Intake.pivotResStowThreshold));
+        }   
+    }
+
+
     /**
      * Moves the pivot to the desired angle, using PDG control. Respects limit switches 
      * @author 5985
@@ -199,28 +212,27 @@ public class Pivot extends SubsystemBase {
      */
     public void pivotPDGCycle()
     {
+        /*
         SmartDashboard.putNumber("Pivot PDG Position Degrees : ", getPivotPos() + 90);
         SmartDashboard.putNumber("Pivot PDG Position Radians : ", Math.toRadians(getPivotPos() + 90)/Math.PI);
         SmartDashboard.putNumber("Pivot PDG Cos : ", Math.cos(Math.toRadians(getPivotPos() + 90)));
         //SmartDashboard.putNumber("Pivot PDG b : ", 0d);
 
-        voltageFromG   = Constants.Intake.pivotKG * Math.cos((Math.toRadians(getPivotPos() + 90)));
-        voltageFromResistance = Constants.Intake.pivotKRes * Math.cos((Math.toRadians(getPivotPos() + 90)));
-        voltageFromPID = pivotPIDController.calculate(getPivotPos(), desiredAngle);
-        voltageToPivot = voltageFromG + voltageFromPID + voltageFromResistance;
+        
 
         SmartDashboard.putNumber("Grav Voltage Output", voltageFromG);
         SmartDashboard.putNumber("PID Voltage Output : ", voltageFromPID);
         SmartDashboard.putNumber("Voltage to Pivot", voltageToPivot);
+        */
         
         // If either stow switch is pressed, and the desired angle or desired voltage is further in the stow direction than the current position, do not move
-        if ((!leftStowSwitch.get() || !rightStowSwitch.get()) && (desiredAngle <= getPivotPos() || voltageToPivot <= 0)) 
+        if ((!leftStowSwitch.get() || !rightStowSwitch.get()) && desiredAngle <= getPivotPos()) 
         {
             voltageToPivot = 0;
             SmartDashboard.putString("Pivot PDG Status : ", "Stopped at Stow");
         }
         // If either deploy switch is pressed, and the desired angle or desired voltage is further in the deploy direction than the curren position, do not move
-        else if ((!leftDeploySwitch.get() || !rightDeploySwitch.get()) && (desiredAngle >= getPivotPos() || voltageToPivot >= 0))
+        else if ((!leftDeploySwitch.get() || !rightDeploySwitch.get()) && desiredAngle >= getPivotPos())
         {
             voltageToPivot = 0;
             SmartDashboard.putString("Pivot PDG Status : ", "Stopped at Deploy");
@@ -228,6 +240,11 @@ public class Pivot extends SubsystemBase {
         // If it is determined safe to move, move using the combined ArmFeedforward for gravity compensation and PID for angle control
         else
         {
+            voltageFromG   = Constants.Intake.pivotKG * Math.cos((Math.toRadians(getPivotPos() + 90)));
+            voltageFromResistance = Constants.Intake.pivotKRes * Math.cos(Math.toRadians(pivotResCalculate(getPivotPos())) + 90);
+            voltageFromPID = pivotPIDController.calculate(getPivotPos(), desiredAngle);
+            voltageToPivot = voltageFromG + voltageFromPID + voltageFromResistance;
+
             SmartDashboard.putString("Pivot PDG Status : ", "Running");
         }
 
