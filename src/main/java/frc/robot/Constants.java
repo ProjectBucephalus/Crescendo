@@ -129,7 +129,7 @@ public final class Constants {
         public static final double pivotKI = 0;
         public static final double pivotKD = 0; //0.03
         public static final double pivotKG = 0.5; //0.5
-        public static final double pivotKRes = -0;
+        public static final double pivotKRes = -0.02;
 
         /** Degrees */
         public static final double pivotResStowThreshold = -10;
