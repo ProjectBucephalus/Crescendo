@@ -49,9 +49,10 @@ public class Pivot extends SubsystemBase {
     boolean deployPressed = false;
     boolean stowPressed = false;
 
-    double voltageFromG, voltageFromPID, voltageToPivot;
-    // Pivot PDG Control
-    ArmFeedforward pivotFeedforward = new ArmFeedforward(0.0, Constants.Intake.pivotKG, 0.0);
+    double voltageFromG, voltageFromPID, voltageToPivot, voltageFromResistance;
+    // Pivot PDGR Control
+    ArmFeedforward pivotGravityFeed = new ArmFeedforward(0.0, Constants.Intake.pivotKG, 0.0);
+    ArmFeedforward pivotResistanceFeed = new ArmFeedforward(0.0, Constants.Intake.pivotKRes, 0.0);
     PIDController pivotPIDController = new PIDController(Constants.Intake.pivotKP, Constants.Intake.pivotKI, Constants.Intake.pivotKD, 0.02);
 
     private Swerve s_Swerve;
@@ -198,14 +199,15 @@ public class Pivot extends SubsystemBase {
      */
     public void pivotPDGCycle()
     {
-        SmartDashboard.putNumber("Pivot PDG Position Degrees : ", getPivotPos()+90);
+        SmartDashboard.putNumber("Pivot PDG Position Degrees : ", getPivotPos() + 90);
         SmartDashboard.putNumber("Pivot PDG Position Radians : ", Math.toRadians(getPivotPos() + 90)/Math.PI);
         SmartDashboard.putNumber("Pivot PDG Cos : ", Math.cos(Math.toRadians(getPivotPos() + 90)));
         //SmartDashboard.putNumber("Pivot PDG b : ", 0d);
 
-        voltageFromG   = pivotFeedforward.calculate((Math.toRadians(getPivotPos() + 90)), 0.0, 0.0);
+        voltageFromG   = Constants.Intake.pivotKG * Math.cos((Math.toRadians(getPivotPos() + 90)));
+        voltageFromResistance = Constants.Intake.pivotKRes * Math.cos((Math.toRadians(getPivotPos() + 90)));
         voltageFromPID = pivotPIDController.calculate(getPivotPos(), desiredAngle);
-        voltageToPivot = voltageFromG + voltageFromPID;
+        voltageToPivot = voltageFromG + voltageFromPID + voltageFromResistance;
 
         SmartDashboard.putNumber("Grav Voltage Output", voltageFromG);
         SmartDashboard.putNumber("PID Voltage Output : ", voltageFromPID);
