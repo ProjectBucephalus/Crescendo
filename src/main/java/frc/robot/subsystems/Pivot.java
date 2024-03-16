@@ -239,9 +239,6 @@ public class Pivot extends SubsystemBase {
         double[] distances = Constants.distancesFromSpeaker; // distances in meters
         double[] angles = Constants.anglesOfPivot; // shooter angles in degrees
 
-        // SmartDashboard.putNumber("distance to target",
-        // PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0,
-        // 0))));
 
         double targetDistance = PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0)));
 
@@ -266,7 +263,12 @@ public class Pivot extends SubsystemBase {
                 break;
             }
         }
+
+        
         return angle;
+
+
+
 
         // return Units.radiansToDegrees(Math.atan(
         // (2 - 0.425) / (PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new

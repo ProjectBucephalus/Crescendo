@@ -59,6 +59,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Climber.ClimberPosition;
 import frc.robot.subsystems.Intake.IndexerState;
+import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Intake.StabiliserPos;
 
 /**
@@ -169,7 +170,7 @@ public class RobotContainer {
 
         //driver.back()          .onTrue(new InstantCommand(s_Swerve::lockWheels, s_Swerve)); // TODO 
         driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-
+        driver.rightTrigger()          .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
         // made this the same as the robot centric so they act as one func
         driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
 
@@ -190,7 +191,7 @@ public class RobotContainer {
         
         /* Co-Driver Buttons */
 
-        coDriver.leftTrigger() .onTrue(new ShooterFeed(s_Intake)).onFalse(new ShooterIdle(s_Shooter));
+        coDriver.leftTrigger() .onTrue(new ShooterFeed(s_Intake)).onFalse(new ShooterIdle(s_Shooter).alongWith(new InstantCommand(()->s_Intake.setIntakeStatus(IntakeStatus.STOPPED))));
         coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)); 
         coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake));
         coDriver.rightBumper() .onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
@@ -208,7 +209,7 @@ public class RobotContainer {
         coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
         coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
         coDriver.povRight()    .onTrue(new InstantCommand(() -> s_Climber.setClimberPosition(ClimberPosition.STOPPED)));
-        
+        SmartDashboard.putData("Trigger Shot", (new ShootSequence(s_Shooter, s_Intake, s_Swerve)));
         
         SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
             Pose2d currentPose = s_Swerve.getEstimatedPose();

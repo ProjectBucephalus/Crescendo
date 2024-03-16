@@ -194,7 +194,7 @@ public class Climber extends SubsystemBase
         switch (status) 
         {
             case RUNNING:
-                mBuddyClimb.set(-1);
+                mBuddyClimb.set(1);
                 break;
             case STOPPED:
                 mBuddyClimb.set(0);

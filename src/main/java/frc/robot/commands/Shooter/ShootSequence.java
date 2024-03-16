@@ -25,14 +25,14 @@ public class ShootSequence extends Command {
      * MAX Total time allowed for the shooter to spin up and shoot if the beam break
      * doesn't work
      */
-    private double SHOOT_TIME;
+    private double SHOOT_TIME = 1;
 
     /**
      * Total time allowed for the shooter to spin up. The difference between the two
      * values will be the time allowed for note to eject. This is only used when we
      * are not using vision alignment.
      */
-    private double SHOOT_SPIN_UP_TIME;
+    private double SHOOT_SPIN_UP_TIME = 0;
 
     Shooter s_Shooter;
     Intake s_Intake;
@@ -44,7 +44,7 @@ public class ShootSequence extends Command {
         this.s_Intake = s_Intake;
         this.s_Swerve = s_Swerve;
 
-        addRequirements(s_Shooter);
+        //addRequirements(s_Shooter);
     }
 
     /**
@@ -65,13 +65,6 @@ public class ShootSequence extends Command {
             // Total time allowed for the shooter to spin up and shoot
             SHOOT_TIME = 1; // seconds
             SHOOT_SPIN_UP_TIME = 0; // seconds
-            // Give some time to spin the shooter up if we arent auto aligning as the auto
-            // alignment triggers the shooters to spin up.
-            if (!s_Swerve.getVisionAlignmentBool()) {
-                SHOOT_TIME = 2; // seconds
-                SHOOT_SPIN_UP_TIME = 1; // seconds
-            }
-            // We aren't using the others at the moment
         } else if (s_Shooter.getShootPosition() == ShootPosition.AMP) {
             // amp shot
             SHOOT_TIME = 1.5; // seconds
