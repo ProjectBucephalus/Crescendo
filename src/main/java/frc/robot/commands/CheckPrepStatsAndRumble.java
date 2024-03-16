@@ -14,7 +14,7 @@ import frc.robot.subsystems.Pivot;
 
 public class CheckPrepStatsAndRumble extends Command {
     private final Pivot s_Pivot;
-    private final Shooter m_Shooter;
+    private final Shooter s_Shooter;
     private final Swerve s_Swerve;
     private final XboxController m_controller;
 
@@ -25,7 +25,7 @@ public class CheckPrepStatsAndRumble extends Command {
     /** Creates a new CheckPrepStatsAndRumble. */
     public CheckPrepStatsAndRumble(Pivot s_Pivot, Shooter s_Shooter, Swerve s_Swerve, XboxController xboxController) {
         this.s_Pivot = s_Pivot;
-        this.m_Shooter = s_Shooter;
+        this.s_Shooter = s_Shooter;
         this.s_Swerve = s_Swerve;
         this.m_controller = xboxController;
     }
@@ -39,7 +39,7 @@ public class CheckPrepStatsAndRumble extends Command {
     @Override
     public void execute() {
         
-        if (s_Pivot.angleWithinTolerance() &&  s_Swerve.getWithinRequiredHeading() && m_controller != null) {
+        if (s_Pivot.angleWithinTolerance() &&  s_Swerve.getWithinRequiredHeading() && s_Shooter.rpmWithinTolerance() && m_controller != null) {
             // Sets rumble
             m_controller.setRumble(RumbleType.kBothRumble, RUMBLE_INTENSITY);
             SmartDashboard.putBoolean("Ready to shoot?", true);

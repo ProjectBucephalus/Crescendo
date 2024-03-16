@@ -55,6 +55,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NoteVision;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
+import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Climber.ClimberPosition;
@@ -170,7 +171,7 @@ public class RobotContainer {
 
         //driver.back()          .onTrue(new InstantCommand(s_Swerve::lockWheels, s_Swerve)); // TODO 
         driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        driver.rightTrigger()          .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
+        driver.back()          .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
         // made this the same as the robot centric so they act as one func
         driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
 
@@ -191,10 +192,11 @@ public class RobotContainer {
         
         /* Co-Driver Buttons */
 
-        coDriver.leftTrigger() .onTrue(new ShooterFeed(s_Intake)).onFalse(new ShooterIdle(s_Shooter).alongWith(new InstantCommand(()->s_Intake.setIntakeStatus(IntakeStatus.STOPPED))));
+        // coDriver.leftTrigger() .onTrue(new ShooterFeed(s_Intake)).onFalse(new ShooterIdle(s_Shooter).alongWith(new InstantCommand(()->s_Intake.setIntakeStatus(IntakeStatus.STOPPED))));
+        coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
         coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)); 
         coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake));
-        coDriver.rightBumper() .onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
+        coDriver.rightBumper() .onTrue(new IntakeSpit(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.OUT)))).onFalse(new IntakeStop(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.STOPPED))));
 
         coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
         coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));

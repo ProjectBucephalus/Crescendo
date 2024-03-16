@@ -665,7 +665,7 @@ public class Swerve extends SubsystemBase
         SmartDashboard.putBoolean("usingVisionAlignment", usingVisionAlignment);
         SmartDashboard.putBoolean("getWithinRequiredHeading", getWithinRequiredHeading());
 
-        SmartDashboard.putNumber("distance to target", PhotonUtils.getDistanceToPose(getEstimatedPose(), FieldConstants.translationToPose2d(FieldConstants.SPEAKER)));
+        SmartDashboard.putNumber("distance to target", PhotonUtils.getDistanceToPose(getEstimatedPose(), FieldConstants.flipPose(FieldConstants.translationToPose2d(FieldConstants.SPEAKER))));
         
 
         // Do this in either robot or subsystem init

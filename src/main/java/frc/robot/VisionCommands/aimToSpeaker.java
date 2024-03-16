@@ -63,7 +63,7 @@ public class aimToSpeaker extends Command {
         s_Pivot.setPosition(PivotPosition.SPEAKER);
         s_Shooter.setShooterState(ShooterState.RUNNING);
 
-        s_Pivot.updateSpeakerAngle();
+        // s_Pivot.updateSpeakerAngle();
 
         // the -4 is purely for backlash adjustment
         // s_Pivot.setDesiredPostion(calculatedRequiredShooterAngle());

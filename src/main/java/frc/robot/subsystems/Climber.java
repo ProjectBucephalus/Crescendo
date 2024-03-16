@@ -26,8 +26,8 @@ public class Climber extends SubsystemBase
     public TalonFX mRightClimber = new TalonFX(IDConstants.Climber.mRightClimbID);
     public TalonFX mBuddyClimb = new TalonFX(IDConstants.Climber.mBuddyClimbID);
 
-    public DigitalInput leftClimberSwitch = new DigitalInput(5);
-    public DigitalInput rightClimberSwitch = new DigitalInput(6);
+    public DigitalInput leftClimberSwitch = new DigitalInput(6);
+    public DigitalInput rightClimberSwitch = new DigitalInput(5);
     
     public static TalonFXConfiguration leftClimbMotorFXConfig = new TalonFXConfiguration();
     public static TalonFXConfiguration rightClimbMotorFXConfig = new TalonFXConfiguration();
@@ -95,7 +95,7 @@ public class Climber extends SubsystemBase
         mLeftClimber.setControl(anglePosition.withPosition(pos)
                 .withLimitReverseMotion(leftClimberSwitch.get()));
         mRightClimber.setControl(anglePosition.withPosition(pos)
-                .withLimitReverseMotion(rightClimberSwitch.get()));
+                .withLimitReverseMotion(leftClimberSwitch.get()));
     }
 
     /** 
@@ -146,10 +146,10 @@ public class Climber extends SubsystemBase
             double LSpeed = leftSpeed;
             double RSpeed = rightSpeed;
 
-            if (leftSpeed < 0 && (/*mLeftClimber.getPosition().getValueAsDouble() <= 0 ||*/ !leftClimberSwitch.get()))
+            if (leftSpeed < 0 && (mLeftClimber.getPosition().getValueAsDouble() <= 0 || !leftClimberSwitch.get()))
                 {LSpeed = 0;}
 
-            if (RSpeed < 0 && (/*mRightClimber.getPosition().getValueAsDouble() <= 0 ||*/ !rightClimberSwitch.get()))
+            if (RSpeed < 0 && (mRightClimber.getPosition().getValueAsDouble() <= 0 || !leftClimberSwitch.get()))
                 {RSpeed = 0;}
             
             if (LSpeed > 0 && mLeftClimber.getPosition().getValueAsDouble() >= Constants.Climber.maxRevolutions)
@@ -194,7 +194,7 @@ public class Climber extends SubsystemBase
         switch (status) 
         {
             case RUNNING:
-                mBuddyClimb.set(1);
+                mBuddyClimb.set(-1);
                 break;
             case STOPPED:
                 mBuddyClimb.set(0);
@@ -211,7 +211,7 @@ public class Climber extends SubsystemBase
 
 
     public boolean getRightLimit() {
-        return rightClimberSwitch.get();
+        return leftClimberSwitch.get();
     }
 
     /**

@@ -39,6 +39,7 @@ public class Shooter extends SubsystemBase
         RUNNING,
         STOPPED,
         IDLE,
+        OUT
     };
 
     /**
@@ -75,12 +76,19 @@ public class Shooter extends SubsystemBase
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case IDLE:
+                System.out.println("idle");
                 driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
 
                 driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mTopShooter.setControl(driveDutyCycle);
                 break;
+            case OUT:
+                driveDutyCycle.Output = -0.5;
+                mBottomShooter.setControl(driveDutyCycle);
+
+                driveDutyCycle.Output = -0.5;
+                mTopShooter.setControl(driveDutyCycle);
             default:
                 break;
         }        
@@ -105,6 +113,7 @@ public class Shooter extends SubsystemBase
      */
     public boolean rpmWithinTolerance() {
         return true; // TODO
+        
     }
 
     @Override
@@ -112,6 +121,8 @@ public class Shooter extends SubsystemBase
         // Prints info to Smart Dashboard
         SmartDashboard.putString("Where am I shooting", getShootPosition().name());
         SmartDashboard.putString("Current State of Motors for sim", getShootPosition().name());
+
+        SmartDashboard.putNumber("Shooter RPM", mTopShooter.getVelocity().getValueAsDouble());
     }
 
     

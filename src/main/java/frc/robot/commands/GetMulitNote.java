@@ -26,7 +26,8 @@ public class GetMulitNote extends SequentialCommandGroup {
         //     }
         // }
         // Shoot the preloaded note.
-        addCommands(new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve));
+        
+        addCommands(new WaitCommand(1),new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve));
 
         // add all the fetching+shooting NOTE blocks
         for (Translation2d note : noteLocations) {

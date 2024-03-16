@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.FieldConstants;
 import frc.robot.IDConstants;
 import frc.robot.CTREConfigs;
 
@@ -63,6 +64,8 @@ public class Pivot extends SubsystemBase {
 
     public Pivot(Swerve s_Swerve) {
         this.s_Swerve = s_Swerve;
+
+        SmartDashboard.putNumber("COMP pivot position", 0);
         
         // Initialises motor controller objects and configures them
         mLeftPivot = new TalonFX(IDConstants.Intooter.Pivot.mLeftPivotID);
@@ -125,6 +128,7 @@ public class Pivot extends SubsystemBase {
      */
     public void moveArmToAngle(double inputAngle) {
         desiredAngle = inputAngle;
+        System.out.println("Moving arm to angle" + inputAngle);
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
         // double motorAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
         mLeftPivot.setControl(
@@ -147,6 +151,7 @@ public class Pivot extends SubsystemBase {
      */
     public void setDesiredPostion(Double angle) 
     {
+        System.out.println("Set Desired Position as" + angle);
         desiredAngle = angle;
     }
 
@@ -225,6 +230,7 @@ public class Pivot extends SubsystemBase {
             //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
             stowPressed = false;
         }
+        calculatedRequiredShooterAngle();
     }
 
     /**
@@ -236,36 +242,50 @@ public class Pivot extends SubsystemBase {
      */
     public double calculatedRequiredShooterAngle() {
 
-        double[] distances = Constants.distancesFromSpeaker; // distances in meters
-        double[] angles = Constants.anglesOfPivot; // shooter angles in degrees
+        // double[] distances = Constants.distancesFromSpeaker; // distances in meters
+        // double[] angles = Constants.anglesOfPivot; // shooter angles in degrees
 
 
-        double targetDistance = PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new Rotation2d(0, 0)));
+        // double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
+        // SmartDashboard.putNumber("COMP Distance to the speaker", targetDistance);
+        // // Ensure the target distance is within the range of the data
+        // if (targetDistance < distances[0]) {
+        //     // Extrapolate using the first two points
+        //     return angles[0]
+        //             + (angles[1] - angles[0]) * (targetDistance - distances[0]) / (distances[1] - distances[0]);
+        // } else if (targetDistance > distances[distances.length - 1]) {
+        //     // Extrapolate using the last twlo points
+        //     int n = distances.length;
+        //     return angles[n - 2] + (angles[n - 1] - angles[n - 2]) * (targetDistance - distances[n - 2])
+        //             / (distances[n - 1] - distances[n - 2]);
+        // }
 
-        // Ensure the target distance is within the range of the data
-        if (targetDistance < distances[0]) {
-            // Extrapolate using the first two points
-            return angles[0]
-                    + (angles[1] - angles[0]) * (targetDistance - distances[0]) / (distances[1] - distances[0]);
-        } else if (targetDistance > distances[distances.length - 1]) {
-            // Extrapolate using the last two points
-            int n = distances.length;
-            return angles[n - 2] + (angles[n - 1] - angles[n - 2]) * (targetDistance - distances[n - 2])
-                    / (distances[n - 1] - distances[n - 2]);
-        }
+        // // Perform linear interpolation
+        // double angle = 0;
+        // for (int i = 0; i < distances.length - 1; i++) {
+        //     if (targetDistance >= distances[i] && targetDistance <= distances[i + 1]) {
+        //         angle = angles[i] + (angles[i + 1] - angles[i]) * (targetDistance - distances[i])
+        //                 / (distances[i + 1] - distances[i]);
+        //         break;
+        //     }
+        // }
 
-        // Perform linear interpolation
-        double angle = 0;
-        for (int i = 0; i < distances.length - 1; i++) {
-            if (targetDistance >= distances[i] && targetDistance <= distances[i + 1]) {
-                angle = angles[i] + (angles[i + 1] - angles[i]) * (targetDistance - distances[i])
-                        / (distances[i + 1] - distances[i]);
-                break;
-            }
-        }
+        double targetHeightOverShooter = 1.6;
+        double shooterPivotOffset = 0.25;
+        double targetAngle;
+        double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
 
+        targetDistance += 0.17;
+
+        targetAngle = Math.atan(targetHeightOverShooter/targetDistance);
+        targetDistance += shooterPivotOffset * Math.tan(targetAngle);
+        targetAngle = Math.toDegrees(Math.atan(targetHeightOverShooter/targetDistance));
+
+        return Math.min(Constants.Intake.pivotDeployPos, Math.max(Constants.Intake.pivotFrameClearPos, targetAngle));
         
-        return angle;
+        // return SmartDashboard.getNumber("COMP calculated shooter angle", angle);
+        // return SmartDashboard.getNumber("COMP pivot position", 0);
+        // return angle;
 
 
 

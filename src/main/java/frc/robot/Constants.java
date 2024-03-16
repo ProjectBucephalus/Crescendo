@@ -28,9 +28,9 @@ public final class Constants {
 
     
 
-    public static final double[] distancesFromSpeaker = { 1.5,    2, 2.5,  3, 3.5,  4, 5, 6 }; // distances in meters
+    public static final double[] distancesFromSpeaker = { 1.8,    2, 2.5,  3, 3.5,  4, 5, 6 }; // distances in meters
     // TODO Values to calibrate: 3.5
-    public static final double[] anglesOfPivot =        {  37, 29.5,  28, 23,  22, 20, 20,20 }; // shooter angles in degrees
+    public static final double[] anglesOfPivot =        {  39, 29.5,  28, 23,  22, 20, 20,20 }; // shooter angles in degrees
 
     public static final class Vision {
         /* Names */
@@ -125,7 +125,7 @@ public final class Constants {
         public static double angleKI;
         public static double angleKD;
 
-        public static final double pivotKP = 60;
+        public static final double pivotKP = 80;
         public static final double pivotKI = 4;
         public static final double pivotKD = 1;
 
@@ -150,7 +150,7 @@ public final class Constants {
 
         public static final double shooterIdleSpeed = 0.3;
 
-        public static final double horizontalShooterAngle = 20;
+        // public static final double horizontalShooterAngle = 20;
 
         public static final double openLoopRamp = 0;
     }
