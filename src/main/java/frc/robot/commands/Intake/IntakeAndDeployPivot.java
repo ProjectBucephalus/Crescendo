@@ -47,8 +47,10 @@ public class IntakeAndDeployPivot extends Command {
         s_Intake.setIntakeStatus(IntakeStatus.IN_WITH_BEAM_BREAK);
         if (!s_Intake.getBeamBreak() && xbox != null) {
             xbox.setRumble(RumbleType.kBothRumble, 0.5);
+            System.out.println("Rumbling");
         } else if (xbox != null) {
             xbox.setRumble(RumbleType.kBothRumble, 0);
+            System.out.println("Not Rumbling");
         }
     }
 

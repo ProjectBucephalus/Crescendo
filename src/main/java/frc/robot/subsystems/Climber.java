@@ -191,6 +191,7 @@ public class Climber extends SubsystemBase
      */
     public void setBuddyClimb(BuddyClimbPosition status) 
     {
+        SmartDashboard.putString("Buddy Climb Status", status.name());
         switch (status) 
         {
             case RUNNING:
