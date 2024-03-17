@@ -8,11 +8,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.IDConstants;
 
-public class Shooter extends SubsystemBase 
-{
+public class Shooter extends SubsystemBase {
     // motors
     private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
-
 
     public TalonFX mTopShooter = new TalonFX(IDConstants.Intooter.Shooter.mTopShooterID);
     public TalonFX mBottomShooter = new TalonFX(IDConstants.Intooter.Shooter.mBottomShooterID);
@@ -21,21 +19,22 @@ public class Shooter extends SubsystemBase
     private ShootPosition shooterMode = ShootPosition.SPEAKER;
 
     /**
-     * Enum representing the status of the indexer roller (OPEN for running, CLOSED for stopped)
+     * Enum representing the status of the indexer roller (OPEN for running, CLOSED
+     * for stopped)
+     * 
      * @author 5985
      */
-    public enum FlapPosition 
-    {
+    public enum FlapPosition {
         OPEN,
         CLOSED,
     };
 
     /**
      * Enum representing the status of the shooter
+     * 
      * @author 5985
      */
-    public enum ShooterState 
-    {
+    public enum ShooterState {
         RUNNING,
         STOPPED,
         IDLE,
@@ -44,6 +43,7 @@ public class Shooter extends SubsystemBase
 
     /**
      * Enum representing the shooter's aiming position
+     * 
      * @author 5985
      */
     public enum ShootPosition {
@@ -52,16 +52,18 @@ public class Shooter extends SubsystemBase
         TRAP,
     };
 
-    public Shooter() {}
-    
-    /** 
+    public Shooter() {
+    }
+
+    /**
      * Sets the shooter's state based on an enum
+     * 
      * @param state Enum representing the desired status of the shooter
      * @author 5985
      */
     public void setShooterState(ShooterState state) {
         SmartDashboard.putString("Current State of Shooter Motors for sim", state.name());
-        
+
         switch (state) {
             case RUNNING:
                 driveDutyCycle.Output = Constants.Shooter.runningBottomShooterSpeed;
@@ -91,7 +93,7 @@ public class Shooter extends SubsystemBase
                 mTopShooter.setControl(driveDutyCycle);
             default:
                 break;
-        }        
+        }
         // SmartDashboard.putNumber("bottomShooterSpeed", bottomSpeed);
         // SmartDashboard.putNumber("topShooterSpeed", topSpeed);
     }
@@ -105,15 +107,16 @@ public class Shooter extends SubsystemBase
     }
 
     /**
-     * Checks if shooter RPM is within acceptable tolerance. 
+     * Checks if shooter RPM is within acceptable tolerance.
      * TODO not implimented yet
+     * 
      * @return Boolean, true when current shooter RPM is acceptable
      * @author 5985
      * @author Aidan
      */
     public boolean rpmWithinTolerance() {
-        return true; // TODO
-        
+        return mTopShooter.getVelocity().getValueAsDouble() > Constants.Shooter.ShooterAcceptableVelocity;
+
     }
 
     @Override
@@ -122,8 +125,8 @@ public class Shooter extends SubsystemBase
         SmartDashboard.putString("Where am I shooting", getShootPosition().name());
         SmartDashboard.putString("Current State of Motors for sim", getShootPosition().name());
 
-        SmartDashboard.putNumber("Shooter RPM", mTopShooter.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Top Shooter RPS", mTopShooter.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Bottom Shooter RPS", mBottomShooter.getVelocity().getValueAsDouble());
     }
 
-    
 }

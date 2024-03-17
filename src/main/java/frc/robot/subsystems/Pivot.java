@@ -209,24 +209,24 @@ public class Pivot extends SubsystemBase {
 
         pose = s_Swerve.getEstimatedPose();
 
-        if ((leftDeploySwitch.get() || rightDeploySwitch.get()) && !deployPressed) {
+        if ((!leftDeploySwitch.get() || !rightDeploySwitch.get()) && !deployPressed) {
             //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
             deployPressed = true;
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
-        else if (!leftDeploySwitch.get() && !rightDeploySwitch.get()) {
+        else if (leftDeploySwitch.get() && rightDeploySwitch.get()) {
             //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
             deployPressed = false;
         }
 
-        if ((leftStowSwitch.get() || rightStowSwitch.get()) && !stowPressed) {
+        if ((!leftStowSwitch.get() || !rightStowSwitch.get()) && !stowPressed) {
             //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
             stowPressed = true;
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
         }
-        else if (!leftStowSwitch.get() && !rightStowSwitch.get()) {
+        else if (leftStowSwitch.get() && rightStowSwitch.get()) {
             //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
             stowPressed = false;
         }
@@ -270,7 +270,7 @@ public class Pivot extends SubsystemBase {
         //     }
         // }
 
-        double targetHeightOverShooter = 1.6;
+        double targetHeightOverShooter = 1.5;
         double shooterPivotOffset = 0.25;
         double targetAngle;
         double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
@@ -280,8 +280,8 @@ public class Pivot extends SubsystemBase {
         targetAngle = Math.atan(targetHeightOverShooter/targetDistance);
         targetDistance += shooterPivotOffset * Math.tan(targetAngle);
         targetAngle = Math.toDegrees(Math.atan(targetHeightOverShooter/targetDistance));
-
-        return Math.min(Constants.Intake.pivotDeployPos, Math.max(Constants.Intake.pivotFrameClearPos, targetAngle));
+        double error = Math.abs(desiredAngle - getPivotPos()) > 2 ? 0 : (desiredAngle - getPivotPos())/2;
+        return  error + Math.min(Constants.Intake.pivotDeployPos, Math.max(Constants.Intake.pivotFrameClearPos, targetAngle));
         
         // return SmartDashboard.getNumber("COMP calculated shooter angle", angle);
         // return SmartDashboard.getNumber("COMP pivot position", 0);

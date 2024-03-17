@@ -29,14 +29,12 @@ public class IntakeAndDeployPivot extends Command {
 
     @Override
     public void initialize() {
-
+        s_Intake.setDriverXbox(xbox);
     }
 
     @Override
     public void end(boolean interrupted) {
-        if (xbox != null) {
-            xbox.setRumble(RumbleType.kBothRumble, 0);
-        }
+        
 
     }
 
@@ -45,13 +43,8 @@ public class IntakeAndDeployPivot extends Command {
     public void execute() {
         s_Pivot.setPosition(PivotPosition.DEPLOYED);
         s_Intake.setIntakeStatus(IntakeStatus.IN_WITH_BEAM_BREAK);
-        if (!s_Intake.getBeamBreak() && xbox != null) {
-            xbox.setRumble(RumbleType.kBothRumble, 0.5);
-            System.out.println("Rumbling");
-        } else if (xbox != null) {
-            xbox.setRumble(RumbleType.kBothRumble, 0);
-            System.out.println("Not Rumbling");
-        }
+        s_Intake.rumbleWithNote(true);
+        
     }
 
     public boolean isFinished() {

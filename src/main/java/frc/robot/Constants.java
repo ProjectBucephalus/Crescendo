@@ -125,8 +125,8 @@ public final class Constants {
         public static double angleKI;
         public static double angleKD;
 
-        public static final double pivotKP = 80;
-        public static final double pivotKI = 4;
+        public static final double pivotKP = 95;
+        public static final double pivotKI = 10;
         public static final double pivotKD = 1;
 
         public static final int pivotCurrentLimit = 38;
@@ -135,12 +135,12 @@ public final class Constants {
         public static final boolean pivotEnableCurrentLimit = false;
         public static final double pivotManualGain = 0.25;
 
-        public static final double openLoopRamp = 1;
+        public static final double openLoopRamp = 1.3;
 
 
         //public static double pivotKP = 45; // 100
         //public static double pivotKI = 5; // 20
-        //public static double pivotKD = 1; // 2 
+        //public static double pivotKD = 1; // 2 ssh
 
     }
 
@@ -149,6 +149,8 @@ public final class Constants {
         public static final double runningBottomShooterSpeed = 0.8; // AMP TOP: 0.450000 bottom: 0.05
 
         public static final double shooterIdleSpeed = 0.3;
+
+        public static final double ShooterAcceptableVelocity = 70;
 
         // public static final double horizontalShooterAngle = 20;
 

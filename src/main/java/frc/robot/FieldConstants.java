@@ -43,6 +43,7 @@ public class FieldConstants {
     public static final Translation2d RED_NOTE_S_3 = new Translation2d(FIELD_LENGTH - NOTE_S_X, 7.00);
 
     public static final Translation2d DUMMY_NOTE_WAIT_FLAG = new Translation2d(NOTE_S_X, 0);
+    public static final Translation2d DUMMY_NOTE_LEAVE_FLAG = new Translation2d(0, 1);
 
     public static final Translation2d SPEAKER = new Translation2d(0, 5.54);
 
@@ -83,6 +84,7 @@ public class FieldConstants {
             put("S3", FieldConstants.BLUE_NOTE_S_3);
 
             put("W", FieldConstants.DUMMY_NOTE_WAIT_FLAG);
+            put("L", FieldConstants.DUMMY_NOTE_LEAVE_FLAG);
         }
     };
 

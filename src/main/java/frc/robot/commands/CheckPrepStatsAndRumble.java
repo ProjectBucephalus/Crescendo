@@ -39,7 +39,7 @@ public class CheckPrepStatsAndRumble extends Command {
     @Override
     public void execute() {
         
-        if (s_Pivot.angleWithinTolerance() &&  s_Swerve.getWithinRequiredHeading() && s_Shooter.rpmWithinTolerance() && m_controller != null) {
+        if (s_Shooter.rpmWithinTolerance() && m_controller != null) {
             // Sets rumble
             m_controller.setRumble(RumbleType.kBothRumble, RUMBLE_INTENSITY);
             SmartDashboard.putBoolean("Ready to shoot?", true);

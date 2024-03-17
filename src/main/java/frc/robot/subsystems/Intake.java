@@ -5,6 +5,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -30,6 +32,10 @@ public class Intake extends SubsystemBase
     // Booleans regarding the beam braek
     private boolean beamBreakBool = false;
     private boolean useBeamBreak = false;
+
+    private boolean doRumbleWithNote = true;
+
+    private XboxController xbox = null;
 
     /** 
      * Enum representing the roller status of the Intake 
@@ -180,11 +186,11 @@ public class Intake extends SubsystemBase
         switch (pos) 
         {
             case IN:
-                mStabilser.set(ControlMode.PercentOutput, -0.6);
+                mStabilser.set(ControlMode.PercentOutput, -1);
 
                 break;
             case OUT:
-                mStabilser.set(ControlMode.PercentOutput, 0.6);
+                mStabilser.set(ControlMode.PercentOutput, 1);
                 break;
             case STOPPED:
                 mStabilser.set(ControlMode.PercentOutput, 0);
@@ -203,12 +209,32 @@ public class Intake extends SubsystemBase
     {
         return beamBreakBool;
     }
+
+    public void rumbleWithNote(Boolean doRumbleWithNote) {
+        this.doRumbleWithNote = doRumbleWithNote;
+    }
+
+    public void setDriverXbox(XboxController xbox) {
+        this.xbox = xbox;
+    }
     
     @Override
     public void periodic() 
     {
         // Sets beamBreakBool to the value of the Beam Break
         beamBreakBool = BeamBreak.get();
+
+        if (doRumbleWithNote) {
+            if (!getBeamBreak() && (xbox != null)) {
+                xbox.setRumble(RumbleType.kBothRumble, 0.5);
+                System.out.println("Rumbling");
+            } else if (xbox != null) {
+                xbox.setRumble(RumbleType.kBothRumble, 0);
+                System.out.println("Not Rumbling");
+            }
+        } else {
+            xbox.setRumble(RumbleType.kBothRumble, 0);
+        }
         
         // Prints the beamBreakBool to the Smart Dashboard
         SmartDashboard.putBoolean("BeamBreak", beamBreakBool);
