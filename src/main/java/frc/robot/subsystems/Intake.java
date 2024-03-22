@@ -80,11 +80,7 @@ public class Intake extends SubsystemBase
 
     public Intake() 
     {
-        // Displays values in Smart Dashboard
-        SmartDashboard.putNumber("topShooterSpeed", 1);
-        SmartDashboard.putNumber("bottomShooterSpeed", 1);
         
-        // SmartDashboard.putNumber("pivotPosition", 1.2);
     }
 
     /**

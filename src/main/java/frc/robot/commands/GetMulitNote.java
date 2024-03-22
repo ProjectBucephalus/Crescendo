@@ -40,9 +40,7 @@ public class GetMulitNote extends SequentialCommandGroup {
             if (FieldConstants.DUMMY_NOTE_WAIT_FLAG.equals(note) || noteLocations.length == 0) {
                 addCommands(new WaitCommand(7));
             if (FieldConstants.DUMMY_NOTE_LEAVE_FLAG.equals(note)) {
-                SmartDashboard.putBoolean("Going Out", true);
                 addCommands(new InstantCommand(() -> s_Swerve.makePathFollowingCommand(PathPlannerPath.fromPathFile("Start_3 to Leave"))));
-                SmartDashboard.putBoolean("Going Out", false);
                 addCommands(new InstantCommand(() -> s_Swerve.makePathFollowingCommand(PathPlannerPath.fromPathFile("Leave to Start_3"))));
                 break;
             }

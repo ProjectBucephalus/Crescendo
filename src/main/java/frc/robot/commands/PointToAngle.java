@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
@@ -45,8 +44,6 @@ public class PointToAngle extends Command {
         // pid.calculate(s_Swerve.getEstimatedPose().getRotation().getDegrees(), 90)));
         // s_Swerve.driveRobotRelative(new ChassisSpeeds(0, 0,(calculateRequiredHeading()/10)));
         s_Swerve.driveRobotRelative(new ChassisSpeeds(0, 0,-calculateRequiredHeading()/10));
-        SmartDashboard.putNumber("RequiredHeading", -calculateRequiredHeading()/10);
-        SmartDashboard.putNumber("TargetRotation", targetRotation);
     }
 
     @Override

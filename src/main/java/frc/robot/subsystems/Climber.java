@@ -233,8 +233,6 @@ public class Climber extends SubsystemBase
 
         SmartDashboard.putBoolean("leftClimberSwitch", getLeftLimit());
         SmartDashboard.putBoolean("RightClimberSwitch", getRightLimit());
-        
-        SmartDashboard.putBoolean("Climber Locked?", isLocked);
 
         if (isLocked) 
         {

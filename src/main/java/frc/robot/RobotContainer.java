@@ -100,7 +100,7 @@ public class RobotContainer {
     private final Pivot s_Pivot = new Pivot(s_Swerve);
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
-    private final NoteVision s_NoteVision = new NoteVision();
+    private final NoteVision s_NoteVision = new NoteVision(s_Swerve);
 
     private final SendableChooser<String> m_chosenAuto = new SendableChooser<>();
     private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();

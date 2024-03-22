@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Shooter;
@@ -42,10 +41,8 @@ public class CheckPrepStatsAndRumble extends Command {
         if (s_Shooter.rpmWithinTolerance() && m_controller != null) {
             // Sets rumble
             m_controller.setRumble(RumbleType.kBothRumble, RUMBLE_INTENSITY);
-            SmartDashboard.putBoolean("Ready to shoot?", true);
         } else if (m_controller != null) {
             m_controller.setRumble(RumbleType.kBothRumble, 0);
-            SmartDashboard.putBoolean("Ready to shoot?", false);
         }
 
 

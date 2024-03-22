@@ -47,11 +47,17 @@ public class NoteVision extends SubsystemBase {
     // Simulation support
     private VisionSystemSim m_visionSim;
 
-    public NoteVision() {
+    // Swerve for notes plotting
+    private Swerve s_Swerve;
+
+    public NoteVision(Swerve s_Swerve) {
         if (true /* Constants.USING_SIM */) {
             // initialize a simulated camera. Must be done after creating the tag layout
             initializeSimulation();
         }
+
+        this.s_Swerve = s_Swerve;
+
 
         // set the driver mode to false
         m_noteCamera.setDriverMode(false);
@@ -181,8 +187,8 @@ public class NoteVision extends SubsystemBase {
         List<Translation2d> notes = getNotes();
         SmartDashboard.putNumber("noteVision nFound", notes.size());
         if (notes.size() > 0) {
-            // we can plot robot relative notes but we can just use field relative plotting
-            // with the specific command
+            m_notes.setRobotPose(FieldConstants.translationToPose2d(getNotes(s_Swerve.getEstimatedPose()).get(0)));
+            SmartDashboard.putData("Notes Poses", m_notes);
         }
 
     }
