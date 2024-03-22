@@ -1,49 +1,67 @@
 package frc.robot;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.photonvision.PhotonCamera;
-
-import com.choreo.lib.Choreo;
-import com.choreo.lib.ChoreoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.VisionCommands.multiTagPoseEstimatior;
-import frc.robot.commands.*;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.VisionCommands.AimToSpeakerNoDrive;
+import frc.robot.VisionCommands.aimToSpeakerSequence;
+import frc.robot.commands.GetMulitNote;
+import frc.robot.commands.PointAndPathFindCommand;
+import frc.robot.commands.PointToAngle;
+import frc.robot.commands.StabiliserBar;
+import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
+import frc.robot.commands.BuddyClimb.StopBuddyClimber;
+import frc.robot.commands.Climber.ClimberExtend;
+import frc.robot.commands.Climber.ClimberRetract;
+import frc.robot.commands.Climber.LockClimber;
 import frc.robot.commands.Climber.MoveClimber;
-import frc.robot.commands.Intake.IntakeDeploy;
+import frc.robot.commands.Climber.UnlockClimber;
+import frc.robot.commands.Intake.IntakeAndDeployPivot;
 import frc.robot.commands.Intake.IntakeSpit;
+import frc.robot.commands.Intake.IntakeStop;
 import frc.robot.commands.Intake.IntakeSuck;
-import frc.robot.commands.Intake.MoveIntake;
-import frc.robot.commands.Intake.MoveIntakeToPosition;
-import frc.robot.commands.Intake.Flap.CloseFlap;
-import frc.robot.commands.Intake.Flap.OpenFlap;
-import frc.robot.commands.Intake.IntakeStow;
+import frc.robot.commands.Intake.MovePivot;
+import frc.robot.commands.Intake.MovePivotToPosition;
+import frc.robot.commands.Intake.StopIntakeAndStow;
+import frc.robot.commands.Shooter.ShootSequence;
+import frc.robot.commands.Shooter.ShooterFeed;
+import frc.robot.commands.Shooter.ShooterIdle;
 import frc.robot.commands.Shooter.ShooterRev;
-import frc.robot.subsystems.*;
-import frc.robot.subsystems.Intake.IntakePosition;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.NoteVision;
+import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Pivot.PivotPosition;
+import frc.robot.subsystems.Shooter.ShooterState;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Climber.ClimberPosition;
+import frc.robot.subsystems.Intake.IndexerState;
+import frc.robot.subsystems.Intake.IntakeStatus;
+import frc.robot.subsystems.Intake.StabiliserPos;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -56,8 +74,8 @@ import frc.robot.subsystems.Intake.IntakePosition;
  */
 public class RobotContainer {
     /* Controllers */
-    private final Joystick driver = new Joystick(0);
-    private final Joystick coDriver = new Joystick(1);
+    private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController coDriver = new CommandXboxController(1); // declare xbox on ds port 1
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -65,48 +83,38 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
-        // Swerve
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    
-    private final POVButton      LOCK_CLIMBER_BUTTON   = new POVButton(driver, 0, 0); // The POV angles start at 0 in the up direction, and increase clockwise (e.g. right is 90, upper-left is 315).
-    private final POVButton      UNLOCK_CLIMBER_BUTTON = new POVButton(driver, 180, 0);
-    private final int            ALIGN_TO_SPEAKER      = XboxController.Axis.kLeftTrigger.value;
-    private final JoystickButton ALIGN_TO_AMP          = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton INTAKE_BUTTON         = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
-    private final int            BRAKE_AXIS            = XboxController.Axis.kRightTrigger.value;
-    
-    /* Co-Driver Buttons */
-    private final int            SHOOT_BUTTON                  = XboxController.Axis.kLeftTrigger.value;
-    private final JoystickButton FLAP_TOGGLE                   = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
-    private final int            INTAKE_IN_BUTTON              = XboxController.Axis.kRightTrigger.value;
-    private final JoystickButton INTAKE_OUT_BUTTON             = new JoystickButton(coDriver, XboxController.Button.kRightBumper.value);
-    private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kRightY.value;
-    private final int            MANUAL_SHOTER_AXIS             = XboxController.Axis.kLeftY.value;
-    private final POVButton      DEPLOY_BUDDY_CLIMBER          = new POVButton(coDriver, 270, 0);
-    private final POVButton      AUTO_CLIMB_OUT                = new POVButton(coDriver, 0, 0);
-    private final POVButton      RETRACT_BUDDY_CLIMBER         = new POVButton(coDriver, 90, 0);
-    private final POVButton      AUTO_CLIMB_IN                 = new POVButton(coDriver, 180, 0);
-    private final JoystickButton MANUAL_STOW_INTAKE            = new JoystickButton(coDriver, XboxController.Button.kA.value);
-    private final JoystickButton MANUAL_SHOOTER_TO_AMP_POS     = new JoystickButton(coDriver, XboxController.Button.kB.value);
-    private final JoystickButton MANUAL_INTAKE_TO_INTAKE_POS   = new JoystickButton(coDriver, XboxController.Button.kX.value);
-    private final JoystickButton MANUAL_SHOOTER_TO_SPEAKER_POS = new JoystickButton(coDriver, XboxController.Button.kY.value);
+    // Swerve
+    // private final JoystickButton zeroGyro = new JoystickButton(driver,
+    // XboxController.Button.kY.value);
+    // private final JoystickButton robotCentric = new JoystickButton(driver,
+    // XboxController.Button.kLeftBumper.value);
+
+    private final int BRAKE_AXIS = XboxController.Axis.kRightTrigger.value;
+
+    private final int MANUAL_CLIMB_AXIS = XboxController.Axis.kLeftY.value;
+    private final int MANUAL_SHOOTER_AXIS = XboxController.Axis.kRightY.value;
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private final Intake s_Intake = new Intake();
+    private final Pivot s_Pivot = new Pivot(s_Swerve);
     private final Climber s_Climber = new Climber();
+    private final Shooter s_Shooter = new Shooter();
+    private final NoteVision s_NoteVision = new NoteVision(s_Swerve);
 
-    PhotonCamera leftCamera = new PhotonCamera(Constants.Vision.leftCamName);
-    PhotonCamera rightCamera = new PhotonCamera(Constants.Vision.rightCamName);
-    private final Vision s_Vision = new Vision(leftCamera, rightCamera, s_Swerve);
-    
+    private final SendableChooser<String> m_chosenAuto = new SendableChooser<>();
+    private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();
+
+    private SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+    public String selectedAuto = "";
+
+    // We use these to check if the robots starting pose has changed in robot disabled periodic and update the starting pos odometry.
+    private Pose2d m_prevInitialPose = new Pose2d();
 
     /* Autonomous */
-    private final SendableChooser<Command> autoChooser;
+    // private final SendableChooser<Command> autoChooser;
     Field2d m_Field = new Field2d();
-    ChoreoTrajectory traj;
-    PathPlannerPath exampleChoreoTraj = PathPlannerPath.fromChoreoTrajectory("Trajectory");
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -118,28 +126,35 @@ public class RobotContainer {
                         () -> -driver.getRawAxis(translationAxis),
                         () -> -driver.getRawAxis(strafeAxis),
                         () -> -driver.getRawAxis(rotationAxis),
-                        () -> robotCentric.getAsBoolean(),
+                        () -> driver.leftTrigger().getAsBoolean(),
                         () -> -driver.getRawAxis(BRAKE_AXIS)));
-        s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
-        //s_Intake.setDefaultCommand(new MoveIntake(s_Intake, () -> -coDriver.getRawAxis(MANUAL_SHOTER_AXIS)));   
-        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));     
+
+        // s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
+        s_Pivot.setDefaultCommand(new MovePivot(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));
+        s_Climber.setDefaultCommand(new MoveClimber(s_Climber, () -> coDriver.getRawAxis(MANUAL_CLIMB_AXIS)));
+
+        NamedCommands.registerCommand("IntakeAndDeployPivot", new IntakeAndDeployPivot(s_Pivot, s_Intake, null));
+        NamedCommands.registerCommand("StopIntakeAndStow", new StopIntakeAndStow(s_Pivot, s_Intake));
+        NamedCommands.registerCommand("AimToSpeaker", new AimToSpeakerNoDrive(s_Swerve, s_Pivot));
+        NamedCommands.registerCommand("Start Shooter", new ShooterRev(s_Shooter));
+        NamedCommands.registerCommand("Stop Shooter", new ShooterIdle(s_Shooter));
+        NamedCommands.registerCommand("Intake Suck", new IntakeSuck(s_Intake));
+        NamedCommands.registerCommand("Intake Stop", new IntakeStop(s_Intake));
+        NamedCommands.registerCommand("Move to Base Speaker Angle",
+                new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER_MANUAL));
+        NamedCommands.registerCommand("Stow Pivot", new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
 
         configureButtonBindings();
+        configureAutos();
 
-        // NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
         // NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
         // NamedCommands.registerCommand("print hello", Commands.print("hello"));
 
         autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Chooser", autoChooser);
-
-        traj = Choreo.getTrajectory("Trajectory");
-        
-
-        m_Field.getObject("traj").setPoses(traj.getInitialPose(), traj.getFinalPose());
-        m_Field.getObject("trajPoses").setPoses(traj.getInitialPose(), traj.getFinalPose());
+        // SmartDashboard.putData("Auto Chooser", autoChooser);
 
         SmartDashboard.putData(m_Field);
+        final var visionTab = Shuffleboard.getTab("Vision");
 
     }
 
@@ -153,18 +168,118 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
-        //INTAKE_BUTTON.toggleOnTrue(new IntakeSuck(s_Intake));
-        INTAKE_OUT_BUTTON.whileTrue(new IntakeSpit(s_Intake));
-        MANUAL_STOW_INTAKE.toggleOnTrue(new ShooterRev(s_Intake));
+        //driver.back()          .onTrue(new InstantCommand(s_Swerve::lockWheels, s_Swerve)); // TODO 
+        driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        driver.back()          .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
+        // made this the same as the robot centric so they act as one func
+        driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+
+        /* Pass in codriver for controller to receive rumble */
+        driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+       
+        /* Pass in driver for controller to receive rumble when note in intake*/
+        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())) .onFalse(new StopIntakeAndStow(s_Pivot, s_Intake).andThen(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED)));
+
+        driver.povUp()         .onTrue(new UnlockClimber(s_Climber));
+        driver.povDown()       .onTrue(new LockClimber(s_Climber));
+       
+        driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
+        driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.RIGHT_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
+        driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.LEFT_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
+        driver.a()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.BACK_STAGE, PathPlannerPath.fromPathFile("Line Up With Back Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
+        
         
         /* Co-Driver Buttons */
-        INTAKE_BUTTON.onTrue(new IntakeDeploy(s_Intake)).onFalse(new IntakeStow(s_Intake));
-        MANUAL_INTAKE_TO_INTAKE_POS.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.DEPLOYED));
-        MANUAL_SHOOTER_TO_AMP_POS.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.AMP));
-        MANUAL_SHOOTER_TO_SPEAKER_POS.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.SPEAKER));
-        MANUAL_STOW_INTAKE.onTrue(new MoveIntakeToPosition(s_Intake, IntakePosition.STOWED));
+
+        // coDriver.leftTrigger() .onTrue(new ShooterFeed(s_Intake)).onFalse(new ShooterIdle(s_Shooter).alongWith(new InstantCommand(()->s_Intake.setIntakeStatus(IntakeStatus.STOPPED))));
+        coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
+        coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)); 
+        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake).andThen(new InstantCommand(()->s_Intake.setIndexerState(IndexerState.OUT)))).onFalse(new IntakeStop(s_Intake).andThen(new InstantCommand(()->s_Intake.setIndexerState(IndexerState.STOPPED)))); //Indexer out.
+        coDriver.rightBumper() .onTrue(new IntakeSpit(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.OUT)))).onFalse(new IntakeStop(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.IDLE))));
+
+        coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
+        coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP)); //speaker base
+        coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
+        //coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
+
+        coDriver.povRight()    .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
+        coDriver.povLeft()     .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
+        
+        coDriver.povDown()     .onTrue(new DeployBuddyClimber(s_Climber)).onFalse(new StopBuddyClimber(s_Climber));
+
+        // coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
+        // coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
+        coDriver.back()        .onTrue(new InstantCommand(() -> s_Climber.setClimberPosition(ClimberPosition.STOPPED)));
+        SmartDashboard.putData("Trigger Shot", (new ShootSequence(s_Shooter, s_Intake, s_Swerve)));
+        
+        SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+            Pose2d currentPose = s_Swerve.getEstimatedPose();
+            
+            // The rotation component in these poses represents the direction of travel
+            //Pose2d startPos = new Pose2d(currentPose.getTranslation(), currentPose.getRotation());
+            Pose2d startPos = currentPose;
+            Pose2d endPos = new Pose2d((new Translation2d(2.0, 2.0)), new Rotation2d(Units.degreesToRadians(90)));
+            //Pose2d endPos = 
+
+            List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
+            PathPlannerPath path = new PathPlannerPath(
+                    bezierPoints,
+                    new PathConstraints(
+                            2.5, 2,
+                            Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                    new GoalEndState(0.0, endPos.getRotation()));
+
+            // Prevent this path from being flipped on the red alliance, since the given
+            // positions are already correct
+            path.preventFlipping = true;
+
+            AutoBuilder.followPath(path).schedule();
+        }));
+
+    }
+    private void configureAutos() {
+        // List of start locations
+        List<String> autonamesDropdown = Arrays.asList("S1-S2", "S3-S2", "S1-S2-S3", "S3-S2-S1", "S2-S1", "S1-C1", "C4", "C5", "S3-C4-C5", "W" );
+
+        m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
+        m_startLocation.addOption("Center", FieldConstants.ROBOT_START_2);
+        m_startLocation.addOption("Amp Side", FieldConstants.ROBOT_START_3);
+
+        for (String autoNm : autonamesDropdown) {
+            m_chosenAuto.addOption(autoNm, autoNm);
+        }
+
+        m_chosenAuto.setDefaultOption("S1-S2", "S1-S2");
+
+        m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
+
+        SmartDashboard.putData("Start Location", m_startLocation);
+
+        SmartDashboard.putData("m_chosenAuto", m_chosenAuto);
+
+        SmartDashboard.putString("Auto Chooser", selectedAuto);
+
+    }
+
+    public Pose2d getInitialPose() {
+        return FieldConstants.flipPose(m_startLocation.getSelected());
+    }
+
+    public String getAutoPopulator() {
+        return m_chosenAuto.getSelected();
+    }
+
+    public boolean autoHasChanged() {
+        Pose2d initialPose = getInitialPose();
+        // We don't compare poses with "==". That compares object IDs, not value.
+        boolean changed = !initialPose.equals(m_prevInitialPose);
+        m_prevInitialPose = initialPose;
+        return changed;
+    }
+
+    public Swerve getSwerve() {
+        return s_Swerve;
     }
 
     /**
@@ -174,8 +289,8 @@ public class RobotContainer {
      */
 
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
+        var transforms = FieldConstants.buildNoteList(SmartDashboard.getString("Auto Chooser", "W"));
+        return new GetMulitNote(transforms, s_Swerve, s_NoteVision, s_Shooter, s_Pivot, s_Intake, s_Climber);
     }
-    
 
 }
