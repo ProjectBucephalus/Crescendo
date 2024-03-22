@@ -25,8 +25,10 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -663,12 +665,16 @@ public class Swerve extends SubsystemBase
         SmartDashboard.putBoolean("usingVisionAlignment", usingVisionAlignment);
         SmartDashboard.putBoolean("getWithinRequiredHeading", getWithinRequiredHeading());
 
-        SmartDashboard.putNumber("distance to target", PhotonUtils.getDistanceToPose(getEstimatedPose(), FieldConstants.translationToPose2d(FieldConstants.SPEAKER)));
+        SmartDashboard.putNumber("distance to target", PhotonUtils.getDistanceToPose(getEstimatedPose(), FieldConstants.flipPose(FieldConstants.translationToPose2d(FieldConstants.SPEAKER))));
         
 
         // Do this in either robot or subsystem init
         SmartDashboard.putData("Field", m_field);
 
+    }
+
+    public void simulationPeriodic() {
+        // resetEstimatedOdometry();
     }
 
 }

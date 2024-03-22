@@ -28,10 +28,12 @@ public abstract class GetNote extends SequentialCommandGroup {
             put(FieldConstants.NOTE_C_3, new String[] { "Start_2 to Note_C_3", "Note_C_3 to Shoot_3" });
             put(FieldConstants.NOTE_C_4, new String[] { "Start_3 to Note_C_4", "Note_C_4 to Shoot_2" });
             put(FieldConstants.NOTE_C_5, new String[] { "Start_3 to Note_C_5", "Note_C_5 to Shoot_2" });
+            put(FieldConstants.DUMMY_NOTE_LEAVE_FLAG, new String[] { "","","Start_3 to Leave", "Leave to Start_3" });
 
             put(FieldConstants.BLUE_NOTE_S_1, new String[] { "Start_1 to Note_S_1", "Start_2 to Note_S_1", "Start_3 to Note_S_1", "Note_S_2 to Note_S_1", null });
             put(FieldConstants.BLUE_NOTE_S_2, new String[] { "Start_1 to Note_S_2", "Start_2 to Note_S_2", "Start_3 to Note_S_2", "Note_S_1 to Note_S_2", "Note_S_3 to Note_S_2", null });
             put(FieldConstants.BLUE_NOTE_S_3, new String[] { "Start_1 to Note_S_3", "Start_2 to Note_S_3", "Start_3 to Note_S_3", "Note_S_2 to Note_S_3", null });
+            
         }
     };
 

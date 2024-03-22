@@ -30,6 +30,7 @@ public class StopIntakeAndStow extends Command {
     public void execute() {
         s_Pivot.setPosition(PivotPosition.STOWED);
         s_Intake.setIntakeStatus(IntakeStatus.STOPPED);
+        s_Intake.rumbleWithNote(false);
     }
 
     // Called once the command ends or is interrupted.

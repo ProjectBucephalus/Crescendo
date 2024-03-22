@@ -43,6 +43,7 @@ public class FieldConstants {
     public static final Translation2d RED_NOTE_S_3 = new Translation2d(FIELD_LENGTH - NOTE_S_X, 7.00);
 
     public static final Translation2d DUMMY_NOTE_WAIT_FLAG = new Translation2d(NOTE_S_X, 0);
+    public static final Translation2d DUMMY_NOTE_LEAVE_FLAG = new Translation2d(0, 1);
 
     public static final Translation2d SPEAKER = new Translation2d(0, 5.54);
 
@@ -60,9 +61,9 @@ public class FieldConstants {
     public static final Pose2d ROBOT_SHOOT_M_1 = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     public static final Pose2d ROBOT_SHOOT_M_2 = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
 
-    public static final Pose2d ROBOT_START_1 = new Pose2d(1.25, 3.85, Rotation2d.fromDegrees(15.27));
+    public static final Pose2d ROBOT_START_1 = new Pose2d(0.75, 4.48, Rotation2d.fromDegrees(-60));
     public static final Pose2d ROBOT_START_2 = new Pose2d(1.3, 5.53, Rotation2d.fromDegrees(0));
-    public static final Pose2d ROBOT_START_3 = new Pose2d(1.25, 6.95, Rotation2d.fromDegrees(-67.52)); // same as 228.4
+    public static final Pose2d ROBOT_START_3 = new Pose2d(0.75, 6.62, Rotation2d.fromDegrees(60)); 
 
     /* Driver pathfinding controlls in teleop */
     public static final Transform2d AMP = new Transform2d(0, 5.54, Rotation2d.fromDegrees(90));
@@ -83,6 +84,7 @@ public class FieldConstants {
             put("S3", FieldConstants.BLUE_NOTE_S_3);
 
             put("W", FieldConstants.DUMMY_NOTE_WAIT_FLAG);
+            put("L", FieldConstants.DUMMY_NOTE_LEAVE_FLAG);
         }
     };
 

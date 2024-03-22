@@ -4,10 +4,8 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Pivot;
-import frc.robot.commands.Intake.PivotPDG;
 
 
 /**
@@ -49,9 +47,9 @@ public class MovePivot extends Command {
             s_Pivot.setArmMotorSpeeds(Constants.Intake.pivotManualGain * MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
             manualActive = true;
         }
-        else //if (manualActive)
+        else if (manualActive)
         {
-            s_Pivot.pivotPDGCycle();
+            s_Pivot.setArmMotorSpeeds(0);
             manualActive = false;
         }
     }
