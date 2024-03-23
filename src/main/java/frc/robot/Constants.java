@@ -134,7 +134,7 @@ public final class Constants {
         /** Degrees */
         public static final double pivotResStowThreshold = -10;
         /** Degrees */
-        public static final double pivotResDeployThreshold = 30;
+        public static final double pivotResDeployThreshold = 40;
 
         public static final int pivotCurrentLimit = 38;
         public static final int pivotCurrentThreshold = 65;
