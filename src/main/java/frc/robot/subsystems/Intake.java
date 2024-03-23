@@ -27,15 +27,21 @@ public class Intake extends SubsystemBase
 
     // Declaration of the beam break digital input
     public DigitalInput BeamBreak = new DigitalInput(9);
+    public DigitalInput StabilserLimit = new DigitalInput(4);
+
 
 
     // Booleans regarding the beam braek
     private boolean beamBreakBool = false;
     private boolean useBeamBreak = false;
 
+    private boolean useStabiliserLimitSwitch = true;
+
     private boolean doRumbleWithNote = true;
 
     private XboxController xbox = null;
+
+    
 
     /** 
      * Enum representing the roller status of the Intake 
@@ -183,13 +189,15 @@ public class Intake extends SubsystemBase
         {
             case IN:
                 mStabilser.set(ControlMode.PercentOutput, -1);
-
+                useStabiliserLimitSwitch = true;
                 break;
             case OUT:
                 mStabilser.set(ControlMode.PercentOutput, 1);
+                useStabiliserLimitSwitch = false;
                 break;
             case STOPPED:
                 mStabilser.set(ControlMode.PercentOutput, 0);
+                useStabiliserLimitSwitch = false;
                 break;
             default:
                 break;
@@ -239,6 +247,12 @@ public class Intake extends SubsystemBase
         if (useBeamBreak && !beamBreakBool)
         {
             setIntakeStatus(IntakeStatus.STOPPED);
+        }
+        if (useStabiliserLimitSwitch)
+        {
+            if (StabilserLimit.get()) {
+                setStabliserPos(StabiliserPos.STOPPED);
+            }
         }
     }
 }

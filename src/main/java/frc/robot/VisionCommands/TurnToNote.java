@@ -53,11 +53,6 @@ public class TurnToNote extends Command {
         Translation2d translation = new Translation2d(translationVal,
                 strafeVal).times(SwerveConstants.maxSpeed);
         try {
-            SmartDashboard.putNumber("Note Position, Yaw", s_NoteVision.getNotesYaw().get(0));
-            SmartDashboard.putNumber("Note Position, X",
-                    s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getX());
-            SmartDashboard.putNumber("Note Position, Y",
-                    s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getY());
             SmartDashboard
                     .putNumber("Note Position, requiredHeading",
                             calculateRequiredHeading(new Pose2d(

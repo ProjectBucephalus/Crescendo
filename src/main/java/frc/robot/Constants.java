@@ -145,12 +145,12 @@ public final class Constants {
     }
 
     public static final class Shooter {
-        public static final double runningTopShooterSpeed = 0.8;
-        public static final double runningBottomShooterSpeed = 0.8; // AMP TOP: 0.450000 bottom: 0.05
+        public static final double runningTopShooterSpeed = 1;
+        public static final double runningBottomShooterSpeed = 1; // AMP TOP: 0.450000 bottom: 0.05
 
         public static final double shooterIdleSpeed = 0.3;
 
-        public static final double ShooterAcceptableVelocity = 70;
+        public static final double ShooterAcceptableVelocity = 75;
 
         // public static final double horizontalShooterAngle = 20;
 
