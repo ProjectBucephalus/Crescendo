@@ -188,11 +188,11 @@ public class Intake extends SubsystemBase
         switch (pos) 
         {
             case IN:
-                mStabilser.set(ControlMode.PercentOutput, -1);
+                mStabilser.set(ControlMode.PercentOutput, 1);
                 useStabiliserLimitSwitch = true;
                 break;
             case OUT:
-                mStabilser.set(ControlMode.PercentOutput, 1);
+                mStabilser.set(ControlMode.PercentOutput, -1);
                 useStabiliserLimitSwitch = false;
                 break;
             case STOPPED:
@@ -227,6 +227,7 @@ public class Intake extends SubsystemBase
     {
         // Sets beamBreakBool to the value of the Beam Break
         beamBreakBool = BeamBreak.get();
+        SmartDashboard.putBoolean("Stabiliser Limit", StabilserLimit.get());
 
         if (doRumbleWithNote) {
             if (!getBeamBreak() && (xbox != null)) {
@@ -250,7 +251,7 @@ public class Intake extends SubsystemBase
         }
         if (useStabiliserLimitSwitch)
         {
-            if (StabilserLimit.get()) {
+            if (!StabilserLimit.get()) {
                 setStabliserPos(StabiliserPos.STOPPED);
             }
         }
