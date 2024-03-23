@@ -41,6 +41,12 @@ public class Pivot extends SubsystemBase {
     boolean deployPressed = false;
     boolean stowPressed = false;
 
+    double voltageFromG, voltageFromPID, voltageToPivot, voltageFromResistance;
+    // Pivot PDGR Control
+    ArmFeedforward pivotGravityFeed = new ArmFeedforward(0.0, Constants.Intake.pivotKG, 0.0);
+    ArmFeedforward pivotResistanceFeed = new ArmFeedforward(0.0, Constants.Intake.pivotKRes, 0.0);
+    PIDController pivotPIDController = new PIDController(Constants.Intake.pivotKP, Constants.Intake.pivotKI, Constants.Intake.pivotKD, 0.02);
+
     private Swerve s_Swerve;
     private Pose2d pose;
 
@@ -136,7 +142,86 @@ public class Pivot extends SubsystemBase {
         );
         mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true));
         // CTREConfigs already has Left and Right use opposite directions
+    
+        pivotPDGCycle(desiredAngle);
+    }
 
+    // .withLimitForwardMotion(rightDeploySwitch.get())
+    // .withLimitForwardMotion(leftDeploySwitch.get())
+
+    // .withLimitReverseMotion(rightStowSwitch.get())
+    // .withLimitReverseMotion(leftStowSwitch.get())
+
+    /**
+     * Moves the arm to a set position, in degrees
+     * @param inputAngle The real-world angle to move the arm to in degrees.
+     *                   Intake Postive,
+     *                   Using limits switches.
+     * @author 5985
+     */
+    public void pivotPDGCycle(double inputAngle) 
+    {
+        desiredAngle = inputAngle;
+        pivotPDGCycle();
+    }
+
+    private double pivotResCalculate(double angle) 
+    {
+        if (angle > 0) 
+        {
+            return Math.max(0, 2 * (angle - Constants.Intake.pivotResDeployThreshold));
+        }
+        else
+        {
+            return Math.min(0, 2 * (angle + Constants.Intake.pivotResStowThreshold));
+        }   
+    }
+
+
+    /**
+     * Moves the pivot to the desired angle, using PDG control. Respects limit switches 
+     * @author 5985
+     * @author Alec
+     */
+    public void pivotPDGCycle()
+    {
+        /*
+        SmartDashboard.putNumber("Pivot PDG Position Degrees : ", getPivotPos() + 90);
+        SmartDashboard.putNumber("Pivot PDG Position Radians : ", Math.toRadians(getPivotPos() + 90)/Math.PI);
+        SmartDashboard.putNumber("Pivot PDG Cos : ", Math.cos(Math.toRadians(getPivotPos() + 90)));
+        //SmartDashboard.putNumber("Pivot PDG b : ", 0d);
+
+        
+
+        SmartDashboard.putNumber("Grav Voltage Output", voltageFromG);
+        SmartDashboard.putNumber("PID Voltage Output : ", voltageFromPID);
+        SmartDashboard.putNumber("Voltage to Pivot", voltageToPivot);
+        */
+        
+        // If either stow switch is pressed, and the desired angle or desired voltage is further in the stow direction than the current position, do not move
+        if ((!leftStowSwitch.get() || !rightStowSwitch.get()) && desiredAngle <= getPivotPos()) 
+        {
+            voltageToPivot = 0;
+            SmartDashboard.putString("Pivot PDG Status : ", "Stopped at Stow");
+        }
+        // If either deploy switch is pressed, and the desired angle or desired voltage is further in the deploy direction than the curren position, do not move
+        else if ((!leftDeploySwitch.get() || !rightDeploySwitch.get()) && desiredAngle >= getPivotPos())
+        {
+            voltageToPivot = 0;
+            SmartDashboard.putString("Pivot PDG Status : ", "Stopped at Deploy");
+        }
+        // If it is determined safe to move, move using the combined ArmFeedforward for gravity compensation and PID for angle control
+        else
+        {
+            voltageFromG   = Constants.Intake.pivotKG * Math.cos((Math.toRadians(getPivotPos() + 90)));
+            voltageFromResistance = Constants.Intake.pivotKRes * Math.cos(Math.toRadians(pivotResCalculate(getPivotPos())) + 90);
+            voltageFromPID = pivotPIDController.calculate(getPivotPos(), desiredAngle);
+            voltageToPivot = voltageFromG + voltageFromPID + voltageFromResistance;
+
+            SmartDashboard.putString("Pivot PDG Status : ", "Running");
+        }
+
+        mLeftPivot.setVoltage(voltageToPivot);
     }
 
     /**
