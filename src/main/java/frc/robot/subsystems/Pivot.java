@@ -137,9 +137,9 @@ public class Pivot extends SubsystemBase {
         System.out.println("Moving arm to angle" + inputAngle);
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
         // double motorAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
-        mLeftPivot.setControl(
-                anglePosition.withPosition((inputAngle / 360))
-        );
+        // mLeftPivot.setControl(
+        //         anglePosition.withPosition((inputAngle / 360))
+        // );
         mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true));
         // CTREConfigs already has Left and Right use opposite directions
     
