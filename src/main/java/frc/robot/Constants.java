@@ -128,8 +128,8 @@ public final class Constants {
         public static final double pivotKP = 0; //0.3
         public static final double pivotKI = 0;
         public static final double pivotKD = 0; //0.03
-        public static final double pivotKG = 0.8; //0.5
-        public static final double pivotKRes = -0.2;
+        public static final double pivotKG = 0.6; //0.5
+        public static final double pivotKRes = -0.1;
 
         /** Degrees */
         public static final double pivotResStowThreshold = -50; //set to -50 so as to not be functional; current setup provides no resistance to the stow direction
