@@ -125,6 +125,12 @@ public final class Constants
         public static final double pivotKD = 0.0; //0.03
         public static final double pivotKG = 0.5; //0.5
         public static final double pivotKRes = -0.25; // -0.25
+        public static final double pivotDampingGain = 0.2;
+
+        public static final double pivotDeployDampingThreshold = 20;
+        public static final double pivotStowDampingThreshold = -5;
+        /** Rotation per second of the mechanism, manual control reaches 0.4 */
+        public static final double pivotDampingSpeed = 0.4;
         
         public static final double openLoopRamp = 0.1; // Seconds to ramp power to new value
 

@@ -41,7 +41,7 @@ public class Pivot extends SubsystemBase {
     boolean deployPressed = false;
     boolean stowPressed = false;
 
-    double voltageFromG, voltageFromPID, voltageToPivot, voltageFromResistance;
+    double voltageFromG, voltageFromPID, voltageToPivot, voltageFromResistance, voltageFromDamping;
     // Pivot PDGR Control
     //ArmFeedforward pivotGravityFeed = new ArmFeedforward(0.0, Constants.Intake.pivotKG, 0.0);
     //ArmFeedforward pivotResistanceFeed = new ArmFeedforward(0.0, Constants.Intake.pivotKRes, 0.0);
@@ -178,6 +178,36 @@ public class Pivot extends SubsystemBase {
         }
     }
 
+    /**
+     * Calculates the absolute value past the damping threshold in the appropriate direction
+     * @return The value past the damping threshold, as a double
+     * @author 5985
+     * @author Alec
+     */
+    private double getDampingAngle() 
+    {   
+        if (getPivotPos() >= 0) 
+        {
+            return Math.max(0, getPivotPos() - Constants.Intake.pivotDeployDampingThreshold);
+        }
+        else 
+        {
+            return Math.max(0, Math.abs(getPivotPos()) - Math.abs(Constants.Intake.pivotStowDampingThreshold));
+        }
+    }
+
+    private double getVelocityForDamping()
+    {
+        if (Math.abs(mLeftPivot.getVelocity().getValueAsDouble()) <= Constants.Intake.pivotDampingSpeed) 
+        {
+            return 0.0;
+        }
+        else 
+        {
+            return mLeftPivot.getVelocity().getValueAsDouble() - Math.copySign(Constants.Intake.pivotDampingSpeed, mLeftPivot.getVelocity().getValueAsDouble());
+        }
+    }
+
 
     /**
      * Moves the pivot to the desired angle, using PDG control. Respects limit switches 
@@ -216,10 +246,16 @@ public class Pivot extends SubsystemBase {
             voltageFromG   = Constants.Intake.pivotKG * Math.cos((Math.toRadians(getPivotPos() + 90)));
             voltageFromResistance = Constants.Intake.pivotKRes * Math.cos(Math.toRadians(pivotResCalculate(getPivotPos())) + 90);
             voltageFromPID = pivotPIDController.calculate(getPivotPos(), desiredAngle);
-            voltageToPivot = voltageFromG + voltageFromPID + voltageFromResistance;
+            voltageFromDamping = -(Constants.Intake.pivotDampingGain * getDampingAngle() * getVelocityForDamping());
+            voltageToPivot = voltageFromG + voltageFromPID + voltageFromResistance + voltageFromDamping;
             
-            SmartDashboard.putNumber("Grav Voltage Output", voltageFromG);
+            SmartDashboard.putNumber("Grav Voltage Output", voltageFromDamping);
             SmartDashboard.putString("Pivot PDG Status : ", "Running");
+
+            if ((deployPressed && voltageToPivot > 0) || (stowPressed && voltageToPivot < 0))
+            {
+                voltageToPivot = 0;
+            }
         }
 
         mLeftPivot.setVoltage(voltageToPivot);
@@ -331,11 +367,11 @@ public class Pivot extends SubsystemBase {
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
         }
-        // else if (leftStowSwitch.get() && rightStowSwitch.get()) 
-        // {
-        //     //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
-        //     stowPressed = false;
-        // }
+        else if (leftStowSwitch.get() && rightStowSwitch.get()) 
+        {
+            //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
+            stowPressed = false;
+        }
         calculatedRequiredShooterAngle();
     }
 
@@ -346,36 +382,8 @@ public class Pivot extends SubsystemBase {
      * @return The value in degrees that the pivot needs to angle to to score in the
      *         speaker.
      */
-    public double calculatedRequiredShooterAngle() {
-
-        // double[] distances = Constants.distancesFromSpeaker; // distances in meters
-        // double[] angles = Constants.anglesOfPivot; // shooter angles in degrees
-
-
-        // double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
-        // SmartDashboard.putNumber("COMP Distance to the speaker", targetDistance);
-        // // Ensure the target distance is within the range of the data
-        // if (targetDistance < distances[0]) {
-        //     // Extrapolate using the first two points
-        //     return angles[0]
-        //             + (angles[1] - angles[0]) * (targetDistance - distances[0]) / (distances[1] - distances[0]);
-        // } else if (targetDistance > distances[distances.length - 1]) {
-        //     // Extrapolate using the last twlo points
-        //     int n = distances.length;
-        //     return angles[n - 2] + (angles[n - 1] - angles[n - 2]) * (targetDistance - distances[n - 2])
-        //             / (distances[n - 1] - distances[n - 2]);
-        // }
-
-        // // Perform linear interpolation
-        // double angle = 0;
-        // for (int i = 0; i < distances.length - 1; i++) {
-        //     if (targetDistance >= distances[i] && targetDistance <= distances[i + 1]) {
-        //         angle = angles[i] + (angles[i + 1] - angles[i]) * (targetDistance - distances[i])
-        //                 / (distances[i + 1] - distances[i]);
-        //         break;
-        //     }
-        // }
-
+    public double calculatedRequiredShooterAngle() 
+    {
         double targetHeightOverShooter = 1.5;
         double shooterPivotOffsetUp = 0.25;
         double shooterPivotOffsetBack = 0.17;
@@ -389,18 +397,6 @@ public class Pivot extends SubsystemBase {
         targetAngle = Math.toDegrees(Math.atan(targetHeightOverShooter/targetDistance));
         double error = Math.abs(desiredAngle - getPivotPos()) > 2 ? 0 : (desiredAngle - getPivotPos())/2;
         return  error + Math.min(Constants.Intake.pivotDeployPos, Math.max(Constants.Intake.pivotFrameClearPos, targetAngle));
-        
-        // return SmartDashboard.getNumber("COMP calculated shooter angle", angle);
-        // return SmartDashboard.getNumber("COMP pivot position", 0);
-        // return angle;
-
-
-
-
-        // return Units.radiansToDegrees(Math.atan(
-        // (2 - 0.425) / (PhotonUtils.getDistanceToPose(pose, new Pose2d(0.2, 5.6, new
-        // Rotation2d(0, 0))))));
-        // return 0;
     }
 
 }
