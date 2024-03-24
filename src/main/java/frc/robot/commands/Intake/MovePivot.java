@@ -53,5 +53,9 @@ public class MovePivot extends Command {
             s_Pivot.moveArmToAngle(s_Pivot.getPivotPos());
             manualActive = false;
         }
+        else
+        {
+            s_Pivot.pivotPDGCycle();
+        }
     }
 }

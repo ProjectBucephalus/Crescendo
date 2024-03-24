@@ -43,8 +43,8 @@ public class Pivot extends SubsystemBase {
 
     double voltageFromG, voltageFromPID, voltageToPivot, voltageFromResistance;
     // Pivot PDGR Control
-    ArmFeedforward pivotGravityFeed = new ArmFeedforward(0.0, Constants.Intake.pivotKG, 0.0);
-    ArmFeedforward pivotResistanceFeed = new ArmFeedforward(0.0, Constants.Intake.pivotKRes, 0.0);
+    //ArmFeedforward pivotGravityFeed = new ArmFeedforward(0.0, Constants.Intake.pivotKG, 0.0);
+    //ArmFeedforward pivotResistanceFeed = new ArmFeedforward(0.0, Constants.Intake.pivotKRes, 0.0);
     PIDController pivotPIDController = new PIDController(Constants.Intake.pivotKP, Constants.Intake.pivotKI, Constants.Intake.pivotKD, 0.02);
 
     private Swerve s_Swerve;
@@ -122,7 +122,8 @@ public class Pivot extends SubsystemBase {
     }
 
     // So that the pivot angle adjusts based on how far away we are.
-    public void updateSpeakerAngle() {
+    public void updateSpeakerAngle() 
+    {
         moveArmToAngle(calculatedRequiredShooterAngle());
     }
 
@@ -134,13 +135,13 @@ public class Pivot extends SubsystemBase {
      */
     public void moveArmToAngle(double inputAngle) {
         desiredAngle = inputAngle;
-        System.out.println("Moving arm to angle" + inputAngle);
+        //System.out.println("Moving arm to angle" + inputAngle);
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
         // double motorAngle = -(desiredAngle - Constants.Intake.pivotOffsetForZero);
         // mLeftPivot.setControl(
         //         anglePosition.withPosition((inputAngle / 360))
         // );
-        mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true));
+        //mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true));
         // CTREConfigs already has Left and Right use opposite directions
     
         pivotPDGCycle(desiredAngle);
@@ -167,14 +168,14 @@ public class Pivot extends SubsystemBase {
 
     private double pivotResCalculate(double angle) 
     {
-        if (angle > 0) 
+        if (angle > 0)
         {
             return Math.max(0, 2 * (angle - Constants.Intake.pivotResDeployThreshold));
         }
         else
         {
             return Math.min(0, 2 * (angle + Constants.Intake.pivotResStowThreshold));
-        }   
+        }
     }
 
 
@@ -193,7 +194,6 @@ public class Pivot extends SubsystemBase {
 
         
 
-        SmartDashboard.putNumber("Grav Voltage Output", voltageFromG);
         SmartDashboard.putNumber("PID Voltage Output : ", voltageFromPID);
         SmartDashboard.putNumber("Voltage to Pivot", voltageToPivot);
         */
@@ -217,7 +217,8 @@ public class Pivot extends SubsystemBase {
             voltageFromResistance = Constants.Intake.pivotKRes * Math.cos(Math.toRadians(pivotResCalculate(getPivotPos())) + 90);
             voltageFromPID = pivotPIDController.calculate(getPivotPos(), desiredAngle);
             voltageToPivot = voltageFromG + voltageFromPID + voltageFromResistance;
-
+            
+            SmartDashboard.putNumber("Grav Voltage Output", voltageFromG);
             SmartDashboard.putString("Pivot PDG Status : ", "Running");
         }
 
@@ -236,7 +237,7 @@ public class Pivot extends SubsystemBase {
      */
     public void setDesiredPostion(Double angle) 
     {
-        System.out.println("Set Desired Position as" + angle);
+        //System.out.println("Set Desired Position as" + angle);
         desiredAngle = angle;
     }
 
@@ -245,11 +246,11 @@ public class Pivot extends SubsystemBase {
      * 
      * @return Pivot position degrees
      */
-    public double getPivotPos() {
+    public double getPivotPos() 
+    {
         // motor.getPosition() returns rotations: convert to degrees and return average.
         return ((mRightPivot.getPosition().getValueAsDouble() * 360)
                 + (mLeftPivot.getPosition().getValueAsDouble() * 360)) / 2;
-        // return mRightPivot.getPosition().getValueAsDouble();
     }
 
     /**
@@ -269,21 +270,27 @@ public class Pivot extends SubsystemBase {
      * @author 5985
      * @author Alec
      */
-    public void setArmMotorSpeeds(double speed) {
+    public void setArmMotorSpeeds(double speed) 
+    {
         if ((speed < 0 && leftStowSwitch.get() && rightStowSwitch.get())
-                || (speed > 0 && leftDeploySwitch.get() && rightDeploySwitch.get())) {
+              || 
+            (speed > 0 && leftDeploySwitch.get() && rightDeploySwitch.get())) 
+        {
             mLeftPivot.set(speed);
             // mRightPivot.set(speed); // mRightPivot is set as reversed follower of
             // mLeftPivot
             desiredAngle = getPivotPos();
-        } else {
+        }
+        else
+        {
             mLeftPivot.set(0);
             // mRightPivot.set(0); // mRightPivot is set as reversed follower of mLeftPivot
         }
     }
 
     @Override
-    public void periodic() {
+    public void periodic() 
+    {
         // Prints a bunch of values to the Smart Dashboard
         SmartDashboard.putNumber("ReportedPivotPosition", getPivotPos());
         SmartDashboard.putNumber("PivotError", desiredAngle - getPivotPos());
@@ -294,27 +301,41 @@ public class Pivot extends SubsystemBase {
 
         pose = s_Swerve.getEstimatedPose();
 
-        if ((!leftDeploySwitch.get() || !rightDeploySwitch.get()) && !deployPressed) {
+        // Calibrates the pivot position the first time it hits a limit, and each time it comes off the deploy limit
+        // The first time is to ensure it always knows where it is to reasonable accuracy
+        // The liftoff calibration is to account for both backlash and drift
+        if ((!leftDeploySwitch.get() || !rightDeploySwitch.get()) && !deployPressed) 
+        {
+            if (!isCalibrated)
+            {
+                isCalibrated = true;
+                mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
+                mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
+            }
             //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
             deployPressed = true;
+        }
+        else if (leftDeploySwitch.get() && rightDeploySwitch.get() && deployPressed) 
+        {
+            //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
+            deployPressed = false;
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotDeployPos));
         }
-        else if (leftDeploySwitch.get() && rightDeploySwitch.get()) {
-            //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
-            deployPressed = false;
-        }
 
-        if ((!leftStowSwitch.get() || !rightStowSwitch.get()) && !stowPressed) {
+        if ((!leftStowSwitch.get() || !rightStowSwitch.get()) && !stowPressed && !isCalibrated) 
+        {
             //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
             stowPressed = true;
+            isCalibrated = true;
             mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
             mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
         }
-        else if (leftStowSwitch.get() && rightStowSwitch.get()) {
-            //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
-            stowPressed = false;
-        }
+        // else if (leftStowSwitch.get() && rightStowSwitch.get()) 
+        // {
+        //     //positionOffset = (Constants.Intake.pivotDeployPos)-Units.rotationsToDegrees(mLeftPivot.getPosition().getValueAsDouble());
+        //     stowPressed = false;
+        // }
         calculatedRequiredShooterAngle();
     }
 
@@ -356,14 +377,15 @@ public class Pivot extends SubsystemBase {
         // }
 
         double targetHeightOverShooter = 1.5;
-        double shooterPivotOffset = 0.25;
+        double shooterPivotOffsetUp = 0.25;
+        double shooterPivotOffsetBack = 0.17;
         double targetAngle;
         double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
 
-        targetDistance += 0.17;
+        targetDistance += shooterPivotOffsetBack;
 
         targetAngle = Math.atan(targetHeightOverShooter/targetDistance);
-        targetDistance += shooterPivotOffset * Math.tan(targetAngle);
+        targetDistance += shooterPivotOffsetUp * Math.tan(targetAngle);
         targetAngle = Math.toDegrees(Math.atan(targetHeightOverShooter/targetDistance));
         double error = Math.abs(desiredAngle - getPivotPos()) > 2 ? 0 : (desiredAngle - getPivotPos())/2;
         return  error + Math.min(Constants.Intake.pivotDeployPos, Math.max(Constants.Intake.pivotFrameClearPos, targetAngle));

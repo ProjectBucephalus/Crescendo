@@ -108,7 +108,7 @@ public class Intake extends SubsystemBase
     public void setIntakeStatus(IntakeStatus status) 
     {
         SmartDashboard.putString("Intake Status", status.name());
-        System.out.println("setIntakeStatus Getting set");
+        //System.out.println("setIntakeStatus Getting set");
         
         switch (status) 
         {

@@ -20,19 +20,18 @@ import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
-public final class Constants {
-
+public final class Constants 
+{
     public static boolean useVision = true;
 
     public static final double stickDeadband = 0.3;
-
-    
 
     public static final double[] distancesFromSpeaker = { 1.8,    2, 2.5,  3, 3.5,  4, 5, 6 }; // distances in meters
     // TODO Values to calibrate: 3.5
     public static final double[] anglesOfPivot =        {  39, 29.5,  28, 23,  22, 20, 20,20 }; // shooter angles in degrees
 
-    public static final class Vision {
+    public static final class Vision 
+    {
         /* Names */
         public static final String frontCamName = "DriveBaseCam";
         public static final String backCamName = "BackCam";
@@ -50,7 +49,6 @@ public final class Constants {
 
         public static final Transform3d frontCamToRobot = new Transform3d
         ( 
-
                 0, 0, 0,
                 new Rotation3d(0,Units.degreesToRadians(-20), Units.degreesToRadians(0))
         ); // Meters and Radians (roll, pitch, yaw)
@@ -87,7 +85,8 @@ public final class Constants {
 
     }
 
-    public static final class Intake {
+    public static final class Intake 
+    {
         /* Arm Ratios and Limis */
         public static final double planetaryRingTeeth = 72;
         public static final double planetarySunTeeth = 18;
@@ -100,7 +99,7 @@ public final class Constants {
         public static final double pivotGearRatio = planetaryRatio * (gear1Out / gear1In)
                 * (pivotGearOut / pivotGearIn);
 
-        public static final double ANGLE_TOLERANCE_DEGREE = 10;
+        public static final double ANGLE_TOLERANCE_DEGREE = 1;
 
         /** Degrees - Difference between pivot mechanism 0 and real-world 0 */
         public static final double pivotOffsetForZero = -37;
@@ -119,7 +118,7 @@ public final class Constants {
 
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
         public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final InvertedValue rightPivotMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue rightPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
 
         public static double angleKP;
         public static double angleKI;
@@ -128,13 +127,13 @@ public final class Constants {
         public static final double pivotKP = 0; //0.3
         public static final double pivotKI = 0;
         public static final double pivotKD = 0; //0.03
-        public static final double pivotKG = 0.8; //0.5
-        public static final double pivotKRes = -0.2;
+        public static final double pivotKG = 0.5; //0.5
+        public static final double pivotKRes = -0.25; // -0.25
 
         /** Degrees to Stow where Resistance begins*/
         public static final double pivotResStowThreshold = -50; // set to <= -40 for no Resistance in Stow direction
         /** Degrees to Deploy where Resistance begins*/
-        public static final double pivotResDeployThreshold = 40; // set to >= 60 for no Resistance in Deploy direction
+        public static final double pivotResDeployThreshold = 45; // set to >= 60 for no Resistance in Deploy direction
 
         public static final int pivotCurrentLimit = 38;
         public static final int pivotCurrentThreshold = 65;
@@ -151,7 +150,8 @@ public final class Constants {
 
     }
 
-    public static final class Shooter {
+    public static final class Shooter 
+    {
         public static final double runningTopShooterSpeed = 1;
         public static final double runningBottomShooterSpeed = 1; // AMP TOP: 0.450000 bottom: 0.05
 
@@ -164,7 +164,8 @@ public final class Constants {
         public static final double openLoopRamp = 0;
     }
 
-    public static final class Climber {
+    public static final class Climber 
+    {
         public static final double climbUpSpeed = 1;
         public static final double climbDownSpeed = -1;
         
@@ -177,7 +178,8 @@ public final class Constants {
 
     }
 
-    public static final class AutoConstants { // TODO
+    public static final class AutoConstants 
+    { // TODO
         public static final double kMaxSpeedMetersPerSecond = 2;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI; // was pi?
