@@ -131,10 +131,10 @@ public final class Constants {
         public static final double pivotKG = 0.6; //0.5
         public static final double pivotKRes = -0.1;
 
-        /** Degrees */
-        public static final double pivotResStowThreshold = -50; //set to -50 so as to not be functional; current setup provides no resistance to the stow direction
-        /** Degrees */
-        public static final double pivotResDeployThreshold = 40;
+        /** Degrees to Stow where Resistance begins*/
+        public static final double pivotResStowThreshold = -50; // set to <= -40 for no Resistance in Stow direction
+        /** Degrees to Deploy where Resistance begins*/
+        public static final double pivotResDeployThreshold = 40; // set to >= 60 for no Resistance in Deploy direction
 
         public static final int pivotCurrentLimit = 38;
         public static final int pivotCurrentThreshold = 65;
