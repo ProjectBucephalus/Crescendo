@@ -191,12 +191,6 @@ public class RobotContainer {
         coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
         //coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
 
-        // TODO set for testing only
-        // coDriver.x()           .onTrue(new MovePivotToAngle(s_Pivot, 0));
-        // coDriver.y()           .onTrue(new MovePivotToAngle(s_Pivot, 40));
-        // coDriver.a()           .onTrue(new MovePivotToAngle(s_Pivot, -20));
-        // coDriver.b()           .onTrue(new MovePivotToAngle(s_Pivot, 20));
-
         coDriver.povRight()    .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         coDriver.povLeft()     .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         
