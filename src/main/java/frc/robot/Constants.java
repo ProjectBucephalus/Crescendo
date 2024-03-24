@@ -120,15 +120,13 @@ public final class Constants
         public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
         public static final InvertedValue rightPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
 
-        public static double angleKP;
-        public static double angleKI;
-        public static double angleKD;
-
-        public static final double pivotKP = 0; //0.3
+        public static final double pivotKP = 0.2; //0.3
         public static final double pivotKI = 0;
-        public static final double pivotKD = 0; //0.03
+        public static final double pivotKD = 0.0; //0.03
         public static final double pivotKG = 0.5; //0.5
         public static final double pivotKRes = -0.25; // -0.25
+        
+        public static final double openLoopRamp = 0.1; // Seconds to ramp power to new value
 
         /** Degrees to Stow where Resistance begins*/
         public static final double pivotResStowThreshold = -50; // set to <= -40 for no Resistance in Stow direction
@@ -140,13 +138,6 @@ public final class Constants
         public static final double pivotCurrentThresholdTime = 0.1;
         public static final boolean pivotEnableCurrentLimit = false;
         public static final double pivotManualGain = 0.25;
-
-        public static final double openLoopRamp = 1.3;
-
-
-        //public static double pivotKP = 45; // 100
-        //public static double pivotKI = 5; // 20
-        //public static double pivotKD = 1; // 2 ssh
 
     }
 

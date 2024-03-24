@@ -293,7 +293,7 @@ public class Pivot extends SubsystemBase {
     {
         // Prints a bunch of values to the Smart Dashboard
         SmartDashboard.putNumber("ReportedPivotPosition", getPivotPos());
-        SmartDashboard.putNumber("PivotError", desiredAngle - getPivotPos());
+        SmartDashboard.putNumber("PivotError", getPivotPos() - desiredAngle);
         SmartDashboard.putBoolean("leftDeploySwitch", leftDeploySwitch.get());
         SmartDashboard.putBoolean("leftStowSwitch", leftStowSwitch.get());
         SmartDashboard.putBoolean("rightDeploySwitch", rightDeploySwitch.get());

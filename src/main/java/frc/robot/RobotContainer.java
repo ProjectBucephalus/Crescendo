@@ -35,22 +35,9 @@ import frc.robot.commands.StabiliserBar;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
 import frc.robot.commands.BuddyClimb.StopBuddyClimber;
-import frc.robot.commands.Climber.ClimberExtend;
-import frc.robot.commands.Climber.ClimberRetract;
-import frc.robot.commands.Climber.LockClimber;
-import frc.robot.commands.Climber.MoveClimber;
-import frc.robot.commands.Climber.UnlockClimber;
-import frc.robot.commands.Intake.IntakeAndDeployPivot;
-import frc.robot.commands.Intake.IntakeSpit;
-import frc.robot.commands.Intake.IntakeStop;
-import frc.robot.commands.Intake.IntakeSuck;
-import frc.robot.commands.Intake.MovePivot;
-import frc.robot.commands.Intake.MovePivotToPosition;
-import frc.robot.commands.Intake.StopIntakeAndStow;
-import frc.robot.commands.Shooter.ShootSequence;
-import frc.robot.commands.Shooter.ShooterFeed;
-import frc.robot.commands.Shooter.ShooterIdle;
-import frc.robot.commands.Shooter.ShooterRev;
+import frc.robot.commands.Climber.*;
+import frc.robot.commands.Intake.*;
+import frc.robot.commands.Shooter.*;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NoteVision;
@@ -203,6 +190,12 @@ public class RobotContainer {
         coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP)); //speaker base
         coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
         //coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
+
+        // TODO set for testing only
+        // coDriver.x()           .onTrue(new MovePivotToAngle(s_Pivot, 0));
+        // coDriver.y()           .onTrue(new MovePivotToAngle(s_Pivot, 40));
+        // coDriver.a()           .onTrue(new MovePivotToAngle(s_Pivot, -20));
+        // coDriver.b()           .onTrue(new MovePivotToAngle(s_Pivot, 20));
 
         coDriver.povRight()    .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         coDriver.povLeft()     .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
