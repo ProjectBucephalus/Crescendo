@@ -79,9 +79,9 @@ public final class CTREConfigs {
         leftPivotMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Intake.pivotCurrentLimit;
 
         /* PID Config */
-        leftPivotMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
-        leftPivotMotorFXConfig.Slot0.kI = Constants.Intake.pivotKI;
-        leftPivotMotorFXConfig.Slot0.kD = Constants.Intake.pivotKD;
+        // leftPivotMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
+        // leftPivotMotorFXConfig.Slot0.kI = Constants.Intake.pivotKI;
+        // leftPivotMotorFXConfig.Slot0.kD = Constants.Intake.pivotKD;
 
         /** Right Pivot Motor Config **/
         rightPivotMotorFXConfig.MotorOutput.Inverted = Constants.Intake.rightPivotMotorInvert;
@@ -99,9 +99,9 @@ public final class CTREConfigs {
  
 
         /* PID Config */
-        rightPivotMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
-        rightPivotMotorFXConfig.Slot0.kD = Constants.Intake.pivotKI;
-        rightPivotMotorFXConfig.Slot0.kI = Constants.Intake.pivotKD;
+        // rightPivotMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
+        // rightPivotMotorFXConfig.Slot0.kD = Constants.Intake.pivotKI;
+        // rightPivotMotorFXConfig.Slot0.kI = Constants.Intake.pivotKD;
 
         rightPivotMotorFXConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = Constants.Intake.openLoopRamp;
         rightPivotMotorFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = Constants.Intake.openLoopRamp;

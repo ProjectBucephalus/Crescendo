@@ -78,7 +78,7 @@ public class Shooter extends SubsystemBase {
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case IDLE:
-                System.out.println("idle");
+                //System.out.println("idle");
                 driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
 
