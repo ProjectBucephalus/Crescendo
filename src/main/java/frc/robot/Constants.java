@@ -57,8 +57,8 @@ public final class Constants {
 
         public static final Transform3d noteCamToRobot = new Transform3d
         (
-                0, 0, 0,
-                new Rotation3d(0, Units.degreesToRadians(32.5), Units.degreesToRadians(180))
+                -0.5, 0, 0.450,
+                new Rotation3d(0, Units.degreesToRadians(20), Units.degreesToRadians(180))
         ); // Meters and Radians (roll, pitch, yaw)
 
 
@@ -145,12 +145,12 @@ public final class Constants {
     }
 
     public static final class Shooter {
-        public static final double runningTopShooterSpeed = 1;
-        public static final double runningBottomShooterSpeed = 1; // AMP TOP: 0.450000 bottom: 0.05
+        public static final double runningTopShooterSpeed = 0.8;
+        public static final double runningBottomShooterSpeed = 0.8; // AMP TOP: 0.450000 bottom: 0.05
 
         public static final double shooterIdleSpeed = 0.3;
 
-        public static final double ShooterAcceptableVelocity = 75;
+        public static final double ShooterAcceptableVelocity = 80;
 
         // public static final double horizontalShooterAngle = 20;
 
