@@ -396,7 +396,7 @@ public class Pivot extends SubsystemBase {
         targetDistance += shooterPivotOffsetUp * Math.tan(targetAngle);
         targetAngle = Math.toDegrees(Math.atan(targetHeightOverShooter/targetDistance));
         double error = Math.abs(desiredAngle - getPivotPos()) > 2 ? 0 : (desiredAngle - getPivotPos())/2;
-        return  error + Math.min(Constants.Intake.pivotDeployPos, Math.max(Constants.Intake.pivotFrameClearPos, targetAngle));
+        return  Math.min(Constants.Intake.pivotDeployPos, Math.max(Constants.Intake.pivotFrameClearPos, targetAngle));
     }
 
 }

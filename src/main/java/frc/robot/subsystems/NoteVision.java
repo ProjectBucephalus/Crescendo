@@ -186,10 +186,10 @@ public class NoteVision extends SubsystemBase {
         // DEBUG
         List<Translation2d> notes = getNotes();
         SmartDashboard.putNumber("noteVision nFound", notes.size());
-        if (notes.size() > 0) {
-            m_notes.setRobotPose(FieldConstants.translationToPose2d(getNotes(s_Swerve.getEstimatedPose()).get(0)));
-            SmartDashboard.putData("Notes Poses", m_notes);
-        }
+        // if (notes.size() > 0) {
+        //     m_notes.setRobotPose(FieldConstants.translationToPose2d(getNotes(s_Swerve.getEstimatedPose()).get(0)));
+        //     SmartDashboard.putData("Notes Poses", m_notes);
+        // }
 
     }
 

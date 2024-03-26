@@ -120,10 +120,10 @@ public final class Constants
         public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
         public static final InvertedValue rightPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
 
-        public static final double pivotKP = 0.2; //0.3
+        public static final double pivotKP = 0.3; //0.3
         public static final double pivotKI = 0;
         public static final double pivotKD = 0.0; //0.03
-        public static final double pivotKG = 0.5; //0.5
+        public static final double pivotKG = 0.85; //0.5
         public static final double pivotKRes = -0.25; // -0.25
         public static final double pivotDampingGain = 0.2;
 
@@ -148,8 +148,8 @@ public final class Constants
     }
 
     public static final class Shooter {
-        public static final double runningTopShooterSpeed = 0.8;
-        public static final double runningBottomShooterSpeed = 0.8; // AMP TOP: 0.450000 bottom: 0.05
+        public static final double runningTopShooterSpeed = 1;
+        public static final double runningBottomShooterSpeed = 1; // AMP TOP: 0.450000 bottom: 0.05
 
         public static final double shooterIdleSpeed = 0.3;
 
