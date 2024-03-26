@@ -115,7 +115,7 @@ public class Shooter extends SubsystemBase {
      * @author Aidan
      */
     public boolean rpmWithinTolerance() {
-        return mTopShooter.getVelocity().getValueAsDouble() > Constants.Shooter.ShooterAcceptableVelocity;
+        return mTopShooter.getVelocity().getValueAsDouble() > Constants.Shooter.shooterVelocityTolerance;
 
     }
 

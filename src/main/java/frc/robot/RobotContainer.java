@@ -167,7 +167,7 @@ public class RobotContainer {
         driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
        
         /* Pass in driver for controller to receive rumble when note in intake*/
-        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())) .onFalse(new StopIntakeAndStow(s_Pivot, s_Intake).andThen(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED)));
+        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())) .onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
 
         driver.povUp()         .onTrue(new UnlockClimber(s_Climber));
         driver.povDown()       .onTrue(new LockClimber(s_Climber));

@@ -295,7 +295,7 @@ public class Pivot extends SubsystemBase {
      * @return Boolean, true if current angle is acceptable
      */
     public boolean angleWithinTolerance() {
-        return Math.abs(desiredAngle - getPivotPos()) < Constants.Intake.ANGLE_TOLERANCE_DEGREE;
+        return Math.abs(desiredAngle - getPivotPos()) < Constants.Intake.pivotAngleTolerance;
     }
 
     /**

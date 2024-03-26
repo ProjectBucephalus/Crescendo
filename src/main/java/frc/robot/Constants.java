@@ -87,7 +87,7 @@ public final class Constants
 
     public static final class Intake 
     {
-        /* Arm Ratios and Limis */
+        /* Arm Ratios and Limits */
         public static final double planetaryRingTeeth = 72;
         public static final double planetarySunTeeth = 18;
         public static final double planetaryPlanetTeeth = 18;
@@ -99,7 +99,8 @@ public final class Constants
         public static final double pivotGearRatio = planetaryRatio * (gear1Out / gear1In)
                 * (pivotGearOut / pivotGearIn);
 
-        public static final double ANGLE_TOLERANCE_DEGREE = 1;
+        /** Acceptable angle for the pivot to be off by, in degrees */
+        public static final double pivotAngleTolerance = 1;
 
         /** Degrees - Difference between pivot mechanism 0 and real-world 0 */
         public static final double pivotOffsetForZero = -37;
@@ -117,69 +118,83 @@ public final class Constants
         public static final double pivotDefaultShootPos = 0;
 
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
-        public static final InvertedValue leftPivotMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final InvertedValue rightPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue leftPivotMotorDirection = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue rightPivotMotorDirection = InvertedValue.CounterClockwise_Positive;
 
+        /* Gain values */
         public static final double pivotKP = 0.2; //0.3
         public static final double pivotKI = 0;
         public static final double pivotKD = 0.0; //0.03
         public static final double pivotKG = 0.5; //0.5
         public static final double pivotKRes = -0.25; // -0.25
         public static final double pivotDampingGain = 0.2;
+        public static final double pivotManualGain = 0.25;
 
+        /* Thresholds for damping to take effect */
         public static final double pivotDeployDampingThreshold = 20;
         public static final double pivotStowDampingThreshold = -5;
-        /** Rotation per second of the mechanism, manual control reaches 0.4 */
+        /** Acceptable rotations per second of the mechanism towards endstops, manual control reaches 0.4 */
         public static final double pivotDampingSpeed = 0.4;
         
-        public static final double openLoopRamp = 0.1; // Seconds to ramp power to new value
+        /** Seconds to ramp power to new value */
+        public static final double openLoopRamp = 0.1; 
 
         /** Degrees to Stow where Resistance begins*/
         public static final double pivotResStowThreshold = -50; // set to <= -40 for no Resistance in Stow direction
         /** Degrees to Deploy where Resistance begins*/
         public static final double pivotResDeployThreshold = 45; // set to >= 60 for no Resistance in Deploy direction
 
+        /* Current limit values */
         public static final int pivotCurrentLimit = 38;
         public static final int pivotCurrentThreshold = 65;
         public static final double pivotCurrentThresholdTime = 0.1;
         public static final boolean pivotEnableCurrentLimit = false;
-        public static final double pivotManualGain = 0.25;
+        
 
     }
 
     public static final class Shooter {
+        /* Shooter speeds */
         public static final double runningTopShooterSpeed = 0.8;
         public static final double runningBottomShooterSpeed = 0.8; // AMP TOP: 0.450000 bottom: 0.05
-
         public static final double shooterIdleSpeed = 0.3;
 
-        public static final double ShooterAcceptableVelocity = 80;
+        /** Acceptable velocity for the shooter to be off by, in rotations per second (?) */
+        public static final double shooterVelocityTolerance = 80;
 
         // public static final double horizontalShooterAngle = 20;
 
+        /** Seconds to ramp power to new value */
         public static final double openLoopRamp = 0;
     }
 
     public static final class Climber 
-    {
+    {   
+        /* Climber motion speeds */
         public static final double climbUpSpeed = 1;
         public static final double climbDownSpeed = -1;
         
-        
+        /* Climber real world values */
         public static final double maxExtensionSpoolRotations = 2.6;
         public static final double motorToSpoolGearRatio = 100;
         public static final double maxRevolutions = maxExtensionSpoolRotations * motorToSpoolGearRatio;
+        
+        /* Climber positions */
         public static final double climberDownPos = 0;
         public static final double climberUpPos = maxExtensionSpoolRotations * motorToSpoolGearRatio;
 
     }
 
     public static final class AutoConstants 
-    { // TODO
+    { 
+        /** Max drivebase speed, in meters per second */
         public static final double kMaxSpeedMetersPerSecond = 2;
+        /** Max drivebase acceleration, in meters per second per second */
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+        /** Max drivebase rotational speed, in radians per second */
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI; // was pi?
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI; // was pi?
+        /** Max drivebase rotational acceleration, in radians per second per second */
+        public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI; // was pi?
 
         public static final double kPXController = 1; // 2.9
         public static final double kPYController = 1;
@@ -187,6 +202,6 @@ public final class Constants
 
         /* Constraint for the motion profilied robot angle controller */
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+                kMaxAngularSpeedRadiansPerSecond, kMaxAngularAccelerationRadiansPerSecondSquared);
     }
 }

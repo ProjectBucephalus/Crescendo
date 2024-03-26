@@ -65,7 +65,7 @@ public final class CTREConfigs {
 
 
         /** Left Pivot Motor Config **/
-        leftPivotMotorFXConfig.MotorOutput.Inverted = Constants.Intake.leftPivotMotorInvert;
+        leftPivotMotorFXConfig.MotorOutput.Inverted = Constants.Intake.leftPivotMotorDirection;
         leftPivotMotorFXConfig.MotorOutput.NeutralMode = Constants.Intake.pivotMotorNeutralMode;
 
         /* Gear Ratio and Wrapping Config */
@@ -84,7 +84,7 @@ public final class CTREConfigs {
         // leftPivotMotorFXConfig.Slot0.kD = Constants.Intake.pivotKD;
 
         /** Right Pivot Motor Config **/
-        rightPivotMotorFXConfig.MotorOutput.Inverted = Constants.Intake.rightPivotMotorInvert;
+        rightPivotMotorFXConfig.MotorOutput.Inverted = Constants.Intake.rightPivotMotorDirection;
         rightPivotMotorFXConfig.MotorOutput.NeutralMode = Constants.Intake.pivotMotorNeutralMode;
 
         /* Gear Ratio and Wrapping Config */
