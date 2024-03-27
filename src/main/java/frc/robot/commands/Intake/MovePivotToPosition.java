@@ -29,6 +29,7 @@ public class MovePivotToPosition extends Command {
         s_Pivot.setPosition(position);
     }
 
+    @Override
     public boolean isFinished() {
         return true;
     }

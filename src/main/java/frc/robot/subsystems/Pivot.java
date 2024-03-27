@@ -144,7 +144,7 @@ public class Pivot extends SubsystemBase {
         //mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true));
         // CTREConfigs already has Left and Right use opposite directions
     
-        pivotPDGCycle(desiredAngle);
+        pivotPDGCycle();
     }
 
     // .withLimitForwardMotion(rightDeploySwitch.get())
