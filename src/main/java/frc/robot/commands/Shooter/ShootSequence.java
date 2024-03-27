@@ -26,6 +26,9 @@ public class ShootSequence extends Command {
      * doesn't work
      */
     private double SHOOT_TIME = 1;
+    private double EJECT_TIME = 5;
+    private double EJECT_DELAY = 0.075;
+    private boolean EJECTED = false;
 
     /**
      * Total time allowed for the shooter to spin up. The difference between the two
@@ -57,6 +60,7 @@ public class ShootSequence extends Command {
      */
     @Override
     public void initialize() {
+        EJECTED = false;
         if (s_Shooter.getShootPosition() == ShootPosition.SPEAKER) {
             // speaker shot
             // s_Intake.setIntakeStatus(IntakeStatus.IN);
@@ -93,6 +97,7 @@ public class ShootSequence extends Command {
         if (m_timer.hasElapsed(SHOOT_SPIN_UP_TIME)) {
             if (s_Shooter.getShootPosition() == ShootPosition.SPEAKER) {
                 /* Speaker Shot */
+                
                 s_Intake.setIntakeStatus(IntakeStatus.IN_FOR_SHOOTING);
                 // s_Shooter.setShooterState(ShooterState.RUNNING);
             } else if (s_Shooter.getShootPosition() == ShootPosition.AMP) {
@@ -121,7 +126,29 @@ public class ShootSequence extends Command {
      * @author Aidan
      */
     @Override
-    public boolean isFinished() {
-        return (m_timer.hasElapsed(SHOOT_TIME) || s_Intake.getBeamBreak());
+    public boolean isFinished() 
+    {
+        if (s_Intake.getBeamBreak()) 
+        {
+            if (EJECTED && m_timer.hasElapsed(EJECT_TIME + EJECT_DELAY)) 
+            {
+                EJECTED = false;
+                return true;
+            }
+            else
+            {
+                EJECTED = true;
+                EJECT_TIME = m_timer.get();
+            }
+        }
+        if (m_timer.hasElapsed(SHOOT_TIME)) 
+        {
+            return true;
+        } 
+        else 
+        {
+            return false;
+        }
+        
     }
 }

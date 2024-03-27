@@ -384,7 +384,7 @@ public class Pivot extends SubsystemBase {
      */
     public double calculatedRequiredShooterAngle() 
     {
-        double targetHeightOverShooter = 1.5;
+        double targetHeightOverShooter = 1.7;
         double shooterPivotOffsetUp = 0.25;
         double shooterPivotOffsetBack = 0.17;
         double targetAngle;
