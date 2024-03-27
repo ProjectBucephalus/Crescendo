@@ -228,6 +228,8 @@ public class Intake extends SubsystemBase
         // Sets beamBreakBool to the value of the Beam Break
         beamBreakBool = BeamBreak.get();
         SmartDashboard.putBoolean("Stabiliser Limit", StabilserLimit.get());
+        SmartDashboard.putNumber("Indexer RPS", mIndexer.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Intake RPS", mIntake.getVelocity().getValueAsDouble());
 
         if (doRumbleWithNote) {
             if (!getBeamBreak() && (xbox != null)) {

@@ -155,8 +155,8 @@ public final class Constants
 
     public static final class Shooter {
         /* Shooter speeds */
-        public static final double runningTopShooterSpeed = 1;
-        public static final double runningBottomShooterSpeed = 1; // AMP TOP: 0.450000 bottom: 0.05
+        public static final double runningTopShooterSpeed = 0.9;
+        public static final double runningBottomShooterSpeed = 0.9; // AMP TOP: 0.450000 bottom: 0.05
         public static final double shooterIdleSpeed = 0.3;
 
         /** Acceptable velocity for the shooter to be off by, in rotations per second (?) */

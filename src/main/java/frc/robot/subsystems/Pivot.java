@@ -386,9 +386,14 @@ public class Pivot extends SubsystemBase {
     {
         double targetHeightOverShooter = 1.7;
         double shooterPivotOffsetUp = 0.25;
-        double shooterPivotOffsetBack = 0.17;
+        double shooterPivotOffsetBack = -0.17;
         double targetAngle;
         double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
+
+        if (targetDistance > 10) 
+        {
+            return 30;
+        }
 
         targetDistance += shooterPivotOffsetBack;
 
