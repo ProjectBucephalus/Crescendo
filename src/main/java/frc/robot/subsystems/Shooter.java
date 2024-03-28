@@ -86,10 +86,10 @@ public class Shooter extends SubsystemBase {
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case OUT:
-                driveDutyCycle.Output = -0.5;
+                driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
 
-                driveDutyCycle.Output = -0.5;
+                driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
                 mTopShooter.setControl(driveDutyCycle);
             default:
                 break;

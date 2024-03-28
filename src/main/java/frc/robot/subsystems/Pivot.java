@@ -384,24 +384,25 @@ public class Pivot extends SubsystemBase {
      */
     public double calculatedRequiredShooterAngle() 
     {
-        double targetHeightOverShooter = 1.7;
-        double shooterPivotOffsetUp = 0.25;
-        double shooterPivotOffsetBack = -0.17;
+        double targetHeightOverShooter = Constants.Shooter.targetHeightOverShooter;
+        double shooterPivotOffsetUp = Constants.Shooter.shooterPivotOffsetUp;
+        double shooterPivotOffsetBack = Constants.Shooter.shooterPivotOffsetBack;
         double targetAngle;
         double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
+        double shooterDrop = Constants.Shooter.verticalAccelerationConstant * (Math.pow(targetDistance,2) + Math.pow(targetHeightOverShooter,2));
 
-        if (targetDistance > 10) 
+        if (targetDistance > Constants.Shooter.maxShootDistance) 
         {
-            return 30;
+            return Constants.Shooter.halfCourtAngle;
         }
 
         targetDistance += shooterPivotOffsetBack;
 
         targetAngle = Math.atan(targetHeightOverShooter/targetDistance);
         targetDistance += shooterPivotOffsetUp * Math.tan(targetAngle);
-        targetAngle = Math.toDegrees(Math.atan(targetHeightOverShooter/targetDistance));
+        targetAngle = Math.toDegrees(Math.atan((targetHeightOverShooter+shooterDrop)/targetDistance));
         double error = Math.abs(desiredAngle - getPivotPos()) > 2 ? 0 : (desiredAngle - getPivotPos())/2;
-        return  error + Math.min(Constants.Intake.pivotDeployPos, Math.max(Constants.Intake.pivotFrameClearPos, targetAngle));
+        return error + Math.min(Constants.Intake.pivotDeployPos, Math.max(Constants.Intake.pivotFrameClearPos, targetAngle));
     }
 
 }

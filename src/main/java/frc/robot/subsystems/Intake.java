@@ -26,8 +26,8 @@ public class Intake extends SubsystemBase
     public VictorSPX mStabilser = new VictorSPX(IDConstants.Climber.mStabiliserID);
 
     // Declaration of the beam break digital input
-    public DigitalInput BeamBreak = new DigitalInput(9);
-    public DigitalInput StabilserLimit = new DigitalInput(4);
+    public DigitalInput BeamBreak = new DigitalInput(IDConstants.Intooter.Intake.beamBreakID);
+    public DigitalInput StabilserLimit = new DigitalInput(IDConstants.Intooter.Intake.stabiliserLimitID);
 
 
 
@@ -114,23 +114,23 @@ public class Intake extends SubsystemBase
         {
             case IN_FOR_SHOOTING:
                 setIndexerState(IndexerState.IN_FOR_SHOOTING);
-                setIntakeSpeed(1, false);
+                setIntakeSpeed(Constants.Intake.intakeSpeedShoot, false);
                 useBeamBreak = false;
                 break;
             case IN:
                 setIndexerState(IndexerState.IN);
-                setIntakeSpeed(0.50, false);
+                setIntakeSpeed(Constants.Intake.intakeSpeedIn, false);
                 useBeamBreak = false;
                 break;
             case OUT:
                 setIndexerState(IndexerState.OUT);
-                setIntakeSpeed(-0.35, false);
+                setIntakeSpeed(Constants.Intake.intakeSpeedOut, false);
                 useBeamBreak = false;
                 break;
             case IN_WITH_BEAM_BREAK:
                 
                 setIndexerState(IndexerState.IN_WITH_BEAM_BREAK);
-                setIntakeSpeed(0.75, true);
+                setIntakeSpeed(Constants.Intake.intakeSpeedInWithLimit, true);
                 useBeamBreak = true;
                 break;
             case STOPPED:
@@ -157,21 +157,21 @@ public class Intake extends SubsystemBase
         {
             // this means that we are running the intake in. We need to do logic on what we actually need to do. 
             case IN:
-                mIndexer.set(0.25);
+                mIndexer.set(Constants.Intake.indexSpeedIn);
                 break;
         
             case OUT:
-                mIndexer.set(-0.35);
+                mIndexer.set(Constants.Intake.indexSpeedOut);
                 
                 break;
             case STOPPED:
                 mIndexer.set(0.0);
                 break;
             case IN_WITH_BEAM_BREAK:
-                mIndexer.set(-0.4);
+                mIndexer.set(Constants.Intake.indexSpeedInWithLimit);
                 break;
             case IN_FOR_SHOOTING:
-                mIndexer.set(1);
+                mIndexer.set(Constants.Intake.indexSpeedShoot);
                 break;
         }
     }

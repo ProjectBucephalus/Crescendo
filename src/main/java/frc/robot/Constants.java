@@ -43,20 +43,20 @@ public final class Constants
         public static final Transform3d backCamToRobot = new Transform3d
         ( 
                 //0.18, -0.21, 0.455,
-                -0.18, -0.21, 0.455,
+                -0.18, -0.18, 0.44,
                 new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(180))
         ); // Meters and Radians (roll, pitch, yaw)
 
         public static final Transform3d frontCamToRobot = new Transform3d
         ( 
-                0, 0, 0,
-                new Rotation3d(0,Units.degreesToRadians(-20), Units.degreesToRadians(0))
+                0.28, -0.17, 0.19,
+                new Rotation3d(Units.degreesToRadians(90),Units.degreesToRadians(38), Units.degreesToRadians(0))
         ); // Meters and Radians (roll, pitch, yaw)
 
         public static final Transform3d noteCamToRobot = new Transform3d
         (
-                -0.5, 0, 0.450,
-                new Rotation3d(0, Units.degreesToRadians(20), Units.degreesToRadians(180))
+                0.32, 0, 0.45,
+                new Rotation3d(0, Units.degreesToRadians(20), Units.degreesToRadians(0))
         ); // Meters and Radians (roll, pitch, yaw)
 
 
@@ -83,6 +83,8 @@ public final class Constants
          */
         public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), .1, .1, 1);
 
+        public static final double noteTurnScalarGain = 10;
+        public static final double noteTurnPowerGain = 3;
     }
 
     public static final class Intake 
@@ -150,14 +152,27 @@ public final class Constants
         public static final double pivotCurrentThresholdTime = 0.1;
         public static final boolean pivotEnableCurrentLimit = false;
         
+        /* Intake Speeds */
+        public static final double intakeSpeedShoot = 1;
+        public static final double intakeSpeedIn = 0.5;
+        public static final double intakeSpeedOut = -0.35;
+        public static final double intakeSpeedInWithLimit = 0.75;
+
+        /* Indexer Speeds */
+        public static final double indexSpeedIn = 0.25;
+        public static final double indexSpeedOut = -0.35;
+        public static final double indexSpeedInWithLimit = -0.4;
+        public static final double indexSpeedShoot = 1;
 
     }
 
-    public static final class Shooter {
+    public static final class Shooter 
+    {
         /* Shooter speeds */
         public static final double runningTopShooterSpeed = 0.9;
         public static final double runningBottomShooterSpeed = 0.9; // AMP TOP: 0.450000 bottom: 0.05
-        public static final double shooterIdleSpeed = 0.3;
+        public static final double shooterIdleSpeed = 0.5;
+        public static final double shooterEjectSpeed = -0.5;
 
         /** Acceptable velocity for the shooter to be off by, in rotations per second (?) */
         public static final double shooterVelocityTolerance = 80;
@@ -166,6 +181,27 @@ public final class Constants
 
         /** Seconds to ramp power to new value */
         public static final double openLoopRamp = 0;
+        
+        public static final double gravity = 9.8;
+        
+        /** Effective velocity of the ring coming out of the shooter, in meters per second */
+        public static final double shooterVelocity = 19;
+
+        public static final double verticalAccelerationConstant = gravity / (2 * Math.pow(shooterVelocity,2));
+
+        /** Metres of target point over shooter exit */
+        public static final double targetHeightOverShooter = 1.4;
+        /** Metres of target point in front of tag */
+        public static final double targetDistanceOffset = 0.23;
+        /** Metres of shooter exit over pivot axis */
+        public static final double shooterPivotOffsetUp = 0.25;
+        /** Metres of pivot behind robot centre */
+        public static final double shooterPivotOffsetBack = -0.17;
+
+        /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */
+        public static final double maxShootDistance = 8;
+        /** Shooter Angle for hard-coded lob */
+        public static final double halfCourtAngle = 30;
     }
 
     public static final class Climber 

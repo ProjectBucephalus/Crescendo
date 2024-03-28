@@ -28,6 +28,9 @@ public final class IDConstants
         {
             public static final int mIndexerID = 35;
             public static final int mIntakeID = 12;
+
+            public static final int beamBreakID = 9;
+            public static final int stabiliserLimitID = 4;
         }
 
         public static final class Pivot

@@ -1,5 +1,6 @@
 package frc.robot.VisionCommands;
 
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import org.photonvision.PhotonUtils;
@@ -34,7 +35,7 @@ public class TurnToNote extends Command {
         this.brakeSup = brakeSup;
 
         SmartDashboard.putNumber("Radians Times", 10);
-        SmartDashboard.putNumber("To power", 1);
+        SmartDashboard.putNumber("To power", 2);
 
     }
 
@@ -50,31 +51,25 @@ public class TurnToNote extends Command {
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double brakeVal = MathUtil.applyDeadband(brakeSup.getAsDouble(),
                 Constants.stickDeadband);
-        Translation2d translation = new Translation2d(translationVal,
-                strafeVal).times(SwerveConstants.maxSpeed);
-        try {
-            SmartDashboard
-                    .putNumber("Note Position, requiredHeading",
-                            calculateRequiredHeading(new Pose2d(
-                                    s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getX(),
-                                    s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getY(), new Rotation2d()))
-                                    .getDegrees());
+        Translation2d translation = new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed);
+        List<Translation2d> notes = s_NoteVision.getNotes(s_Swerve.getEstimatedPose());
+        double noteHeading = 0;
+        try 
+        {
+            if (notes.size() > 0) 
+            {
+                noteHeading = calculateRequiredHeading(new Pose2d(notes.get(0).getX(), notes.get(0).getY(), new Rotation2d())).getRadians();
+                SmartDashboard.putNumber("Note Position, requiredHeading", noteHeading);
 
-            /* Remove the roate by 180 when the camera gets moved */
-            turningVal = -Math.copySign(Math.pow(calculateRequiredHeading(new Pose2d(
-                    s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getX(),
-                    s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getY(),
-                    new Rotation2d())).rotateBy(Rotation2d.fromDegrees(180)).getRadians()
-                    * SmartDashboard.getNumber("Radians Times", 0), SmartDashboard.getNumber("To power", 0)),
-                    calculateRequiredHeading(new Pose2d(
-                            s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getX(),
-                            s_NoteVision.getNotes(s_Swerve.getEstimatedPose()).get(0).getY(),
-                            new Rotation2d())).rotateBy(Rotation2d.fromDegrees(180)).getRadians() * 70);
-
-            // tuningVal;
-        } catch (Exception e) {
-            /* Sometimes we may loose the note don't really want the code to crash :) */
-        }
+                turningVal = -Math.copySign
+                (
+                    Math.pow(noteHeading * Constants.Vision.noteTurnScalarGain, Constants.Vision.noteTurnPowerGain),
+                    noteHeading
+                );
+            }
+        } 
+        catch (Exception e) 
+            {}
 
         // s_Swerve.driveRobotRelative(translation, -turningVal, true, brakeVal);
 
