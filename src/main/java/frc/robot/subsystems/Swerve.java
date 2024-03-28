@@ -218,11 +218,13 @@ public class Swerve extends SubsystemBase
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) 
     {
+        SmartDashboard.putBoolean("Egotistic?", !fieldRelative);
         if (!usingVisionAlignment) 
         {
             SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates
             (
-                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds
+                fieldRelative ? 
+                ChassisSpeeds.fromFieldRelativeSpeeds
                 (
                     translation.getX(),
                     translation.getY(),
@@ -230,7 +232,7 @@ public class Swerve extends SubsystemBase
                     getHeading()
                 )
                 : new ChassisSpeeds
-                (
+                (   
                     translation.getX(),
                     translation.getY(),
                     rotation
@@ -274,16 +276,23 @@ public class Swerve extends SubsystemBase
      * @param brakeVal
      * @author 5985
      */
-    public void visionDrive(Translation2d translation, double rotation, boolean isOpenLoop, double brakeVal) 
+    public void visionDrive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) 
     {
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates
         (
+            fieldRelative ? 
             ChassisSpeeds.fromFieldRelativeSpeeds
             (
                 translation.getX(),
                 translation.getY(),
                 rotation,
                 getHeading()
+            )
+            : new ChassisSpeeds
+            (   
+                translation.getX(),
+                translation.getY(),
+                rotation
             )
         );
         SwerveDriveKinematics.desaturateWheelSpeeds

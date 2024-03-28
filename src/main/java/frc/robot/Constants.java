@@ -173,6 +173,7 @@ public final class Constants
         public static final double runningBottomShooterSpeed = 0.9; // AMP TOP: 0.450000 bottom: 0.05
         public static final double shooterIdleSpeed = 0.5;
         public static final double shooterEjectSpeed = -0.5;
+        public static final double shooterLobSpeed = 0.5;
 
         /** Acceptable velocity for the shooter to be off by, in rotations per second (?) */
         public static final double shooterVelocityTolerance = 80;
@@ -196,7 +197,7 @@ public final class Constants
         /** Metres of shooter exit over pivot axis */
         public static final double shooterPivotOffsetUp = 0.25;
         /** Metres of pivot behind robot centre */
-        public static final double shooterPivotOffsetBack = -0.17;
+        public static final double shooterPivotOffsetBack = 0.17;
 
         /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */
         public static final double maxShootDistance = 8;

@@ -16,7 +16,8 @@ import frc.robot.SwerveConstants;
 import frc.robot.subsystems.NoteVision;
 import frc.robot.subsystems.Swerve;
 
-public class TurnToNote extends Command {
+public class TurnToNote extends Command 
+{
     private final Swerve s_Swerve;
     private NoteVision s_NoteVision;
 
@@ -75,8 +76,7 @@ public class TurnToNote extends Command {
 
         /* We set this to true so that we only use this vision drive method to drive. */
         s_Swerve.setVisionAlignmentBool(true);
-        s_Swerve.visionDrive(translation, turningVal, true, brakeVal);
-
+        s_Swerve.visionDrive(translation, turningVal, false, true, brakeVal);
     }
 
     public Rotation2d calculateRequiredHeading(Pose2d p) {

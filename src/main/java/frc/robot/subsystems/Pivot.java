@@ -385,6 +385,7 @@ public class Pivot extends SubsystemBase {
     public double calculatedRequiredShooterAngle() 
     {
         double targetHeightOverShooter = Constants.Shooter.targetHeightOverShooter;
+        double targetDistanceOffset = Constants.Shooter.targetDistanceOffset;
         double shooterPivotOffsetUp = Constants.Shooter.shooterPivotOffsetUp;
         double shooterPivotOffsetBack = Constants.Shooter.shooterPivotOffsetBack;
         double targetAngle;
@@ -396,7 +397,7 @@ public class Pivot extends SubsystemBase {
             return Constants.Shooter.halfCourtAngle;
         }
 
-        targetDistance += shooterPivotOffsetBack;
+        targetDistance += shooterPivotOffsetBack - targetDistanceOffset;
 
         targetAngle = Math.atan(targetHeightOverShooter/targetDistance);
         targetDistance += shooterPivotOffsetUp * Math.tan(targetAngle);

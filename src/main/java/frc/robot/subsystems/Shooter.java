@@ -61,10 +61,12 @@ public class Shooter extends SubsystemBase {
      * @param state Enum representing the desired status of the shooter
      * @author 5985
      */
-    public void setShooterState(ShooterState state) {
+    public void setShooterState(ShooterState state) 
+    {
         SmartDashboard.putString("Current State of Shooter Motors for sim", state.name());
 
-        switch (state) {
+        switch (state) 
+        {
             case RUNNING:
                 driveDutyCycle.Output = Constants.Shooter.runningBottomShooterSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
