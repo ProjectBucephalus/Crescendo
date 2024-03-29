@@ -93,7 +93,7 @@ public class FieldConstants {
         String[] separateNoteNames = noteSequence.split("\\s*-\\s*");
         Translation2d[] noteCoordList = new Translation2d[separateNoteNames.length];
 
-        if (noteSequence == "") {
+        if (noteSequence.length() == 0) {
             separateNoteNames = new String[] { "W" };
         }
 
