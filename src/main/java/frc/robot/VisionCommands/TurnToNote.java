@@ -23,16 +23,19 @@ public class TurnToNote extends Command
 
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
+    private DoubleSupplier rotationSup;
     private DoubleSupplier brakeSup;
 
     public TurnToNote(Swerve driveSubsystem, NoteVision s_NoteVision, DoubleSupplier translationSup,
             DoubleSupplier strafeSup,
+            DoubleSupplier rotationSup,
             DoubleSupplier brakeSup) {
         s_Swerve = driveSubsystem;
         this.s_NoteVision = s_NoteVision;
 
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
+        this.rotationSup = rotationSup;
         this.brakeSup = brakeSup;
 
         SmartDashboard.putNumber("Radians Times", 10);
@@ -50,6 +53,7 @@ public class TurnToNote extends Command
         double turningVal = 0;
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
+        double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
         double brakeVal = MathUtil.applyDeadband(brakeSup.getAsDouble(),
                 Constants.stickDeadband);
         Translation2d translation = new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed);
@@ -67,6 +71,10 @@ public class TurnToNote extends Command
                     Math.pow(noteHeading * Constants.Vision.noteTurnScalarGain, Constants.Vision.noteTurnPowerGain),
                     noteHeading
                 );
+            }
+            else 
+            {
+                turningVal = rotationVal;
             }
         } 
         catch (Exception e) 
