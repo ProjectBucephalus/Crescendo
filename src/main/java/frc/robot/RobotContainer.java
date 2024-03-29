@@ -35,22 +35,9 @@ import frc.robot.commands.StabiliserBar;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
 import frc.robot.commands.BuddyClimb.StopBuddyClimber;
-import frc.robot.commands.Climber.ClimberExtend;
-import frc.robot.commands.Climber.ClimberRetract;
-import frc.robot.commands.Climber.LockClimber;
-import frc.robot.commands.Climber.MoveClimber;
-import frc.robot.commands.Climber.UnlockClimber;
-import frc.robot.commands.Intake.IntakeAndDeployPivot;
-import frc.robot.commands.Intake.IntakeSpit;
-import frc.robot.commands.Intake.IntakeStop;
-import frc.robot.commands.Intake.IntakeSuck;
-import frc.robot.commands.Intake.MovePivot;
-import frc.robot.commands.Intake.MovePivotToPosition;
-import frc.robot.commands.Intake.StopIntakeAndStow;
-import frc.robot.commands.Shooter.ShootSequence;
-import frc.robot.commands.Shooter.ShooterFeed;
-import frc.robot.commands.Shooter.ShooterIdle;
-import frc.robot.commands.Shooter.ShooterRev;
+import frc.robot.commands.Climber.*;
+import frc.robot.commands.Intake.*;
+import frc.robot.commands.Shooter.*;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NoteVision;
@@ -120,15 +107,20 @@ public class RobotContainer {
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
-    public RobotContainer() {
-        s_Swerve.setDefaultCommand(
-                new TeleopSwerve(
-                        s_Swerve,
-                        () -> -driver.getRawAxis(translationAxis),
-                        () -> -driver.getRawAxis(strafeAxis),
-                        () -> -driver.getRawAxis(rotationAxis),
-                        () -> driver.leftTrigger().getAsBoolean(),
-                        () -> -driver.getRawAxis(BRAKE_AXIS)));
+    public RobotContainer() 
+    {
+        s_Swerve.setDefaultCommand
+        (
+            new TeleopSwerve
+            (
+                s_Swerve,
+                () -> -driver.getRawAxis(translationAxis),
+                () -> -driver.getRawAxis(strafeAxis),
+                () -> -driver.getRawAxis(rotationAxis),
+                () ->  driver.leftTrigger().getAsBoolean(),
+                () -> -driver.getRawAxis(BRAKE_AXIS)
+            )
+        );
 
         // s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
         s_Pivot.setDefaultCommand(new MovePivot(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));
@@ -174,21 +166,21 @@ public class RobotContainer {
         driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         driver.back()          .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
         // made this the same as the robot centric so they act as one func
-        driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+        driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
 
         /* Pass in codriver for controller to receive rumble */
         driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
        
         /* Pass in driver for controller to receive rumble when note in intake*/
-        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())) .onFalse(new StopIntakeAndStow(s_Pivot, s_Intake).andThen(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED)));
+        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())) .onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
 
         driver.povUp()         .onTrue(new UnlockClimber(s_Climber));
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
        
-        driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
-        driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.RIGHT_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
-        driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.LEFT_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
-        driver.a()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.BACK_STAGE, PathPlannerPath.fromPathFile("Line Up With Back Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
+        driver.a()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
+        driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.RIGHT_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
+        driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.LEFT_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
+        driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.BACK_STAGE, PathPlannerPath.fromPathFile("Line Up With Back Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
         
         
         /* Co-Driver Buttons */
@@ -204,8 +196,8 @@ public class RobotContainer {
         coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
         //coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
 
-        coDriver.povLeft()     .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
-        coDriver.povRight()    .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
+        coDriver.povRight()    .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
+        coDriver.povLeft()     .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         
         coDriver.povDown()     .onTrue(new DeployBuddyClimber(s_Climber)).onFalse(new StopBuddyClimber(s_Climber));
 

@@ -61,10 +61,12 @@ public class Shooter extends SubsystemBase {
      * @param state Enum representing the desired status of the shooter
      * @author 5985
      */
-    public void setShooterState(ShooterState state) {
+    public void setShooterState(ShooterState state) 
+    {
         SmartDashboard.putString("Current State of Shooter Motors for sim", state.name());
 
-        switch (state) {
+        switch (state) 
+        {
             case RUNNING:
                 driveDutyCycle.Output = Constants.Shooter.runningBottomShooterSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
@@ -78,7 +80,7 @@ public class Shooter extends SubsystemBase {
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case IDLE:
-                System.out.println("idle");
+                //System.out.println("idle");
                 driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
 
@@ -86,10 +88,10 @@ public class Shooter extends SubsystemBase {
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case OUT:
-                driveDutyCycle.Output = -0.5;
+                driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
 
-                driveDutyCycle.Output = -0.5;
+                driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
                 mTopShooter.setControl(driveDutyCycle);
             default:
                 break;
@@ -115,7 +117,7 @@ public class Shooter extends SubsystemBase {
      * @author Aidan
      */
     public boolean rpmWithinTolerance() {
-        return mTopShooter.getVelocity().getValueAsDouble() > Constants.Shooter.ShooterAcceptableVelocity;
+        return mTopShooter.getVelocity().getValueAsDouble() > Constants.Shooter.shooterVelocityTolerance;
 
     }
 

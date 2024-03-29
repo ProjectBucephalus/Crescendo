@@ -85,7 +85,7 @@ public class GetCentreNote extends GetNote {
                     new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                             Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
                             Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,
-                            Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared),
+                            Constants.AutoConstants.kMaxAngularAccelerationRadiansPerSecondSquared),
                     new GoalEndState(0, heading, true));
         }
 

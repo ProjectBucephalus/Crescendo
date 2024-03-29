@@ -57,7 +57,7 @@ public class aimToSpeaker extends Command {
         Translation2d translation = new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed);
 
         s_Swerve.visionDrive(translation,
-                (calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getRadians()) * 70, true, brakeVal);
+                (calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getRadians()) * 70, true, true, brakeVal);
 
         /* Used for figuring out how we should shoot */
         s_Pivot.setPosition(PivotPosition.SPEAKER);
