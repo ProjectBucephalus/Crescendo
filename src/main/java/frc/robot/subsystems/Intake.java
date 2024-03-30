@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -211,7 +212,9 @@ public class Intake extends SubsystemBase
      */
     public boolean getBeamBreak() 
     {
+        
         return beamBreakBool;
+        
     }
 
     public void rumbleWithNote(Boolean doRumbleWithNote) {
