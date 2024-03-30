@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.FieldConstants;
 import frc.robot.subsystems.Swerve;
 
 public class PointAndPathFindCommand extends SequentialCommandGroup {
@@ -42,10 +43,10 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
 
         addCommands(
                 new InstantCommand(()->s_Swerve.setVisionAlignmentBool(true)),
-                new PointToAngle(s_Swerve, targetLocation).withTimeout(1),
+                new PointToAngle(s_Swerve, targetLocation).withTimeout(0.5),
                 // Wait for the robot to align before pathfinding so the robot doesn't pathfind
                 // if the driver doesn't want to
-                //new WaitCommand(0.5),
+                // new WaitCommand(0.5),
                 
 
                 // the driver should be quite close before aligning so no need to path find to pose.

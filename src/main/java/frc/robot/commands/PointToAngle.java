@@ -12,6 +12,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.SwerveConstants;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -75,8 +76,7 @@ public class PointToAngle extends Command {
 
     @Override
     public boolean isFinished() {
-        // return (Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
-        //         - Math.abs(calculateRequiredHeading())) < SwerveConstants.ANGLE_TOLERANCE_DEGREES);
+        // return (Math.abs(-calculateRequiredHeading()/10)<SwerveConstants.ANGLE_TOLERANCE_DEGREES);
         return false;
     }
 }

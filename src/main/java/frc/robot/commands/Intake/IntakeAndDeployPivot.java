@@ -28,7 +28,7 @@ public class IntakeAndDeployPivot extends Command {
 
     @Override
     public void initialize() {
-        s_Intake.setDriverXbox(xbox);
+        
     }
 
     @Override

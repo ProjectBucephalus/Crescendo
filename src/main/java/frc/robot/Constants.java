@@ -25,6 +25,8 @@ public final class Constants
     public static boolean useVision = true;
 
     public static final double stickDeadband = 0.3;
+    public static final double hasNoteRumble = 1;
+    public static final double isAlignedToNoteRumble = 0.5;
 
     public static final double[] distancesFromSpeaker = { 1.8,    2, 2.5,  3, 3.5,  4, 5, 6 }; // distances in meters
     // TODO Values to calibrate: 3.5
