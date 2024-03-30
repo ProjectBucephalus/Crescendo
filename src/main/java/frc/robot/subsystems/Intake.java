@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.RumbleController;
+import frc.lib.util.RumbleController.Controllers;
 import frc.robot.Constants;
 import frc.robot.IDConstants;
 
@@ -36,11 +38,16 @@ public class Intake extends SubsystemBase
     private boolean beamBreakBool = false;
     private boolean useBeamBreak = false;
 
+    // For rumbling with note flag
+    private boolean hasRumbled = false;
+
     private boolean useStabiliserLimitSwitch = true;
 
-    private boolean doRumbleWithNote = true;
+    private boolean doRumbleWithNote = false;
+    private boolean prevBeamBrakeState = false;
 
-    private XboxController xbox = null;
+
+    private RumbleController s_RumbleController;
 
     
 
@@ -85,9 +92,9 @@ public class Intake extends SubsystemBase
 
     };
 
-    public Intake() 
+    public Intake(RumbleController s_RumbleController) 
     {
-        
+        this.s_RumbleController = s_RumbleController;
     }
 
     /**
@@ -220,10 +227,6 @@ public class Intake extends SubsystemBase
     public void rumbleWithNote(Boolean doRumbleWithNote) {
         this.doRumbleWithNote = doRumbleWithNote;
     }
-
-    public void setDriverXbox(XboxController xbox) {
-        this.xbox = xbox;
-    }
     
     @Override
     public void periodic() 
@@ -233,17 +236,18 @@ public class Intake extends SubsystemBase
         SmartDashboard.putBoolean("Stabiliser Limit", StabilserLimit.get());
         SmartDashboard.putNumber("Indexer RPS", mIndexer.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Intake RPS", mIntake.getVelocity().getValueAsDouble());
+        
 
-        if (doRumbleWithNote) {
-            if (!getBeamBreak() && (xbox != null)) {
-                xbox.setRumble(RumbleType.kBothRumble, 1);
-                System.out.println("Rumbling");
-            } else if (xbox != null) {
-                xbox.setRumble(RumbleType.kBothRumble, 0);
-                System.out.println("Not Rumbling");
-            }
-        } else {
-            //xbox.setRumble(RumbleType.kBothRumble, 0);
+        if (doRumbleWithNote && !getBeamBreak() && !hasRumbled) {
+            // start the rumble with intensity 1
+            s_RumbleController.setRumble(Controllers.DRIVER, 1, RumbleType.kBothRumble);
+            System.out.println("Rumble started.");
+            hasRumbled = true; // set the flag to true
+        } else if (getBeamBreak() || hasRumbled) {
+            // stop the rumble
+            s_RumbleController.setRumble(Controllers.DRIVER, 0, RumbleType.kBothRumble);
+            System.out.println("Rumble stopped.");
+            hasRumbled = false; // reset the flag to false
         }
         
         // Prints the beamBreakBool to the Smart Dashboard

@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.util.RumbleController;
+import frc.lib.util.RumbleController.Controllers;
 import frc.robot.Constants;
 import frc.robot.SwerveConstants;
 import frc.robot.subsystems.NoteVision;
@@ -27,12 +29,16 @@ public class TurnToNote extends Command
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private DoubleSupplier brakeSup;
-    private XboxController xbox; 
 
-    public TurnToNote(XboxController xbox, Swerve driveSubsystem, NoteVision s_NoteVision, DoubleSupplier translationSup,
+    private RumbleController s_RumbleController;
+
+    boolean rumbleSet = false;
+
+    public TurnToNote(Swerve driveSubsystem, NoteVision s_NoteVision, DoubleSupplier translationSup,
             DoubleSupplier strafeSup,
             DoubleSupplier rotationSup,
-            DoubleSupplier brakeSup) {
+            DoubleSupplier brakeSup,
+            RumbleController s_RumbleController) {
         s_Swerve = driveSubsystem;
         this.s_NoteVision = s_NoteVision;
 
@@ -40,7 +46,7 @@ public class TurnToNote extends Command
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.brakeSup = brakeSup;
-        this.xbox = xbox;
+        this.s_RumbleController = s_RumbleController;
     }
 
     @Override
@@ -68,26 +74,40 @@ public class TurnToNote extends Command
                 SmartDashboard.putBoolean("Seeing note?", true);
                 noteHeading = calculateRequiredHeading(new Pose2d(notes.get(0).getX(), notes.get(0).getY(), new Rotation2d())).getRadians();
                 if (Math.abs(noteHeading) < 0.5)
-                {
-                    xbox.setRumble(RumbleType.kBothRumble, 0.7);
-                }
-                SmartDashboard.putNumber("Note Position, requiredHeading", noteHeading);
+                {       
+                    if (!rumbleSet){
+                        rumbleSet = true;
+                        s_RumbleController.setRumble(Controllers.DRIVER, Constants.isAlignedToNoteRumble, RumbleType.kBothRumble);
+                        System.out.println("set Rumble");
+                    }
+                    System.out.println(rumbleSet);
+                    SmartDashboard.putNumber("Note Position, requiredHeading", noteHeading);
 
-                turningVal = -Math.copySign
-                (
-                    Math.pow(noteHeading * Constants.Vision.noteTurnScalarGain, Constants.Vision.noteTurnPowerGain),
-                    noteHeading
-                );
-                
+                    turningVal = -Math.copySign
+                    (
+                        Math.pow(noteHeading * Constants.Vision.noteTurnScalarGain, Constants.Vision.noteTurnPowerGain),
+                        noteHeading
+                    ); 
+                } else if (rumbleSet) {
+                    rumbleSet = false;
+                    s_RumbleController.setRumble(Controllers.DRIVER, 0, RumbleType.kLeftRumble);
+                    System.out.println("turning off Rumble");
+                }
             }
             else 
             {
                 SmartDashboard.putBoolean("Seeing note?", false);
-                xbox.setRumble(RumbleType.kBothRumble, 0);
+                
+                if (rumbleSet) {
+                    rumbleSet = false;
+                    s_RumbleController.setRumble(Controllers.DRIVER, 0, RumbleType.kLeftRumble);
+                    System.out.println("turning off Rumble");
+                }
+                
             }
-        } 
+        }
         catch (Exception e) 
-            {}
+        {}
 
         // s_Swerve.driveRobotRelative(translation, -turningVal, true, brakeVal);
 
@@ -109,7 +129,10 @@ public class TurnToNote extends Command
     public void end(boolean interrupted) {
         // m_lime.disableVision();
         s_Swerve.setVisionAlignmentBool(false);
-        xbox.setRumble(RumbleType.kBothRumble, 0);
+        if (rumbleSet) {
+                    rumbleSet = false;
+                    s_RumbleController.setRumble(Controllers.DRIVER, 0, RumbleType.kLeftRumble);
+                }
     }
 
     // Returns true when the command should end.
