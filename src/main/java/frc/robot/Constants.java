@@ -185,7 +185,7 @@ public final class Constants
         
         /** Effective velocity of the ring coming out of the shooter, in meters per second */
         public static final double shooterVelocity = 20;
-        public static final double gravity = 5;
+        public static final double gravity = 5.8;
 
         public static final double verticalAccelerationConstant = gravity / (2 * Math.pow(shooterVelocity,2));
 
