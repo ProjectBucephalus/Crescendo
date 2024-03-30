@@ -70,8 +70,6 @@ public class Pivot extends SubsystemBase {
 
     public Pivot(Swerve s_Swerve) {
         this.s_Swerve = s_Swerve;
-
-        SmartDashboard.putNumber("COMP pivot position", 0);
         
         // Initialises motor controller objects and configures them
         mLeftPivot = new TalonFX(IDConstants.Intooter.Pivot.mLeftPivotID);

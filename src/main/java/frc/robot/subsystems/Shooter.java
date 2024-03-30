@@ -124,7 +124,6 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         // Prints info to Smart Dashboard
-        SmartDashboard.putString("Where am I shooting", getShootPosition().name());
         SmartDashboard.putString("Current State of Motors for sim", getShootPosition().name());
 
         SmartDashboard.putNumber("Top Shooter RPS", mTopShooter.getVelocity().getValueAsDouble());

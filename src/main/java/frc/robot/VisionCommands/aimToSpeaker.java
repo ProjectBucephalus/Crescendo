@@ -34,13 +34,10 @@ public class aimToSpeaker extends Command {
         this.s_Swerve = s_Swerve;
         this.s_Pivot = s_Pivot;
         this.s_Shooter = s_Shooter;
-        SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
 
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
         this.brakeSup = brakeSup;
-
-        SmartDashboard.putNumber("Pivot position for array", 0);
     }
 
     @Override

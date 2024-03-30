@@ -37,10 +37,6 @@ public class TurnToNote extends Command
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.brakeSup = brakeSup;
-
-        SmartDashboard.putNumber("Radians Times", 10);
-        SmartDashboard.putNumber("To power", 2);
-
     }
 
     @Override

@@ -672,7 +672,6 @@ public class Swerve extends SubsystemBase
         SmartDashboard.putNumber("Rotaton (Estimated)", getEstimatedPose().getRotation().getDegrees());
 
         SmartDashboard.putBoolean("usingVisionAlignment", usingVisionAlignment);
-        SmartDashboard.putBoolean("getWithinRequiredHeading", getWithinRequiredHeading());
 
         SmartDashboard.putNumber("distance to target", PhotonUtils.getDistanceToPose(getEstimatedPose(), FieldConstants.flipPose(FieldConstants.translationToPose2d(FieldConstants.SPEAKER))));
         
