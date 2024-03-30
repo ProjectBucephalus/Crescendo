@@ -403,6 +403,6 @@ public class Pivot extends SubsystemBase {
         double error = Math.abs(desiredAngle - getPivotPos()) > 2 ? 0 : (desiredAngle - getPivotPos())/2;
         return error + Math.min(Constants.Intake.pivotDeployPos, Math.max(Constants.Intake.pivotFrameClearPos, targetAngle));
     }
-    
+
 
 }
