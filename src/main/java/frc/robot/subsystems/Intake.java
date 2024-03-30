@@ -4,8 +4,10 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.units.Time;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,9 +48,12 @@ public class Intake extends SubsystemBase
     private boolean doRumbleWithNote = false;
     private boolean prevBeamBrakeState = false;
 
+    private boolean timerHasReset = false;
+
 
     private RumbleController s_RumbleController;
 
+    Timer m_timer = new Timer();
     
 
     /** 
@@ -254,9 +259,19 @@ public class Intake extends SubsystemBase
         SmartDashboard.putBoolean("BeamBreak", beamBreakBool);
         
         // Stops the Intake rollers if the beam break is tripped and it is set to be using the beam break for control
+        
         if (useBeamBreak && !beamBreakBool)
         {
-            setIntakeStatus(IntakeStatus.STOPPED);
+            if (timerHasReset == false) {
+                timerHasReset = true;
+            m_timer.restart();
+            }
+            
+            if (m_timer.hasElapsed(Constants.Intake.extraIntakeTime)) {
+                setIntakeStatus(IntakeStatus.STOPPED);
+                timerHasReset = false;
+            }
+            
         }
         if (useStabiliserLimitSwitch)
         {

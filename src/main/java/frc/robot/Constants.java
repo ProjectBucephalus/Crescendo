@@ -122,6 +122,9 @@ public final class Constants
         /** Degrees - Real-world angle for default shooter position */
         public static final double pivotDefaultShootPos = 0;
 
+        /* Seconds - Extra intake time when using the beam break to ensure the note is actually in */
+        public static final double extraIntakeTime = 0.5;
+
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
         public static final InvertedValue leftPivotMotorDirection = InvertedValue.Clockwise_Positive;
         public static final InvertedValue rightPivotMotorDirection = InvertedValue.CounterClockwise_Positive;
