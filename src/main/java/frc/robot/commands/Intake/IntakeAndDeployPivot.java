@@ -15,7 +15,7 @@ import frc.robot.subsystems.Pivot.PivotPosition;
  * @author 5985
  */
 public class IntakeAndDeployPivot extends Command {
-    public boolean isFinished = false;
+    public boolean isFinished = true;
     Pivot s_Pivot;
     Intake s_Intake;
     private XboxController xbox;
@@ -47,6 +47,7 @@ public class IntakeAndDeployPivot extends Command {
     }
 
     public boolean isFinished() {
-        return true;
+        s_Intake.rumbleWithNote(false);
+        return isFinished;
     }
 }

@@ -67,13 +67,14 @@ public class ShootSequenceBasic extends Command {
             s_Shooter.setShooterState(ShooterState.RUNNING);
 
             // Total time allowed for the shooter to spin up and shoot
-            if (!s_Swerve.getVisionAlignmentBool()) {
-                SHOOT_TIME = 2; // seconds
-                SHOOT_SPIN_UP_TIME = 1; // seconds
-            } else {
-                SHOOT_TIME = 1; // seconds
-                SHOOT_SPIN_UP_TIME = 0; // seconds
-            }
+            //if (!s_Swerve.getVisionAlignmentBool() || true) {
+                SHOOT_TIME = 1.5; // seconds
+                SHOOT_SPIN_UP_TIME = 0.2; // seconds
+            //} 
+            // else {
+            //     SHOOT_TIME = 1; // seconds
+            //     SHOOT_SPIN_UP_TIME = 0; // seconds
+            // }
         // Not used only speaker
         } else if (s_Shooter.getShootPosition() == ShootPosition.AMP) {
             // amp shot
@@ -133,14 +134,16 @@ public class ShootSequenceBasic extends Command {
             if (EJECTED && m_timer.hasElapsed(EJECT_TIME + EJECT_DELAY)) 
             {
                 EJECTED = false;
-                return true;
+                // return true;
             }
-            else
+            else// if (!EJECTED)
             {
                 EJECTED = true;
                 EJECT_TIME = m_timer.get();
             }
         }
+
+
         if (m_timer.hasElapsed(SHOOT_TIME)) 
         {
             return true;

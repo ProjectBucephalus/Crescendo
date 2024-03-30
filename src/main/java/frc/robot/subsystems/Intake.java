@@ -241,12 +241,12 @@ public class Intake extends SubsystemBase
         if (doRumbleWithNote && !getBeamBreak() && !hasRumbled) {
             // start the rumble with intensity 1
             s_RumbleController.setRumble(Controllers.DRIVER, 1, RumbleType.kBothRumble);
-            System.out.println("Rumble started.");
+            //System.out.println("Rumble started.");
             hasRumbled = true; // set the flag to true
         } else if (getBeamBreak() || hasRumbled) {
             // stop the rumble
             s_RumbleController.setRumble(Controllers.DRIVER, 0, RumbleType.kBothRumble);
-            System.out.println("Rumble stopped.");
+            //System.out.println("Rumble stopped.");
             hasRumbled = false; // reset the flag to false
         }
         

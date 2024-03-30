@@ -13,6 +13,7 @@ import com.pathplanner.lib.path.PathPoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -25,6 +26,7 @@ import frc.robot.commands.Intake.IntakeAndDeployPivot;
 import frc.robot.commands.Shooter.AutoPivotShootSequence;
 import frc.robot.commands.Shooter.ShootSequence;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Shooter.ShootPosition;
 import frc.robot.subsystems.Shooter.ShooterState;
 
@@ -53,21 +55,33 @@ public class GetCentreNote extends GetNote {
         setReturnPath(targetNote);
 
         // Use note "monitoring" with note camera for center notes only
-        addCommands(
-                new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
-                new IntakeAndDeployPivot(s_Pivot, s_Intake, null),
-                new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(getInitialPath()), Set.of(s_Swerve))
-                        .andThen(new WaitCommand(2)),
-                // .deadlineWith(
-                // new MonitorForNote(noteVision, () -> s_Swerve.getEstimatedPose(),
-                // m_targetNote, this)),
-                new ParallelDeadlineGroup(
-                        new GetBeamBreak(s_Intake),
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
-                                s_Swerve.makePathFollowingCommand(m_returnPath)
-                                        .andThen(new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve)))),
-                new ShootSequence(s_Shooter, s_Intake, s_Swerve));
+        addCommands
+        (
+            new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
+            new IntakeAndDeployPivot(s_Pivot, s_Intake, null),
+            new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(getInitialPath()), Set.of(s_Swerve))
+                .andThen(new WaitCommand(2)),
+            // .deadlineWith(
+            // new MonitorForNote(noteVision, () -> s_Swerve.getEstimatedPose(),
+            // m_targetNote, this)),
+            new ConditionalCommand
+            (
+                new SequentialCommandGroup(new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.IN_WITH_BEAM_BREAK)), new WaitCommand(0.3)), 
+                new WaitCommand(0), 
+                () -> s_Intake.getBeamBreak()
+            ),
+            new ConditionalCommand  
+            (
+                new WaitCommand(0),
+                new SequentialCommandGroup
+                (
+                    new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
+                    s_Swerve.makePathFollowingCommand(m_returnPath),
+                    new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve)
+                ),
+                () -> s_Intake.getBeamBreak()
+            )
+        );
     }
 
     private PathPlannerPath getInitialPath() {
