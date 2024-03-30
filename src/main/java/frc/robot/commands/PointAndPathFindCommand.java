@@ -12,6 +12,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.Swerve;
+import frc.robot.VisionCommands.AlignToTrap;
 
 public class PointAndPathFindCommand extends SequentialCommandGroup {
 
@@ -41,21 +43,13 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
                 Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
                 Units.degreesToRadians(540), Units.degreesToRadians(720));
 
-        addCommands(
+        addCommands
+        (
                 new InstantCommand(()->s_Swerve.setVisionAlignmentBool(true)),
                 new PointToAngle(s_Swerve, targetLocation).withTimeout(0.5),
-                // Wait for the robot to align before pathfinding so the robot doesn't pathfind
-                // if the driver doesn't want to
-                // new WaitCommand(0.5),
-                
-
-                // the driver should be quite close before aligning so no need to path find to pose.
-                // AutoBuilder.pathfindToPose(
-                //         path.getStartingDifferentialPose(),  constraints
-                // ),
-                AutoBuilder.followPath(
-                        path
-                ));
+                AutoBuilder.followPath(path),
+                new AlignToTrap(s_Swerve, targetLocation)
+        );
 
     }
 }
