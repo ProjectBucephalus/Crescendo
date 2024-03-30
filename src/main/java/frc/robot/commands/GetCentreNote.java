@@ -55,56 +55,57 @@ public class GetCentreNote extends GetNote {
         setReturnPath(targetNote);
 
         // Use note "monitoring" with note camera for center notes only
-        addCommands
-        (
-            new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
-            new IntakeAndDeployPivot(s_Pivot, s_Intake, null),
-            new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(getInitialPath()), Set.of(s_Swerve))
-                .andThen(new WaitCommand(2)),
-            // .deadlineWith(
-            // new MonitorForNote(noteVision, () -> s_Swerve.getEstimatedPose(),
-            // m_targetNote, this)),
-            new ConditionalCommand
-            (
-                new SequentialCommandGroup(new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.IN_WITH_BEAM_BREAK)), new WaitCommand(0.3)), 
-                new WaitCommand(0), 
-                () -> s_Intake.getBeamBreak()
-            ),
-            new ConditionalCommand  
-            (
-                new WaitCommand(0),
-                new SequentialCommandGroup
-                (
-                    new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
-                    s_Swerve.makePathFollowingCommand(m_returnPath),
-                    new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve)
-                ),
-                () -> s_Intake.getBeamBreak()
-            )
-        );
+        addCommands(
+                new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
+                new IntakeAndDeployPivot(s_Pivot, s_Intake, null),
+                new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(getInitialPath()), Set.of(s_Swerve))
+                        .andThen(new WaitCommand(2)),
+                // .deadlineWith(
+                // new MonitorForNote(noteVision, () -> s_Swerve.getEstimatedPose(),
+                // m_targetNote, this)),
+                new ConditionalCommand(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.IN_WITH_BEAM_BREAK)),
+                                new WaitCommand(0.3)),
+                        new WaitCommand(0),
+                        () -> s_Intake.getBeamBreak()),
+                new ConditionalCommand(
+                        new WaitCommand(0),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
+                                s_Swerve.makePathFollowingCommand(m_returnPath),
+                                new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve)),
+                        () -> s_Intake.getBeamBreak()));
     }
 
     private PathPlannerPath getInitialPath() {
-        Pose2d pose = s_Swerve.getEstimatedPose();
+        Pose2d pose = s_Swerve.getPose();
         Pose2d poseBlue = FieldConstants.flipPose(pose);
-        System.out.println("Starting getInitialPath " + poseBlue);
+        // System.out.println("Starting getInitialPath " + poseBlue);
 
-        // this part used when in center note area, if intended center note is not found
+        // this part is used when in center note area, if intended center note is not
+        // found
         if (poseBlue.getX() > FieldConstants.BLUE_WING_LINE_X_METERS) {
             Rotation2d heading = m_targetNote.minus(poseBlue.getTranslation()).getAngle();
-            List<PathPoint> pathPoints = List.of(new PathPoint(poseBlue.getTranslation()), // starting pose
-                    new PathPoint(m_targetNote));
-            return PathPlannerPath.fromPathPoints(
-                    pathPoints, // position, heading
+
+            // heading here is the heading along the path
+            List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
+                    new Pose2d(poseBlue.getTranslation(), heading),
+                    new Pose2d(m_targetNote, heading));
+
+            // Create the path using the bezier points created above
+            // Note final Robot heading should be "backward" since the intake is on the back
+            return new PathPlannerPath(
+                    bezierPoints,
                     new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                             Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
                             Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,
                             Constants.AutoConstants.kMaxAngularAccelerationRadiansPerSecondSquared),
-                    new GoalEndState(0, heading, true));
+                    new GoalEndState(0, heading.rotateBy(Rotation2d.fromRadians(Math.PI)), true));
         }
 
         Pose2d closestPathStart = poseBlue.nearest(new ArrayList<>(m_candidateStartPaths.keySet()));
-        System.out.println("getInitialPath nearest = " + closestPathStart);
+        // System.out.println("Center: getInitialPath nearest = " + closestPathStart);
         return m_candidateStartPaths.get(closestPathStart);
     }
 }
