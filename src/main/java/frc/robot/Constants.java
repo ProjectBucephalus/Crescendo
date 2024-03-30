@@ -83,7 +83,7 @@ public final class Constants
          */
         public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), .1, .1, 1);
 
-        public static final double noteTurnScalarGain = 10;
+        public static final double noteTurnScalarGain = 12;
         public static final double noteTurnPowerGain = 3;
     }
 
