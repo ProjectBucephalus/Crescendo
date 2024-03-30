@@ -38,7 +38,8 @@ public class Shooter extends SubsystemBase {
         RUNNING,
         STOPPED,
         IDLE,
-        OUT
+        OUT,
+        TRAP
     };
 
     /**
@@ -93,6 +94,13 @@ public class Shooter extends SubsystemBase {
 
                 driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
                 mTopShooter.setControl(driveDutyCycle);
+            case TRAP:
+                driveDutyCycle.Output = Constants.Shooter.trapBottomShooterSpeed;
+                mBottomShooter.setControl(driveDutyCycle);
+
+                driveDutyCycle.Output = Constants.Shooter.trapTopShooterSpeed;
+                mTopShooter.setControl(driveDutyCycle);
+                break;
             default:
                 break;
         }

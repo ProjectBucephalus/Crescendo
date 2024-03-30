@@ -23,8 +23,6 @@ import frc.robot.subsystems.Shooter.ShooterState;
 public class AlignToTrap extends Command {
 
     public Swerve s_Swerve;
-    public Pivot s_Pivot;
-    public Shooter s_Shooter;
 
     private Pose2d shootingPose;
     private Transform2d targetLocation;
@@ -47,20 +45,18 @@ public class AlignToTrap extends Command {
         Transform2d distanceToShootingPos = s_Swerve.getEstimatedPose().minus(shootingPose);
         Translation2d translation = new Translation2d(distanceToShootingPos.getY(), distanceToShootingPos.getX()).times(SwerveConstants.maxSpeed);
 
-        s_Swerve.visionDrive(translation, 0, true, true, 0);
+        s_Swerve.visionDrive(translation, shootingPose.getRotation().getRadians(), true, true, 0);
     }
 
     public boolean isFinished() 
     {
-        return false;
+        return true;
     }
 
     @Override
     public void end(boolean end) 
     {
         s_Swerve.setVisionAlignmentBool(false);
-        s_Pivot.setPosition(PivotPosition.STOWED);
-        s_Shooter.setShooterState(ShooterState.IDLE);
 
         /*
          * Make sure we do this so that other manual alignment functions work. It should

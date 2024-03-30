@@ -179,10 +179,10 @@ public class RobotContainer {
         driver.povUp()         .onTrue(new UnlockClimber(s_Climber));
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
        
-        driver.a()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
-        driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.RIGHT_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
-        driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.LEFT_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
-        driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.BACK_STAGE, PathPlannerPath.fromPathFile("Line Up With Back Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
+        driver.a()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
+        driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.RIGHT_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
+        driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.LEFT_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
+        driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.BACK_STAGE, PathPlannerPath.fromPathFile("Line Up With Back Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
         
         
         /* Co-Driver Buttons */
@@ -206,6 +206,7 @@ public class RobotContainer {
         // coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
         // coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
         coDriver.back()        .onTrue(new InstantCommand(() -> s_Climber.setClimberPosition(ClimberPosition.STOPPED)));
+        coDriver.start()       .onTrue(new TrapShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve));
         SmartDashboard.putData("Trigger Shot", (new ShootSequence(s_Shooter, s_Intake, s_Swerve)));
         
         SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {

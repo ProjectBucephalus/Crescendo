@@ -44,7 +44,7 @@ public class GetMulitNote extends SequentialCommandGroup {
             new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.SPEAKER)),
             // this finishes when no note is in intake (beam break) or after SHOOT_TIME in the command.
             new WaitCommand(0.8),
-            new ShootSequenceBasic(s_Shooter, s_Intake, s_Swerve),
+            new ShootSequenceBasic(s_Shooter, s_Intake),
             new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
             new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.DEPLOYED)),
             new WaitCommand(0.2));

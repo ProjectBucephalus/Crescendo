@@ -177,6 +177,8 @@ public final class Constants
         public static final double shooterIdleSpeed = 0.5;
         public static final double shooterEjectSpeed = -0.5;
         public static final double shooterLobSpeed = 0.5;
+        public static final double trapTopShooterSpeed = 0.9;
+        public static final double trapBottomShooterSpeed = 0.9;
 
         /** Acceptable velocity for the shooter to be off by, in rotations per second (?) */
         public static final double shooterVelocityTolerance = 80;
