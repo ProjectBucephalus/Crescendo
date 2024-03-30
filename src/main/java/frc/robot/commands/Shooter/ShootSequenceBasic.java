@@ -74,7 +74,7 @@ public class ShootSequenceBasic extends Command {
                 SHOOT_TIME = 1; // seconds
                 SHOOT_SPIN_UP_TIME = 0; // seconds
             }
-            
+        // Not used only speaker
         } else if (s_Shooter.getShootPosition() == ShootPosition.AMP) {
             // amp shot
             SHOOT_TIME = 1.5; // seconds
