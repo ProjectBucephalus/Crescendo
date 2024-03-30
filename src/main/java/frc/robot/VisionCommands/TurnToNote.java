@@ -50,19 +50,22 @@ public class TurnToNote extends Command
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double turningVal = 0;
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
         double brakeVal = MathUtil.applyDeadband(brakeSup.getAsDouble(),
                 Constants.stickDeadband);
+        
+        double turningVal = rotationVal * SwerveConstants.maxAngularVelocity;
+
         Translation2d translation = new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed);
         List<Translation2d> notes = s_NoteVision.getNotes(s_Swerve.getEstimatedPose());
         double noteHeading = 0;
         try 
         {
             if (notes.size() > 0) 
-            {
+            {   
+                SmartDashboard.putBoolean("Seeing note?", true);
                 noteHeading = calculateRequiredHeading(new Pose2d(notes.get(0).getX(), notes.get(0).getY(), new Rotation2d())).getRadians();
                 SmartDashboard.putNumber("Note Position, requiredHeading", noteHeading);
 
@@ -74,7 +77,7 @@ public class TurnToNote extends Command
             }
             else 
             {
-                turningVal = rotationVal;
+                SmartDashboard.putBoolean("Seeing note?", false);
             }
         } 
         catch (Exception e) 
@@ -83,6 +86,8 @@ public class TurnToNote extends Command
         // s_Swerve.driveRobotRelative(translation, -turningVal, true, brakeVal);
 
         /* We set this to true so that we only use this vision drive method to drive. */
+        SmartDashboard.putNumber("RotationVal", rotationVal);
+        SmartDashboard.putNumber("TurningVal", turningVal);
         s_Swerve.setVisionAlignmentBool(true);
         s_Swerve.visionDrive(translation, turningVal, false, true, brakeVal);
     }

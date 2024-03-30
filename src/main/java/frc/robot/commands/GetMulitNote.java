@@ -15,11 +15,15 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.FieldConstants;
 import frc.robot.commands.Shooter.AutoPivotShootSequence;
+import frc.robot.commands.Shooter.ShootSequence;
+import frc.robot.commands.Shooter.ShootSequenceBasic;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NoteVision;
 import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Pivot.PivotPosition;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.Swerve;
 
 public class GetMulitNote extends SequentialCommandGroup {
@@ -33,7 +37,17 @@ public class GetMulitNote extends SequentialCommandGroup {
         // }
         // Shoot the preloaded note.
         
-        addCommands(new WaitCommand(1),new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve));
+        addCommands(new WaitCommand(1),
+        
+        // If not done already
+            new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
+            new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.SPEAKER)),
+            // this finishes when no note is in intake (beam break) or after SHOOT_TIME in the command.
+            new WaitCommand(0.8),
+            new ShootSequenceBasic(s_Shooter, s_Intake, s_Swerve),
+            new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
+            new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.DEPLOYED)),
+            new WaitCommand(0.2));
 
         // add all the fetching+shooting NOTE blocks
         for (Translation2d note : noteLocations) {
