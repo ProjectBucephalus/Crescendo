@@ -164,7 +164,7 @@ public final class Constants
         public static final double indexSpeedIn = 0.25;
         public static final double indexSpeedOut = -0.35;
         public static final double indexSpeedInWithLimit = -0.4;
-        public static final double indexSpeedShoot = 1;
+        public static final double indexSpeedShoot = 0.5;
 
     }
 
@@ -186,8 +186,8 @@ public final class Constants
         public static final double openLoopRamp = 0;
         
         /** Effective velocity of the ring coming out of the shooter, in meters per second */
-        public static final double shooterVelocity = 20;
-        public static final double gravity = 5.8;
+        public static final double shooterVelocity = 15.5;
+        public static final double gravity = 9.8;
 
         public static final double verticalAccelerationConstant = gravity / (2 * Math.pow(shooterVelocity,2));
 
