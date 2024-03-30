@@ -71,6 +71,10 @@ public class TurnToNote extends Command
             {   
                 SmartDashboard.putBoolean("Seeing note?", true);
                 noteHeading = calculateRequiredHeading(new Pose2d(notes.get(0).getX(), notes.get(0).getY(), new Rotation2d())).getRadians();
+                if (Math.abs(noteHeading) < 0.5)
+                {
+                    xbox.setRumble(RumbleType.kBothRumble, 0.7);
+                }
                 SmartDashboard.putNumber("Note Position, requiredHeading", noteHeading);
 
                 turningVal = -Math.copySign
@@ -78,8 +82,7 @@ public class TurnToNote extends Command
                     Math.pow(noteHeading * Constants.Vision.noteTurnScalarGain, Constants.Vision.noteTurnPowerGain),
                     noteHeading
                 );
-                xbox.setRumble(RumbleType.kBothRumble, 0.5
-                );
+                
             }
             else 
             {

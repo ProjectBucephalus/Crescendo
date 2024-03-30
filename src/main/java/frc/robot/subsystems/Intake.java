@@ -243,7 +243,7 @@ public class Intake extends SubsystemBase
                 System.out.println("Not Rumbling");
             }
         } else {
-            xbox.setRumble(RumbleType.kBothRumble, 0);
+            //xbox.setRumble(RumbleType.kBothRumble, 0);
         }
         
         // Prints the beamBreakBool to the Smart Dashboard
