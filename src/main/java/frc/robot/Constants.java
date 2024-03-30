@@ -183,15 +183,14 @@ public final class Constants
         /** Seconds to ramp power to new value */
         public static final double openLoopRamp = 0;
         
-        public static final double gravity = 9.8;
-        
         /** Effective velocity of the ring coming out of the shooter, in meters per second */
-        public static final double shooterVelocity = 19;
+        public static final double shooterVelocity = 20;
+        public static final double gravity = 5;
 
         public static final double verticalAccelerationConstant = gravity / (2 * Math.pow(shooterVelocity,2));
 
         /** Metres of target point over shooter exit */
-        public static final double targetHeightOverShooter = 1.4;
+        public static final double targetHeightOverShooter = 1.6;
         /** Metres of target point in front of tag */
         public static final double targetDistanceOffset = 0.23;
         /** Metres of shooter exit over pivot axis */
