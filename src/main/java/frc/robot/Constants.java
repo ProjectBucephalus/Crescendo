@@ -46,7 +46,8 @@ public final class Constants
         public static final Transform3d backCamToRobot = new Transform3d
         ( 
                 //-0.18, -0.18, 0.44, // This is the actuall coordinates of the camera on the robot
-                0, -0.36, 0.44, // WHY Is this the coordinates that makes it work!!!!
+                //0, -0.36, 0.44, // WHY Is this the coordinates that makes it work!!!! Doesn't actually work, it breaks actual tracking
+                -0.18, -0.18, 0.44,
                 new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(180))
         ); // Meters and Radians (roll, pitch, yaw)
 
