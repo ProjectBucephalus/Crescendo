@@ -84,6 +84,8 @@ public class ShootSequenceBasic extends Command {
         } else if (s_Shooter.getShootPosition() == ShootPosition.TRAP) {
             // trap shot
             s_Shooter.setShooterState(ShooterState.TRAP);
+            SHOOT_TIME = 1.5; // seconds
+            SHOOT_SPIN_UP_TIME = 0.2; // seconds
         }
 
         m_timer.restart();
@@ -106,6 +108,7 @@ public class ShootSequenceBasic extends Command {
                 s_Intake.setIntakeStatus(IntakeStatus.OUT);
             } else if (s_Shooter.getShootPosition() == ShootPosition.TRAP) {
                 /* Trap Shot */
+                EJECT_TIME = m_timer.get();
                 s_Intake.setIntakeStatus(IntakeStatus.IN_FOR_SHOOTING);
             }
         }
