@@ -9,6 +9,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -25,8 +27,9 @@ public class TurnToNote extends Command
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private DoubleSupplier brakeSup;
+    private XboxController xbox; 
 
-    public TurnToNote(Swerve driveSubsystem, NoteVision s_NoteVision, DoubleSupplier translationSup,
+    public TurnToNote(XboxController xbox, Swerve driveSubsystem, NoteVision s_NoteVision, DoubleSupplier translationSup,
             DoubleSupplier strafeSup,
             DoubleSupplier rotationSup,
             DoubleSupplier brakeSup) {
@@ -37,6 +40,7 @@ public class TurnToNote extends Command
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.brakeSup = brakeSup;
+        this.xbox = xbox;
     }
 
     @Override
@@ -70,10 +74,13 @@ public class TurnToNote extends Command
                     Math.pow(noteHeading * Constants.Vision.noteTurnScalarGain, Constants.Vision.noteTurnPowerGain),
                     noteHeading
                 );
+                xbox.setRumble(RumbleType.kBothRumble, 0.5
+                );
             }
             else 
             {
                 SmartDashboard.putBoolean("Seeing note?", false);
+                xbox.setRumble(RumbleType.kBothRumble, 0);
             }
         } 
         catch (Exception e) 
@@ -99,6 +106,7 @@ public class TurnToNote extends Command
     public void end(boolean interrupted) {
         // m_lime.disableVision();
         s_Swerve.setVisionAlignmentBool(false);
+        xbox.setRumble(RumbleType.kBothRumble, 0);
     }
 
     // Returns true when the command should end.

@@ -166,7 +166,7 @@ public class RobotContainer {
         driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         driver.back()          .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
         // made this the same as the robot centric so they act as one func
-        driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+        driver.leftTrigger()   .whileTrue(new TurnToNote(driver.getHID(), s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
 
         /* Pass in codriver for controller to receive rumble */
         driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));

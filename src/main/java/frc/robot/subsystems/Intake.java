@@ -236,7 +236,7 @@ public class Intake extends SubsystemBase
 
         if (doRumbleWithNote) {
             if (!getBeamBreak() && (xbox != null)) {
-                xbox.setRumble(RumbleType.kBothRumble, 0.5);
+                xbox.setRumble(RumbleType.kBothRumble, 1);
                 System.out.println("Rumbling");
             } else if (xbox != null) {
                 xbox.setRumble(RumbleType.kBothRumble, 0);
