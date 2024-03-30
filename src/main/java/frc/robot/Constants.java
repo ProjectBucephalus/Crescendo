@@ -45,8 +45,8 @@ public final class Constants
         // pitch is the Y angle, and it is positive down
         public static final Transform3d backCamToRobot = new Transform3d
         ( 
-                //0.18, -0.21, 0.455,
-                -0.18, -0.18, 0.44,
+                //-0.18, -0.18, 0.44, // This is the actuall coordinates of the camera on the robot
+                0, -0.36, 0.44, // WHY Is this the coordinates that makes it work!!!!
                 new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(180))
         ); // Meters and Radians (roll, pitch, yaw)
 
@@ -200,7 +200,7 @@ public final class Constants
         /** Metres of target point over shooter exit */
         public static final double targetHeightOverShooter = 1.6;
         /** Metres of target point in front of tag */
-        public static final double targetDistanceOffset = 0.23;
+        public static final double targetDistanceOffset = 0.2;
         /** Metres of shooter exit over pivot axis */
         public static final double shooterPivotOffsetUp = 0.25;
         /** Metres of pivot behind robot centre */
