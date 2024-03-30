@@ -66,9 +66,9 @@ public class FieldConstants {
 
     /* Driver pathfinding controlls in teleop */
     public static final Transform2d AMP = new Transform2d(0, 5.54, Rotation2d.fromDegrees(90));
-    public static final Transform2d BACK_STAGE = new Transform2d(5.85, 4.14, Rotation2d.fromDegrees(180));
-    public static final Transform2d LEFT_STAGE = new Transform2d(4.3, 3, Rotation2d.fromDegrees(-60));
-    public static final Transform2d RIGHT_STAGE = new Transform2d(4.3, 5.0, Rotation2d.fromDegrees(60));
+    public static final Transform2d BACK_STAGE = new Transform2d(5.65, 4.11, Rotation2d.fromDegrees(0));
+    public static final Transform2d LEFT_STAGE = new Transform2d(4.3, 3, Rotation2d.fromDegrees(120));
+    public static final Transform2d RIGHT_STAGE = new Transform2d(4.3, 5.0, Rotation2d.fromDegrees(-120));
 
     private static final Map<String, Translation2d> s_noteNameMap = new HashMap<>() {
         {

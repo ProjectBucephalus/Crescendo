@@ -8,6 +8,7 @@ import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -176,6 +177,8 @@ public final class Constants
         public static final double shooterIdleSpeed = 0.5;
         public static final double shooterEjectSpeed = -0.5;
         public static final double shooterLobSpeed = 0.5;
+        public static final double trapTopShooterSpeed = 0;
+        public static final double trapBottomShooterSpeed = 0;
 
         /** Acceptable velocity for the shooter to be off by, in rotations per second (?) */
         public static final double shooterVelocityTolerance = 80;

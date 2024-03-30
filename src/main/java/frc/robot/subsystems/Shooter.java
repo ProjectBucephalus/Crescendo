@@ -38,7 +38,8 @@ public class Shooter extends SubsystemBase {
         RUNNING,
         STOPPED,
         IDLE,
-        OUT
+        OUT,
+        TRAP
     };
 
     /**
@@ -52,7 +53,10 @@ public class Shooter extends SubsystemBase {
         TRAP,
     };
 
-    public Shooter() {
+    public Shooter() 
+    {
+        SmartDashboard.putNumber("Shooter Bottom Speed", 0);
+        SmartDashboard.putNumber("Shooter Top Speed", 0);
     }
 
     /**
@@ -93,6 +97,13 @@ public class Shooter extends SubsystemBase {
 
                 driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
                 mTopShooter.setControl(driveDutyCycle);
+            case TRAP:
+                driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Bottom Speed", 0);
+                mBottomShooter.setControl(driveDutyCycle);
+
+                driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Top Speed", 0);
+                mTopShooter.setControl(driveDutyCycle);
+                break;
             default:
                 break;
         }

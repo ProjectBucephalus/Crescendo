@@ -28,7 +28,7 @@ public class ShootSequence extends SequentialCommandGroup{
             new IntakeStop(s_Intake),
             new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.IN_FOR_SHOOTING)),
             new WaitCommand(0.5),
-            new ShootSequenceBasic(s_Shooter, s_Intake, s_Swerve)
+            new ShootSequenceBasic(s_Shooter, s_Intake)
         );
     }
 }
