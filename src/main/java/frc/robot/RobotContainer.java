@@ -25,7 +25,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.util.RumbleController;
 import frc.robot.VisionCommands.AimToSpeakerNoDrive;
+import frc.robot.VisionCommands.TurnToNote;
 import frc.robot.VisionCommands.aimToSpeakerSequence;
 import frc.robot.commands.GetMulitNote;
 import frc.robot.commands.PointAndPathFindCommand;
@@ -34,22 +36,9 @@ import frc.robot.commands.StabiliserBar;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
 import frc.robot.commands.BuddyClimb.StopBuddyClimber;
-import frc.robot.commands.Climber.ClimberExtend;
-import frc.robot.commands.Climber.ClimberRetract;
-import frc.robot.commands.Climber.LockClimber;
-import frc.robot.commands.Climber.MoveClimber;
-import frc.robot.commands.Climber.UnlockClimber;
-import frc.robot.commands.Intake.IntakeAndDeployPivot;
-import frc.robot.commands.Intake.IntakeSpit;
-import frc.robot.commands.Intake.IntakeStop;
-import frc.robot.commands.Intake.IntakeSuck;
-import frc.robot.commands.Intake.MovePivot;
-import frc.robot.commands.Intake.MovePivotToPosition;
-import frc.robot.commands.Intake.StopIntakeAndStow;
-import frc.robot.commands.Shooter.ShootSequence;
-import frc.robot.commands.Shooter.ShooterFeed;
-import frc.robot.commands.Shooter.ShooterIdle;
-import frc.robot.commands.Shooter.ShooterRev;
+import frc.robot.commands.Climber.*;
+import frc.robot.commands.Intake.*;
+import frc.robot.commands.Shooter.*;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NoteVision;
@@ -95,8 +84,9 @@ public class RobotContainer {
     private final int MANUAL_SHOOTER_AXIS = XboxController.Axis.kRightY.value;
 
     /* Subsystems */
+    private final RumbleController s_RumbleController = new RumbleController(driver.getHID(), coDriver.getHID());
     private final Swerve s_Swerve = new Swerve();
-    private final Intake s_Intake = new Intake();
+    private final Intake s_Intake = new Intake(s_RumbleController);
     private final Pivot s_Pivot = new Pivot(s_Swerve);
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
@@ -119,15 +109,20 @@ public class RobotContainer {
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
-    public RobotContainer() {
-        s_Swerve.setDefaultCommand(
-                new TeleopSwerve(
-                        s_Swerve,
-                        () -> -driver.getRawAxis(translationAxis),
-                        () -> -driver.getRawAxis(strafeAxis),
-                        () -> -driver.getRawAxis(rotationAxis),
-                        () -> driver.leftTrigger().getAsBoolean(),
-                        () -> -driver.getRawAxis(BRAKE_AXIS)));
+    public RobotContainer() 
+    {
+        s_Swerve.setDefaultCommand
+        (
+            new TeleopSwerve
+            (
+                s_Swerve,
+                () -> -driver.getRawAxis(translationAxis),
+                () -> -driver.getRawAxis(strafeAxis),
+                () -> -driver.getRawAxis(rotationAxis),
+                () ->  driver.leftTrigger().getAsBoolean(),
+                () -> -driver.getRawAxis(BRAKE_AXIS)
+            )
+        );
 
         // s_Vision.setDefaultCommand(new multiTagPoseEstimatior(s_Vision));
         s_Pivot.setDefaultCommand(new MovePivot(s_Pivot, () -> -coDriver.getRawAxis(MANUAL_SHOOTER_AXIS)));
@@ -173,21 +168,21 @@ public class RobotContainer {
         driver.start()         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         driver.back()          .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
         // made this the same as the robot centric so they act as one func
-        driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+        driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_RumbleController));
 
         /* Pass in codriver for controller to receive rumble */
         driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
        
         /* Pass in driver for controller to receive rumble when note in intake*/
-        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())) .onFalse(new StopIntakeAndStow(s_Pivot, s_Intake).andThen(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED)));
+        driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())) .onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
 
         driver.povUp()         .onTrue(new UnlockClimber(s_Climber));
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
        
-        driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
-        driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.RIGHT_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
-        driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.LEFT_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
-        driver.a()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.BACK_STAGE, PathPlannerPath.fromPathFile("Line Up With Back Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis)));
+        driver.a()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
+        driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.RIGHT_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
+        driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.LEFT_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
+        driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.BACK_STAGE, PathPlannerPath.fromPathFile("Line Up With Back Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
         
         
         /* Co-Driver Buttons */
@@ -211,6 +206,7 @@ public class RobotContainer {
         // coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
         // coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
         coDriver.back()        .onTrue(new InstantCommand(() -> s_Climber.setClimberPosition(ClimberPosition.STOPPED)));
+        coDriver.start()       .onTrue(new TrapShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve));
         SmartDashboard.putData("Trigger Shot", (new ShootSequence(s_Shooter, s_Intake, s_Swerve)));
         
         SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {

@@ -141,7 +141,7 @@ public class NoteVision extends SubsystemBase {
             double yaw = Math.toRadians(tgt.getYaw());
 
             // the pi is because the camera is on the back
-            double noteAngle = robotRotation - Math.PI + yaw;
+            double noteAngle = robotRotation + yaw;
             double fieldCentricNoteX = robotX + d * Math.cos(noteAngle);
             double fieldCentricNoteY = robotY + d * Math.sin(noteAngle);
 
@@ -184,10 +184,11 @@ public class NoteVision extends SubsystemBase {
     @Override
     public void periodic() {
         // DEBUG
-        List<Translation2d> notes = getNotes();
+        List<Translation2d> notes = getNotes(s_Swerve.getEstimatedPose());
         SmartDashboard.putNumber("noteVision nFound", notes.size());
-        if (notes.size() > 0) {
-            m_notes.setRobotPose(FieldConstants.translationToPose2d(getNotes(s_Swerve.getEstimatedPose()).get(0)));
+        if (notes.size() > 0) 
+        {
+            m_notes.setRobotPose(FieldConstants.translationToPose2d(notes.get(0)));
             SmartDashboard.putData("Notes Poses", m_notes);
         }
 
