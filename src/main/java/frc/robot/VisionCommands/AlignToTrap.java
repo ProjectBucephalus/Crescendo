@@ -1,5 +1,6 @@
 package frc.robot.VisionCommands;
 
+import java.sql.Driver;
 import java.util.function.DoubleSupplier;
 
 import org.photonvision.PhotonUtils;
@@ -9,6 +10,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -26,6 +29,7 @@ public class AlignToTrap extends Command {
 
     private Pose2d shootingPose;
     private Transform2d targetLocation;
+    private boolean invert = false;
 
     public AlignToTrap(Swerve s_Swerve, Transform2d targetLocation) {
         this.s_Swerve = s_Swerve;
@@ -35,15 +39,23 @@ public class AlignToTrap extends Command {
     @Override
     public void initialize() {
         s_Swerve.setVisionAlignmentBool(true);
-
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == Alliance.Red) 
+        {
+            invert = true;
+        }
     }
 
     @Override
     public void execute() 
-    {
+    {   
         shootingPose = new Pose2d(targetLocation.getTranslation(), targetLocation.getRotation());
         Transform2d distanceToShootingPos = s_Swerve.getEstimatedPose().minus(shootingPose);
         Translation2d translation = new Translation2d(distanceToShootingPos.getY(), distanceToShootingPos.getX()).times(SwerveConstants.maxSpeed);
+        if (invert)
+        {
+            translation = translation.unaryMinus();
+        };
 
         s_Swerve.visionDrive(translation, shootingPose.getRotation().getRadians(), true, true, 0);
     }
