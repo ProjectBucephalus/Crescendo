@@ -1,29 +1,23 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.DutyCycleOut;
+import org.photonvision.PhotonUtils;
+
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
 import frc.robot.IDConstants;
 import frc.robot.CTREConfigs;
-
-import javax.print.attribute.standard.Destination;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Pivot extends SubsystemBase {
     // motors
@@ -34,10 +28,10 @@ public class Pivot extends SubsystemBase {
 
 
     // limit switches
-    public DigitalInput leftDeploySwitch = new DigitalInput(Constants.Intake.leftOutSwitchID);
-    public DigitalInput leftStowSwitch = new DigitalInput(Constants.Intake.leftInSwitchID);
-    public DigitalInput rightDeploySwitch = new DigitalInput(Constants.Intake.rightOutSwitchID);
-    public DigitalInput rightStowSwitch = new DigitalInput(Constants.Intake.rightInSwitchID);
+    /**Normally Open / True = safe*/ public DigitalInput leftDeploySwitch = new DigitalInput(IDConstants.Intooter.Pivot.leftOutSwitchID);
+    /**Normally Open / True = safe*/ public DigitalInput leftStowSwitch = new DigitalInput(IDConstants.Intooter.Pivot.leftInSwitchID);
+    /**Normally Open / True = safe*/ public DigitalInput rightDeploySwitch = new DigitalInput(IDConstants.Intooter.Pivot.rightOutSwitchID);
+    /**Normally Open / True = safe*/ public DigitalInput rightStowSwitch = new DigitalInput(IDConstants.Intooter.Pivot.rightInSwitchID);
     // limits as checked during calibration, to account for encoder drift
     double intakeStowLimitPos;
     double intakeDeployLimitPos;
@@ -64,6 +58,9 @@ public class Pivot extends SubsystemBase {
         AMP,
         TRAP,
         SPEAKER,
+        AMP_MANUAL,
+        TRAP_MANUAL,
+        SPEAKER_MANUAL
     };
 
     public enum FlapPosition {
@@ -71,35 +68,53 @@ public class Pivot extends SubsystemBase {
         CLOSED,
     };
 
-    public Pivot() {
-        SmartDashboard.putNumber("pivotPosition", -90);
-        SmartDashboard.putNumber("ampPosition", -45);
-
-        mLeftPivot = new TalonFX(Constants.Intake.mLeftPivotID);
+    public Pivot(Swerve s_Swerve) {
+        this.s_Swerve = s_Swerve;
+        
+        // Initialises motor controller objects and configures them
+        mLeftPivot = new TalonFX(IDConstants.Intooter.Pivot.mLeftPivotID);
         mLeftPivot.getConfigurator().apply(CTREConfigs.leftPivotMotorFXConfig);
-        mLeftPivot.getConfigurator().setPosition(0);
+        mLeftPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
 
-        mRightPivot = new TalonFX(Constants.Intake.mRightPivotID);
+        mRightPivot = new TalonFX(IDConstants.Intooter.Pivot.mRightPivotID);
         mRightPivot.getConfigurator().apply(CTREConfigs.rightPivotMotorFXConfig);
-        mRightPivot.getConfigurator().setPosition(0);
+        mRightPivot.getConfigurator().setPosition(Units.degreesToRotations(Constants.Intake.pivotStowPos));
+        mRightPivot.setControl(new Follower(mLeftPivot.getDeviceID(), true));
     }
 
+    /**
+     * Sets the position of the pivot based on an enum
+     * 
+     * @param position The desired position, as an enum
+     * @author 5985
+     * @author Aidan
+     */
     public void setPosition(PivotPosition position) {
-        switch (position) { 
+        SmartDashboard.putString("Pivot Position Status", position.name());
+        switch (position) {
             case STOWED:
-                moveArmToAngle(0);
+                moveArmToAngle(Constants.Intake.pivotStowPos); // TODO Ensure this is checking limit switches
                 break;
             case DEPLOYED:
-                moveArmToAngle(SmartDashboard.getNumber("pivotPosition", -90));
+                moveArmToAngle(Constants.Intake.pivotDeployPos);
                 break;
             case AMP:
-                moveArmToAngle(SmartDashboard.getNumber("ampPosition", -45));
+                moveArmToAngle(Constants.Intake.pivotAmpPos);
                 break;
             case TRAP:
-                moveArmToAngle(Constants.Intake.trapPos);
+                moveArmToAngle(Constants.Intake.pivotTrapPos);
                 break;
             case SPEAKER:
-                moveArmToAngle(desiredAngle);
+                moveArmToAngle(calculatedRequiredShooterAngle());
+                break;
+            case AMP_MANUAL:
+                moveArmToAngle(0);
+                break;
+            case TRAP_MANUAL:
+                moveArmToAngle(0);
+                break;
+            case SPEAKER_MANUAL:
+                moveArmToAngle(50);
                 break;
         }
     }
@@ -246,10 +261,13 @@ public class Pivot extends SubsystemBase {
 
     /**
      * 
-     * @param angle the desired angle to move the arm to when the setPosition() method is called with the correct enum.
+     * @param angle the desired angle to move the arm to when the setPosition()
+     *              method is called with the correct enum.
      * 
-     * for example, if we want to align to the speaker, we would call this metod and pass in the desired angle and call setPosition() with 
-     * PivotPosition.SPEAKER.
+     *              for example, if we want to align to the speaker, we would call
+     *              this method and pass in the desired angle and call setPosition()
+     *              with
+     *              PivotPosition.SPEAKER.
      */
     public void setDesiredPostion(Double angle) 
     {
@@ -262,11 +280,11 @@ public class Pivot extends SubsystemBase {
      * 
      * @return Pivot position degrees
      */
-    public double getPivotPos() {
+    public double getPivotPos() 
+    {
         // motor.getPosition() returns rotations: convert to degrees and return average.
         return ((mRightPivot.getPosition().getValueAsDouble() * 360)
                 + (mLeftPivot.getPosition().getValueAsDouble() * 360)) / 2;
-        // return mRightPivot.getPosition().getValueAsDouble();
     }
 
     /**
@@ -275,7 +293,7 @@ public class Pivot extends SubsystemBase {
      * @return Boolean, true if current angle is acceptable
      */
     public boolean angleWithinTolerance() {
-        return Math.abs(desiredAngle - getPivotPos()) < Constants.Intake.ANGLE_TOLERANCE_DEGREE;
+        return Math.abs(desiredAngle - getPivotPos()) < Constants.Intake.pivotAngleTolerance;
     }
 
     /**
@@ -286,14 +304,19 @@ public class Pivot extends SubsystemBase {
      * @author 5985
      * @author Alec
      */
-    public void setArmMotorSpeeds(double speed) {
+    public void setArmMotorSpeeds(double speed) 
+    {
         if ((speed < 0 && leftStowSwitch.get() && rightStowSwitch.get())
-                || (speed > 0 && leftDeploySwitch.get() && rightDeploySwitch.get())) {
+              || 
+            (speed > 0 && leftDeploySwitch.get() && rightDeploySwitch.get())) 
+        {
             mLeftPivot.set(speed);
             // mRightPivot.set(speed); // mRightPivot is set as reversed follower of
             // mLeftPivot
             desiredAngle = getPivotPos();
-        } else {
+        }
+        else
+        {
             mLeftPivot.set(0);
             // mRightPivot.set(0); // mRightPivot is set as reversed follower of mLeftPivot
         }

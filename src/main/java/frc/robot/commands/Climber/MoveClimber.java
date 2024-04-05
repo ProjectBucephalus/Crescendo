@@ -9,7 +9,7 @@ import frc.robot.subsystems.Climber;
 
 
 /**
- * climber movement command
+ * Climber movement command
  * @author 5985
  */
 public class MoveClimber extends Command {
@@ -20,7 +20,7 @@ public class MoveClimber extends Command {
     /**
      * Moves the climber
      * @param climber reference to the climber subsystem
-     * @param speed_sup double supplier for the climber speed
+     * @param speed_sup double supplier for the climber speed [-1..1]
      */
     public MoveClimber(Climber climber, DoubleSupplier speed_sup) 
     {
@@ -33,8 +33,8 @@ public class MoveClimber extends Command {
     @Override
     public void execute() 
     {
-        System.out.println(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
-        climber.setSpeed(MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
+        //System.out.println("Climber Speed : " + MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband));
+        climber.climberManual(MathUtil.applyDeadband(-speed.getAsDouble(), Constants.stickDeadband));
     }
     
 }

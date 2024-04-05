@@ -1,11 +1,17 @@
 package frc.robot;
 
-import org.photonvision.PhotonCamera;
+import java.util.Arrays;
+import java.util.List;
 
-import com.choreo.lib.Choreo;
-import com.choreo.lib.ChoreoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -13,7 +19,11 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.util.RumbleController;
 import frc.robot.VisionCommands.AimToSpeakerNoDrive;
@@ -54,7 +64,7 @@ import frc.robot.subsystems.Intake.StabiliserPos;
 public class RobotContainer {
     /* Controllers */
     private final CommandXboxController driver = new CommandXboxController(0);
-    private final CommandXboxController coDriver = new CommandXboxController(1); //declare xbox on ds port 1
+    private final CommandXboxController coDriver = new CommandXboxController(1); // declare xbox on ds port 1
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -62,18 +72,16 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
-        // Swerve
-    //private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    //private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    
-    private final int            ALIGN_TO_SPEAKER      = XboxController.Axis.kLeftTrigger.value;
-    private final int            BRAKE_AXIS            = XboxController.Axis.kRightTrigger.value;
-    
-    /* Co-Driver Buttons */
-    private final int            SHOOT_BUTTON                  = XboxController.Axis.kLeftTrigger.value;
-    private final int            INTAKE_IN_BUTTON              = XboxController.Axis.kRightTrigger.value;
-    private final int            MANUAL_CLIMB_AXIS             = XboxController.Axis.kLeftY.value;
-    private final int            MANUAL_SHOTER_AXIS            = XboxController.Axis.kRightY.value;
+    // Swerve
+    // private final JoystickButton zeroGyro = new JoystickButton(driver,
+    // XboxController.Button.kY.value);
+    // private final JoystickButton robotCentric = new JoystickButton(driver,
+    // XboxController.Button.kLeftBumper.value);
+
+    private final int BRAKE_AXIS = XboxController.Axis.kRightTrigger.value;
+
+    private final int MANUAL_CLIMB_AXIS = XboxController.Axis.kLeftY.value;
+    private final int MANUAL_SHOOTER_AXIS = XboxController.Axis.kRightY.value;
 
     /* Subsystems */
     private final RumbleController s_RumbleController = new RumbleController(driver.getHID(), coDriver.getHID());
@@ -95,7 +103,7 @@ public class RobotContainer {
     private Pose2d m_prevInitialPose = new Pose2d();
 
     /* Autonomous */
-    private final SendableChooser<Command> autoChooser;
+    // private final SendableChooser<Command> autoChooser;
     Field2d m_Field = new Field2d();
 
     /**
@@ -132,13 +140,13 @@ public class RobotContainer {
         NamedCommands.registerCommand("Stow Pivot", new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
 
         configureButtonBindings();
+        configureAutos();
 
-        // NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
         // NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
         // NamedCommands.registerCommand("print hello", Commands.print("hello"));
 
         autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+        // SmartDashboard.putData("Auto Chooser", autoChooser);
 
         SmartDashboard.putData(m_Field);
         final var visionTab = Shuffleboard.getTab("Vision");
@@ -153,8 +161,7 @@ public class RobotContainer {
      * it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
-    private void configureButtonBindings() 
-    {
+    private void configureButtonBindings() {
         /* Driver Buttons */
 
         //driver.back()          .onTrue(new InstantCommand(s_Swerve::lockWheels, s_Swerve)); // TODO 
@@ -180,22 +187,27 @@ public class RobotContainer {
         
         /* Co-Driver Buttons */
 
-        coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve)).onFalse(new ShooterIdle(s_Shooter));
-        coDriver.rightTrigger().onTrue(new IntakeSpit(s_Intake)).onFalse(new IntakeStop(s_Intake));
-        coDriver.rightBumper() .onTrue(new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.IN))).onFalse(new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.STOPPED)));
+        // coDriver.leftTrigger() .onTrue(new ShooterFeed(s_Intake)).onFalse(new ShooterIdle(s_Shooter).alongWith(new InstantCommand(()->s_Intake.setIntakeStatus(IntakeStatus.STOPPED))));
+        coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
+        coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)); 
+        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake).andThen(new InstantCommand(()->s_Intake.setIndexerState(IndexerState.OUT)))).onFalse(new IntakeStop(s_Intake).andThen(new InstantCommand(()->s_Intake.setIndexerState(IndexerState.STOPPED)))); //Indexer out.
+        coDriver.rightBumper() .onTrue(new IntakeSpit(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.OUT)))).onFalse(new IntakeStop(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.IDLE))));
 
-        coDriver.leftBumper()  .onTrue(new IntakeSuck(s_Intake).andThen(new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.OUT)))).onFalse(new IntakeStop(s_Intake)); 
         coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
-        coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP));
+        coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP)); //speaker base
         coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
         //coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
-        
-        coDriver.povLeft()     .onTrue(new DeployBuddyClimber(s_Climber)).onFalse(new StopBuddyClimber(s_Climber));
 
-        coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
-        coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
-        coDriver.povRight()    .onTrue(new InstantCommand(() -> s_Climber.setClimberPosition(ClimberPosition.STOPPED)));
+        coDriver.povRight()    .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
+        coDriver.povLeft()     .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         
+        coDriver.povDown()     .onTrue(new DeployBuddyClimber(s_Climber)).onFalse(new StopBuddyClimber(s_Climber));
+
+        // coDriver.povUp()       .onTrue(new ClimberExtend(s_Climber));
+        // coDriver.povDown()     .onTrue(new ClimberRetract(s_Climber));
+        coDriver.back()        .onTrue(new InstantCommand(() -> s_Climber.setClimberPosition(ClimberPosition.STOPPED)));
+        coDriver.start()       .onTrue(new TrapShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve));
+        SmartDashboard.putData("Trigger Shot", (new ShootSequence(s_Shooter, s_Intake, s_Swerve)));
         
         SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
             Pose2d currentPose = s_Swerve.getEstimatedPose();
@@ -272,10 +284,9 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
 
-    public Command getAutonomousCommand() 
-    {
-        return autoChooser.getSelected();
+    public Command getAutonomousCommand() {
+        var transforms = FieldConstants.buildNoteList(SmartDashboard.getString("Auto Chooser", "W"));
+        return new GetMulitNote(transforms, s_Swerve, s_NoteVision, s_Shooter, s_Pivot, s_Intake, s_Climber);
     }
-    
 
 }

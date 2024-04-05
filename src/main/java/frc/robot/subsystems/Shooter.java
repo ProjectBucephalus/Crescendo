@@ -1,16 +1,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.IDConstants;
@@ -79,18 +72,17 @@ public class Shooter extends SubsystemBase {
         switch (state) 
         {
             case RUNNING:
-                driveDutyCycle.Output = bottomSpeed;
+                driveDutyCycle.Output = Constants.Shooter.runningBottomShooterSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
 
-                driveDutyCycle.Output = topSpeed;
+                driveDutyCycle.Output = Constants.Shooter.runningTopShooterSpeed;
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case STOPPED:
                 driveDutyCycle.Output = 0;
                 mBottomShooter.setControl(driveDutyCycle);
-
-                driveDutyCycle.Output = 0;
                 mTopShooter.setControl(driveDutyCycle);
+                break;
             case IDLE:
                 //System.out.println("idle");
                 driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
@@ -128,22 +120,25 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
-     * Checks if shooter RPM is within acceptable tolerance. 
+     * Checks if shooter RPM is within acceptable tolerance.
      * TODO not implimented yet
+     * 
      * @return Boolean, true when current shooter RPM is acceptable
      * @author 5985
      * @author Aidan
      */
     public boolean rpmWithinTolerance() {
-        return true; // TODO
+        return mTopShooter.getVelocity().getValueAsDouble() > Constants.Shooter.shooterVelocityTolerance;
+
     }
 
     @Override
     public void periodic() {
         // Prints info to Smart Dashboard
-        SmartDashboard.putString("Where am I shooting", getShootPosition().name());
         SmartDashboard.putString("Current State of Motors for sim", getShootPosition().name());
+
+        SmartDashboard.putNumber("Top Shooter RPS", mTopShooter.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Bottom Shooter RPS", mBottomShooter.getVelocity().getValueAsDouble());
     }
 
-    
 }

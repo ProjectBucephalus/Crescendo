@@ -78,7 +78,19 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    boolean isRedAlliance = FieldConstants.isRedAlliance();
+        if (isRedAlliance != m_prevIsRedAlliance || m_robotContainer.autoHasChanged()) {
+            m_robotContainer.getSwerve().resetEstimatedOdometry(m_robotContainer.getInitialPose());
+            m_prevIsRedAlliance = isRedAlliance;
+        }
+
+    String autoPopulator = m_robotContainer.getAutoPopulator();
+    if (!autoPopulator.equals(m_prevAuto)) {
+      SmartDashboard.putString("Auto Chooser", autoPopulator);
+      m_prevAuto = autoPopulator;
+    }        
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override

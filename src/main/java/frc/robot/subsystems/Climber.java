@@ -1,13 +1,22 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.IDConstants;
 
 /**
- * the climber subsystem
+ * The Subsystem for the climber. Handles all climber movements as well as the RoboWrangler/Buddy Climber
  * @author 5985
  */
 public class Climber extends SubsystemBase 
@@ -29,20 +38,49 @@ public class Climber extends SubsystemBase
     public boolean leftCalibrated = true;
     public boolean rightCalibrated = true;
 
-    public Climber() { 
-        
-    }
+    public Climber() {
+        leftClimbMotorFXConfig.Slot0.kP = 100;
+        leftClimbMotorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        leftClimbMotorFXConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;  
+        mLeftClimber.getConfigurator().apply(leftClimbMotorFXConfig);
+        mLeftClimber.getConfigurator().setPosition(0);
 
-    public enum ClimberPosition {
+        rightClimbMotorFXConfig.Slot0.kP = 100;
+        rightClimbMotorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;  
+        rightClimbMotorFXConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;        
+        mRightClimber.getConfigurator().apply(rightClimbMotorFXConfig);
+        mRightClimber.getConfigurator().setPosition(0);
+    }
+    
+
+    /** 
+     * Enum representing the position of the climber 
+     * @author 5985
+     */
+    public enum ClimberPosition 
+    {
         UP,
         DOWN,
-    }
-    public enum BuddyClimbPosition {
+        STOPPED,
+        MANUAL
+    };
+
+    /** 
+     * Enum representing the status of the RoboWrangler (Spinning/Not spinning)
+     * @author 5985
+     */
+    public enum BuddyClimbPosition 
+    {
         RUNNING,
         STOPPED,
     };
 
-    public enum ClimberStatus {
+    /** 
+     * Enum representing the status of the Climber
+     * @author 5985
+     */
+    public enum ClimberStatus 
+    {
         LOCKED,
         UNLOCKED
     };
@@ -137,24 +175,9 @@ public class Climber extends SubsystemBase
             case LOCKED:
                 isLocked = true;
                 break;
-            case DOWN:
-                
-                break;
-        
-            default:
-                break;
-        }
-    }
-    
-    public void setStatus(ClimberStatus status) {
-        switch (status) {
-            case LOCKED:
-                
-                break;
             case UNLOCKED:
-                
+                isLocked = false;
                 break;
-        
             default:
                 break;
         }
@@ -168,6 +191,7 @@ public class Climber extends SubsystemBase
      */
     public void setBuddyClimb(BuddyClimbPosition status) 
     {
+        SmartDashboard.putString("Buddy Climb Status", status.name());
         switch (status) 
         {
             case RUNNING:
@@ -176,7 +200,6 @@ public class Climber extends SubsystemBase
             case STOPPED:
                 mBuddyClimb.set(0);
                 break;
-        
             default:
                 break;
         }
@@ -193,12 +216,12 @@ public class Climber extends SubsystemBase
     }
 
     /**
-     * gets the position of the climber in radians
-     * @return the position of the climber in radians
+     * Gets the position of the climber in radians
+     * @return The position of the climber in radians
+     * @author 5985
      */
     public double getPosition() 
     {
-        SmartDashboard.putNumber("ClimberPosition", mLeftClimber.getPosition().getValueAsDouble());
         return (mLeftClimber.getPosition().getValueAsDouble());
     }
 

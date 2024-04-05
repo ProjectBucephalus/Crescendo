@@ -1,8 +1,5 @@
 package frc.robot;
 
-import javax.swing.plaf.BorderUIResource.MatteBorderUIResource;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -21,10 +18,8 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
-import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
 
 public final class Constants 
 {
@@ -76,13 +71,13 @@ public final class Constants
         public static final double DISTANCE_WEIGHT = 7;
         public static final int TAG_PRESENCE_WEIGHT = 10;
 
-
-        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),
-                        // if these numbers are less than one, multiplying will do bad things
-                        1, // x
-                        1, // y
-                        1 * Math.PI // theta
-                );
+        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill
+        (Nat.N3(), Nat.N1(),
+                // if these numbers are less than one, multiplying will do bad things
+                1, // x
+                1, // y
+                1 * Math.PI // theta
+        );
 
         /**
          * Standard deviations of the vision measurements. Increase these numbers to
@@ -90,7 +85,7 @@ public final class Constants
          * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
          * radians.
          */
-        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),.1, .1, 1);
+        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), .1, .1, 1);
 
         public static final double noteTurnScalarGain = 10;
         public static final double noteTurnPowerGain = 3;
@@ -100,9 +95,9 @@ public final class Constants
     {
         /* Arm Ratios and Limits */
         public static final double planetaryRingTeeth = 72;
-        public static final double planetarySunTeeth = 36;
+        public static final double planetarySunTeeth = 18;
         public static final double planetaryPlanetTeeth = 18;
-        public static final double planetaryRatio = (planetaryRingTeeth/planetarySunTeeth) + 1;
+        public static final double planetaryRatio = (planetaryRingTeeth / planetarySunTeeth) + 1;
         public static final double gear1In = 20;
         public static final double gear1Out = 76;
         public static final double pivotGearIn = 10;
@@ -246,7 +241,7 @@ public final class Constants
         /** Max drivebase rotational acceleration, in radians per second per second */
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI; // was pi?
 
-        public static final double kPXController = 1;
+        public static final double kPXController = 1; // 2.9
         public static final double kPYController = 1;
         public static final double kPThetaController = 1;
 

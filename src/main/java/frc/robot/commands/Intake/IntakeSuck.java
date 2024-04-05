@@ -2,10 +2,10 @@ package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Intake.FlapPosition;
+import frc.robot.subsystems.Intake.IntakeStatus;
 
 /**
- * intake suck command
+ * Intake suck command
  * @author 5985
  */
 public class IntakeSuck extends Command {
@@ -24,15 +24,13 @@ public class IntakeSuck extends Command {
     @Override
     public void execute() {
 
-        s_Intake.setIntakeSpeed(-1);
-        s_Intake.setFlapPosition(FlapPosition.OPEN);
+        s_Intake.setIntakeStatus(IntakeStatus.IN);
 
     }
 
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {
-        s_Intake.setIntakeSpeed(0);
-
+    public boolean isFinished() {
+        return true;
     }
 }

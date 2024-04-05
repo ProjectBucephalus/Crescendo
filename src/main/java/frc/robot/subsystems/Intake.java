@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
@@ -13,20 +11,16 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.RumbleController;
 import frc.lib.util.RumbleController.Controllers;
 import frc.robot.Constants;
-import frc.lib.math.Conversions;
-import frc.robot.CTREConfigs;
+import frc.robot.IDConstants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 /**
- * intake subsystem 
+ * Intake subsystem, handling the intake rollers, indexer rollers, and stabiliser bar (latter should probably be in Climber.java)
  * @author 5985
  */
 public class Intake extends SubsystemBase 
@@ -67,12 +61,13 @@ public class Intake extends SubsystemBase
      * (Spinning inwards, spinning outwards, spinning inwards with beam break control, stopped, or spinning inwards to feed for shooting)
      * @author 5985
      */
-    public enum IntakePosition {
-        STOWED,
-        DEPLOYED,
-        AMP,
-        TRAP,
-        SPEAKER
+    public enum IntakeStatus 
+    {
+        IN,
+        OUT,
+        IN_WITH_BEAM_BREAK,
+        STOPPED,
+        IN_FOR_SHOOTING
     };
 
     /** 
