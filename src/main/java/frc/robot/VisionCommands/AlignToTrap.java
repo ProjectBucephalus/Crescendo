@@ -29,7 +29,6 @@ public class AlignToTrap extends Command {
 
     private Pose2d shootingPose;
     private Transform2d targetLocation;
-    private boolean invert = false;
 
     public AlignToTrap(Swerve s_Swerve, Transform2d targetLocation) {
         this.s_Swerve = s_Swerve;
@@ -39,23 +38,14 @@ public class AlignToTrap extends Command {
     @Override
     public void initialize() {
         s_Swerve.setVisionAlignmentBool(true);
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent() && alliance.get() == Alliance.Red) 
-        {
-            invert = true;
-        }
     }
 
     @Override
     public void execute() 
     {   
         shootingPose = new Pose2d(targetLocation.getTranslation(), targetLocation.getRotation());
-        Transform2d distanceToShootingPos = s_Swerve.getEstimatedPose().minus(shootingPose);
+        Transform2d distanceToShootingPos = s_Swerve.getEstimatedPose().minus(FieldConstants.flipPose(shootingPose));
         Translation2d translation = new Translation2d(distanceToShootingPos.getY(), distanceToShootingPos.getX()).times(SwerveConstants.maxSpeed);
-        if (invert)
-        {
-            translation = translation.unaryMinus();
-        };
 
         s_Swerve.visionDrive(translation, shootingPose.getRotation().getRadians(), true, true, 0);
     }
