@@ -10,6 +10,8 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -24,50 +26,49 @@ import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK3.driveRatios;
 
-public final class Constants {
-
+public final class Constants 
+{
     public static boolean useVision = true;
 
     public static final double stickDeadband = 0.3;
-    
-    /* Shooter Constants */
-    public static final double shooterAngleOffset = 15;
-    public static final double horizontalShooterAngle = 20;
-    public static final double mFlapMaxCurrent = 40;
+    public static final double hasNoteRumble = 1;
+    public static final double isAlignedToNoteRumble = 0.5;
 
-    /* Image Tracking Constants */
-    public static final double cameraPitchOffset = 26;
-    public static final double speakerTagHeight = 144;
-    public static final double cameraHeightOverGround = 23;
-    public static final double targetHeightOverTag = 40;
+    public static final double[] distancesFromSpeaker = { 1.8,    2, 2.5,  3, 3.5,  4, 5, 6 }; // distances in meters
+    // TODO Values to calibrate: 3.5
+    public static final double[] anglesOfPivot =        {  39, 29.5,  28, 23,  22, 20, 20,20 }; // shooter angles in degrees
 
-    /* CAN IDs */
-    public static final int pigeonID = 53;
-
-    public static final class Vision {
+    public static final class Vision 
+    {
         /* Names */
-        public static final String frontCamName = "FrontCam";
-        public static final String leftCamName = "LeftCam";
-        public static final String rightCamName = "RightCam";
+        public static final String frontCamName = "DriveBaseCam";
         public static final String backCamName = "BackCam";
+        public static final String noteCameraName = "IntakeCam";
 
         /* Offsets */
-        public static final Transform3d leftCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                0, 0, 0.525,
-                new Rotation3d(
-                        0, Units.degreesToRadians(45), Units.degreesToRadians(30)));
-        public static final Transform3d rightCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                0, 0, 0.525,
-                new Rotation3d(
-                        0, Units.degreesToRadians(45), Units.degreesToRadians(45)));
-        public static final Transform3d backCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                0, 0, 0.525,
-                new Rotation3d(
-                        0,Units.degreesToRadians(31), Units.degreesToRadians(180)));
-        public static final Transform3d frontCamToRobot = new Transform3d( // Meters and Radians (roll, pitch, yaw)
-                0, 0, 0.525,
-                new Rotation3d(
-                        0, Units.degreesToRadians(31), Units.degreesToRadians(0)));
+        // relative position of the camera on the robot to the robot center
+        // pitch is the Y angle, and it is positive down
+        public static final Transform3d backCamToRobot = new Transform3d
+        ( 
+                //-0.18, -0.18, 0.44, // This is the actuall coordinates of the camera on the robot
+                //0, -0.36, 0.44, // WHY Is this the coordinates that makes it work!!!! Doesn't actually work, it breaks actual tracking
+                -0.18, -0.18, 0.44,
+                new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(180))
+        ); // Meters and Radians (roll, pitch, yaw)
+
+        public static final Transform3d frontCamToRobot = new Transform3d
+        ( 
+                0.28, -0.17, 0.19,
+                new Rotation3d(Units.degreesToRadians(90),Units.degreesToRadians(38), Units.degreesToRadians(0))
+        ); // Meters and Radians (roll, pitch, yaw)
+
+        public static final Transform3d noteCamToRobot = new Transform3d
+        (
+                0.32, 0, 0.45,
+                new Rotation3d(0, Units.degreesToRadians(20), Units.degreesToRadians(0))
+        ); // Meters and Radians (roll, pitch, yaw)
+
+
         public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
         public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
         public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
@@ -91,26 +92,13 @@ public final class Constants {
          */
         public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),.1, .1, 1);
 
+        public static final double noteTurnScalarGain = 10;
+        public static final double noteTurnPowerGain = 3;
     }
 
-    public static final class Intake {
-        public static final int mLeftPivotID = 13;
-        public static final int mRightPivotID = 11;
-
-        public static final int leftOutSwitchID = 1;
-        public static final int leftInSwitchID = 0;
-        public static final int rightInSwitchID = 2;
-        public static final int rightOutSwitchID = 3;
-
-        public static final int mFlapID = 14;
-
-        public static final int mIntakeID = 12;
-
-        public static final int mBuddyClimbID = 16;
-
-        public static final double FlapMaxCurrent = 40;
-
-        /* Arm Ratios and Limis */
+    public static final class Intake 
+    {
+        /* Arm Ratios and Limits */
         public static final double planetaryRingTeeth = 72;
         public static final double planetarySunTeeth = 36;
         public static final double planetaryPlanetTeeth = 18;
@@ -119,189 +107,144 @@ public final class Constants {
         public static final double gear1Out = 76;
         public static final double pivotGearIn = 10;
         public static final double pivotGearOut = 40;
-        public static final double pivotGearRatio = planetaryRatio * (gear1Out/gear1In) * (pivotGearOut/pivotGearIn);
+        public static final double pivotGearRatio = planetaryRatio * (gear1Out / gear1In)
+                * (pivotGearOut / pivotGearIn);
 
+        /** Acceptable angle for the pivot to be off by, in degrees */
+        public static final double pivotAngleTolerance = 1;
 
-        public static final double pivotGearMaxRange = -90; // degrees
+        /** Degrees - Difference between pivot mechanism 0 and real-world 0 */
+        public static final double pivotOffsetForZero = -37;
+        /** Degrees - Real-world angle for deployed/intake position */
+        public static final double pivotDeployPos = 60;
+        /** Degrees - Real-world angle for stowed position */
+        public static final double pivotStowPos = -40;
+        /** Degrees - Real-world angle for shooting to Amp */
+        public static final double pivotAmpPos = 47;
+        /** Degrees - Real-world angle for shooting to Stage Trap */
+        public static final double pivotTrapPos = pivotStowPos;
+        /** Degrees - Real-world angle for shooter to clear frame */
+        public static final double pivotFrameClearPos = 15;
+        /** Degrees - Real-world angle for default shooter position */
+        public static final double pivotDefaultShootPos = 0;
 
-        public static final double offsetForZero = -45;
-        public static final double pivotAmpPos = -30;
-        public static final double trapPos = 0;
+        /* Seconds - Extra intake time when using the beam break to ensure the note is actually in */
+        public static final double extraIntakeTime = 0.5;
 
         public static final NeutralModeValue pivotMotorNeutralMode = NeutralModeValue.Brake;
-        public static final InvertedValue leftPivotMotorInvert = InvertedValue.CounterClockwise_Positive;
-        public static final InvertedValue rightPivotMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue leftPivotMotorDirection = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue rightPivotMotorDirection = InvertedValue.CounterClockwise_Positive;
 
-        public static double angleKP;
-        public static double angleKI;
-        public static double angleKD;
+        /* Gain values */
+        public static final double pivotKP = 0.2; //0.3
+        public static final double pivotKI = 0;
+        public static final double pivotKD = 0.0; //0.03
+        public static final double pivotKG = 0.85; //0.5
+        public static final double pivotKRes = -0.25; // -0.25
+        public static final double pivotDampingGain = 0.2;
+        public static final double pivotManualGain = 0.25;
+
+        /* Thresholds for damping to take effect */
+        public static final double pivotDeployDampingThreshold = 20;
+        public static final double pivotStowDampingThreshold = -5;
+        /** Acceptable rotations per second of the mechanism towards endstops, manual control reaches 0.4 */
+        public static final double pivotDampingSpeed = 0.4;
+        
+        /** Seconds to ramp power to new value */
+        public static final double openLoopRamp = 0.1; 
+
+        /** Degrees to Stow where Resistance begins*/
+        public static final double pivotResStowThreshold = -50; // set to <= -40 for no Resistance in Stow direction
+        /** Degrees to Deploy where Resistance begins*/
+        public static final double pivotResDeployThreshold = 45; // set to >= 60 for no Resistance in Deploy direction
+
+        /* Current limit values */
         public static final int pivotCurrentLimit = 38;
         public static final int pivotCurrentThreshold = 65;
         public static final double pivotCurrentThresholdTime = 0.1;
         public static final boolean pivotEnableCurrentLimit = false;
-
-        public static double pivotKP = 40;
-        public static double pivotKI = 0;
-        public static double pivotKD = 0;
-
-    }
-
-    public static final class Shooter {
-        public static final int mTopShooterID = 15;
-        public static final int mBottomShooterID = 23;
-
-        public static final double maxTopShooterSpeed = 0.8;
-        public static final double maxBottomShooterSpeed = 0.8; // AMP TOP: 0.450000 bottom: 0.05
-
-        public static final double shooterIdleSpeed = 0.5;
-
-        public static final double shooterAngleOffset = 15;
-        public static final double horizontalShooterAngle = 20;
-        public static final double mFlapMaxCurrent = 40;
-    }
-
-    public static final class Climber {
-        public static final int mLeftClimbID = 17;
-        public static final int mRightClimbID = 14;
-        public static final double maxRevolutions = 320; // 3.2 with gear ratio
-
-        public static final double maxExtensionSpoolRotations = 3.2;
-        public static final double motorToSpoolGearRatio = 100;
-        public static final double climberDownPos = 0;
         
+        /* Intake Speeds */
+        public static final double intakeSpeedShoot = 1;
+        public static final double intakeSpeedIn = 0.5;
+        public static final double intakeSpeedOut = -0.35;
+        public static final double intakeSpeedInWithLimit = 0.75;
+
+        /* Indexer Speeds */
+        public static final double indexSpeedIn = 0.25;
+        public static final double indexSpeedOut = -0.35;
+        public static final double indexSpeedInWithLimit = -0.4;
+        public static final double indexSpeedShoot = 0.5;
+
     }
 
-    public static final class Swerve {
+    public static final class Shooter 
+    {
+        /* Shooter speeds */
+        public static final double runningTopShooterSpeed = 0.9;
+        public static final double runningBottomShooterSpeed = 0.9; // AMP TOP: 0.450000 bottom: 0.05
+        public static final double shooterIdleSpeed = 0.5;
+        public static final double shooterEjectSpeed = -0.5;
+        public static final double shooterLobSpeed = 0.5;
+        public static final double trapTopShooterSpeed = 0;
+        public static final double trapBottomShooterSpeed = 0;
 
-        public static final boolean invertGyro = false;
+        /** Acceptable velocity for the shooter to be off by, in rotations per second (?) */
+        public static final double shooterVelocityTolerance = 80;
 
-        public static final double brakeIntensity = 0.15; // 0.25 -> Trigger fully pressed -> quarter speed.
+        // public static final double horizontalShooterAngle = 20;
 
-        public static final COTSTalonFXSwerveConstants chosenModule = COTSTalonFXSwerveConstants.SDS.MK4i
-                .Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
+        /** Seconds to ramp power to new value */
+        public static final double openLoopRamp = 0;
+        
+        /** Effective velocity of the ring coming out of the shooter, in meters per second */
+        public static final double shooterVelocity = 15.5;
+        public static final double gravity = 9.8;
 
-        /* Drivetrain Constants */
-        public static final double trackWidth = 0.48;
-        public static final double wheelBase = 0.48;
-        public static final double wheelCircumference = chosenModule.wheelCircumference;
+        public static final double verticalAccelerationConstant = gravity / (2 * Math.pow(shooterVelocity,2));
 
-        /*
-         * Swerve Kinematics
-         * No need to ever change this unless you are not doing a traditional
-         * rectangular/square 4 module swerve
-         */
-        public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
-                new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
-                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
-                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
-                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+        /** Metres of target point over shooter exit */
+        public static final double targetHeightOverShooter = 1.6;
+        /** Metres of target point in front of tag */
+        public static final double targetDistanceOffset = 0.2;
+        /** Metres of shooter exit over pivot axis */
+        public static final double shooterPivotOffsetUp = 0.25;
+        /** Metres of pivot behind robot centre */
+        public static final double shooterPivotOffsetBack = 0.17;
 
-        /* Module Gear Ratios */
-        public static final double driveGearRatio = chosenModule.driveGearRatio;
-        public static final double angleGearRatio = chosenModule.angleGearRatio;
-
-        /* Motor Inverts */
-        public static final InvertedValue angleMotorInvert = chosenModule.angleMotorInvert;
-        public static final InvertedValue driveMotorInvert = chosenModule.driveMotorInvert;
-
-        /* Angle Encoder Invert */
-        public static final SensorDirectionValue cancoderInvert = chosenModule.cancoderInvert;
-
-        /* Swerve Current Limiting */
-        public static final int angleCurrentLimit = 27;
-        public static final int angleCurrentThreshold = 45;
-        public static final double angleCurrentThresholdTime = 0.1;
-        public static final boolean angleEnableCurrentLimit = true;
-
-        public static final int driveCurrentLimit = 38;
-        public static final int driveCurrentThreshold = 65;
-        public static final double driveCurrentThresholdTime = 0.1;
-        public static final boolean driveEnableCurrentLimit = true;
-
-        /*
-         * These values are used by the drive falcon to ramp in open loop and closed
-         * loop driving.
-         * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc
-         */
-        public static final double openLoopRamp = 0.25;
-        public static final double closedLoopRamp = 0.0;
-
-        /* Angle Motor PID Values */
-        public static final double angleKP = chosenModule.angleKP;
-        public static final double angleKI = chosenModule.angleKI;
-        public static final double angleKD = chosenModule.angleKD;
-
-        /* Drive Motor PID Values */
-        public static final double driveKP = 0.1;
-        public static final double driveKI = 0.03;
-        public static final double driveKD = 0.04;
-        public static final double driveKF = 0.0;
-
-        /*
-         * Drive Motor Characterization Values
-         * Divide SYSID values by 12 to convert from volts to percent output for CTRE
-         */
-        public static final double driveKS = (0.32 / 12);
-        public static final double driveKV = (1.51 / 12);
-        public static final double driveKA = (0.27 / 12);
-
-        /* Swerve Profiling Values */
-        /** Meters per Second */
-        public static final double maxSpeed = 80.0; // 2.5 TODO it was 8
-        /** Radians per Second */
-        public static final double maxAngularVelocity = 150.0; // 5.0?? it was 15
-
-        /* Neutral Modes */
-        public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
-        public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
-
-        /* Module Specific Constants */
-        /* Front Left Module - Module 0 */
-        public static final class Mod0 {
-            public static final int driveMotorID = 1;
-            public static final int angleMotorID = 2;
-            public static final int canCoderID = 9;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
-            public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
-                    canCoderID, angleOffset);
-        }
-
-        /* Front Right Module - Module 1 */
-        public static final class Mod1 {
-            public static final int driveMotorID = 3;
-            public static final int angleMotorID = 4;
-            public static final int canCoderID = 10;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(90);
-            public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
-                    canCoderID, angleOffset);
-        }
-
-        /* Back Left Module - Module 2 */
-        public static final class Mod2 {
-            public static final int driveMotorID = 5;
-            public static final int angleMotorID = 6;
-            public static final int canCoderID = 11;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(270);
-            public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
-                    canCoderID, angleOffset);
-        }
-
-        /* Back Right Module - Module 3 */
-        public static final class Mod3 {
-            public static final int driveMotorID = 7;
-            public static final int angleMotorID = 8;
-            public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(180);
-            public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
-                    canCoderID, angleOffset);
-        }
+        /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */
+        public static final double maxShootDistance = 8;
+        /** Shooter Angle for hard-coded lob */
+        public static final double halfCourtAngle = 30;
     }
 
-    public static final class AutoConstants { // TODO
-        public static final double kMaxSpeedMetersPerSecond = 4;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+    public static final class Climber 
+    {   
+        /* Climber motion speeds */
+        public static final double climbUpSpeed = 1;
+        public static final double climbDownSpeed = -1;
+        
+        /* Climber real world values */
+        public static final double maxExtensionSpoolRotations = 2.6;
+        public static final double motorToSpoolGearRatio = 100;
+        public static final double maxRevolutions = maxExtensionSpoolRotations * motorToSpoolGearRatio;
+        
+        /* Climber positions */
+        public static final double climberDownPos = 0;
+        public static final double climberUpPos = maxExtensionSpoolRotations * motorToSpoolGearRatio;
+
+    }
+
+    public static final class AutoConstants 
+    { 
+        /** Max drivebase speed, in meters per second */
+        public static final double kMaxSpeedMetersPerSecond = 2;
+        /** Max drivebase acceleration, in meters per second per second */
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+        /** Max drivebase rotational speed, in radians per second */
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI; // was pi?
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI; // was pi?
+        /** Max drivebase rotational acceleration, in radians per second per second */
+        public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI; // was pi?
 
         public static final double kPXController = 1;
         public static final double kPYController = 1;
@@ -309,6 +252,6 @@ public final class Constants {
 
         /* Constraint for the motion profilied robot angle controller */
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+                kMaxAngularSpeedRadiansPerSecond, kMaxAngularAccelerationRadiansPerSecondSquared);
     }
 }

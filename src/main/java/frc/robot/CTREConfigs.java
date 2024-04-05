@@ -65,7 +65,7 @@ public final class CTREConfigs {
 
 
         /** Left Pivot Motor Config **/
-        leftPivotMotorFXConfig.MotorOutput.Inverted = Constants.Intake.leftPivotMotorInvert;
+        leftPivotMotorFXConfig.MotorOutput.Inverted = Constants.Intake.leftPivotMotorDirection;
         leftPivotMotorFXConfig.MotorOutput.NeutralMode = Constants.Intake.pivotMotorNeutralMode;
 
         /* Gear Ratio and Wrapping Config */
@@ -79,12 +79,12 @@ public final class CTREConfigs {
         leftPivotMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Intake.pivotCurrentLimit;
 
         /* PID Config */
-        leftPivotMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
-        leftPivotMotorFXConfig.Slot0.kI = Constants.Intake.pivotKI;
-        leftPivotMotorFXConfig.Slot0.kD = Constants.Intake.pivotKD;
+        // leftPivotMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
+        // leftPivotMotorFXConfig.Slot0.kI = Constants.Intake.pivotKI;
+        // leftPivotMotorFXConfig.Slot0.kD = Constants.Intake.pivotKD;
 
         /** Right Pivot Motor Config **/
-        rightPivotMotorFXConfig.MotorOutput.Inverted = Constants.Intake.rightPivotMotorInvert;
+        rightPivotMotorFXConfig.MotorOutput.Inverted = Constants.Intake.rightPivotMotorDirection;
         rightPivotMotorFXConfig.MotorOutput.NeutralMode = Constants.Intake.pivotMotorNeutralMode;
 
         /* Gear Ratio and Wrapping Config */
@@ -99,9 +99,15 @@ public final class CTREConfigs {
  
 
         /* PID Config */
-        rightPivotMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
-        rightPivotMotorFXConfig.Slot0.kD = Constants.Intake.pivotKI;
-        rightPivotMotorFXConfig.Slot0.kI = Constants.Intake.pivotKD;
+        // rightPivotMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
+        // rightPivotMotorFXConfig.Slot0.kD = Constants.Intake.pivotKI;
+        // rightPivotMotorFXConfig.Slot0.kI = Constants.Intake.pivotKD;
+
+        rightPivotMotorFXConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = Constants.Intake.openLoopRamp;
+        rightPivotMotorFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = Constants.Intake.openLoopRamp;
+        
+        leftPivotMotorFXConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = Constants.Intake.openLoopRamp;
+        leftPivotMotorFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = Constants.Intake.openLoopRamp;
         
 
         

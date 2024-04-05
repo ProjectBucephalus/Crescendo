@@ -4,15 +4,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Pivot.PivotPosition;
 
-public class MoveIntakeToPosition extends Command {
-    public boolean isFinished = false;
-
+/**
+ * Move to intake position command
+ * @author 5985
+ */
+public class MovePivotToAngle extends Command {
+    public boolean isFinished = true;
     private Pivot s_Pivot;
-    private PivotPosition position;
+    private double angle;
+    
 
-    public MoveIntakeToPosition(Pivot s_Pivot, PivotPosition position) {
+    public MovePivotToAngle(Pivot s_Pivot, double angle) {
         this.s_Pivot = s_Pivot;
-        this.position = position;
+        this.angle = angle;
     }
 
     public void initialize() {
@@ -22,11 +26,10 @@ public class MoveIntakeToPosition extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        s_Pivot.setPosition(position);
+        s_Pivot.setDesiredPostion(angle);
     }
 
-    @Override
     public boolean isFinished() {
-        return true;
+        return isFinished;
     }
 }

@@ -13,43 +13,71 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.lib.math.Conversions;
-import frc.robot.CTREConfigs;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import frc.robot.IDConstants;
 
 public class Shooter extends SubsystemBase {
     // motors
     private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
 
-    public VictorSPX mFlap = new VictorSPX(Constants.Intake.mFlapID);
+    public TalonFX mTopShooter = new TalonFX(IDConstants.Intooter.Shooter.mTopShooterID);
+    public TalonFX mBottomShooter = new TalonFX(IDConstants.Intooter.Shooter.mBottomShooterID);
 
-    public TalonFX mTopShooter = new TalonFX(Constants.Shooter.mTopShooterID);
-    public TalonFX mBottomShooter = new TalonFX(Constants.Shooter.mBottomShooterID);
+    // Sets the starting shooter aiming position to the speaker
+    private ShootPosition shooterMode = ShootPosition.SPEAKER;
 
+    /**
+     * Enum representing the status of the indexer roller (OPEN for running, CLOSED
+     * for stopped)
+     * 
+     * @author 5985
+     */
     public enum FlapPosition {
         OPEN,
         CLOSED,
     };
 
+    /**
+     * Enum representing the status of the shooter
+     * 
+     * @author 5985
+     */
     public enum ShooterState {
         RUNNING,
         STOPPED,
         IDLE,
+        OUT,
+        TRAP
     };
 
-    public Shooter() {
-        
+    /**
+     * Enum representing the shooter's aiming position
+     * 
+     * @author 5985
+     */
+    public enum ShootPosition {
+        AMP,
+        SPEAKER,
+        TRAP,
+    };
+
+    public Shooter() 
+    {
+        SmartDashboard.putNumber("Shooter Bottom Speed", 0);
+        SmartDashboard.putNumber("Shooter Top Speed", 0);
     }
-    
-    /* sets shooter to full speed */
-    public void setShooterState(ShooterState state) {
-        double bottomSpeed = SmartDashboard.getNumber("bottomShooterSpeed", 1);
-        double topSpeed = SmartDashboard.getNumber("topShooterSpeed", 1);
-        
-        switch (state) {
+
+    /**
+     * Sets the shooter's state based on an enum
+     * 
+     * @param state Enum representing the desired status of the shooter
+     * @author 5985
+     */
+    public void setShooterState(ShooterState state) 
+    {
+        SmartDashboard.putString("Current State of Shooter Motors for sim", state.name());
+
+        switch (state) 
+        {
             case RUNNING:
                 driveDutyCycle.Output = bottomSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
@@ -64,46 +92,58 @@ public class Shooter extends SubsystemBase {
                 driveDutyCycle.Output = 0;
                 mTopShooter.setControl(driveDutyCycle);
             case IDLE:
-                driveDutyCycle.Output = -0;
+                //System.out.println("idle");
+                driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
 
-                driveDutyCycle.Output = -0;
+                driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mTopShooter.setControl(driveDutyCycle);
+                break;
+            case OUT:
+                driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
+                mBottomShooter.setControl(driveDutyCycle);
+
+                driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
+                mTopShooter.setControl(driveDutyCycle);
+            case TRAP:
+                driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Bottom Speed", 0);
+                mBottomShooter.setControl(driveDutyCycle);
+
+                driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Top Speed", 0);
+                mTopShooter.setControl(driveDutyCycle);
+                break;
             default:
                 break;
-        }        
-        SmartDashboard.putNumber("bottomShooterSpeed", bottomSpeed);
-        SmartDashboard.putNumber("topShooterSpeed", topSpeed);
-    }
-
-    /* stops shooter */
-    public void stopShooter() {
-        mTopShooter.set(0);
-        mBottomShooter.set(0);
-    }
-
-    /* sets shooter to idle speed */
-    public void idleShooter() {
-        mTopShooter.set(Constants.Shooter.shooterIdleSpeed);
-        mBottomShooter.set(Constants.Shooter.shooterIdleSpeed);
-    }
-
-    public void setFlapSpeed(double speed) {
-        mFlap.set(VictorSPXControlMode.PercentOutput, speed);
-    }
-
-    public void setFlapPosition (FlapPosition pos) {
-        switch (pos) {
-            case OPEN:
-                mFlap.set(ControlMode.PercentOutput, 1);
-                break;
-        
-            case CLOSED:
-                mFlap.set(ControlMode.PercentOutput, -1);
-                SmartDashboard.putNumber("Output Voltage", mFlap.getMotorOutputVoltage());
-                SmartDashboard.putNumber("Percent Output", mFlap.getMotorOutputPercent()); // prints the percent output of the motor (0.5)
-                SmartDashboard.putNumber("Bus voltage", mFlap.getBusVoltage()); // prints the bus voltage seen by the motor controller
-                break;
         }
+        // SmartDashboard.putNumber("bottomShooterSpeed", bottomSpeed);
+        // SmartDashboard.putNumber("topShooterSpeed", topSpeed);
     }
+
+    public void setShooterPosition(ShootPosition pos) {
+        shooterMode = pos;
+    }
+
+    public ShootPosition getShootPosition() {
+        return shooterMode;
+    }
+
+    /**
+     * Checks if shooter RPM is within acceptable tolerance. 
+     * TODO not implimented yet
+     * @return Boolean, true when current shooter RPM is acceptable
+     * @author 5985
+     * @author Aidan
+     */
+    public boolean rpmWithinTolerance() {
+        return true; // TODO
+    }
+
+    @Override
+    public void periodic() {
+        // Prints info to Smart Dashboard
+        SmartDashboard.putString("Where am I shooting", getShootPosition().name());
+        SmartDashboard.putString("Current State of Motors for sim", getShootPosition().name());
+    }
+
+    
 }

@@ -32,7 +32,7 @@ public class aimToSpeaker extends Command {
             DoubleSupplier brakeSup, Pivot s_Pivot) {
         this.s_Swerve = s_Swerve;
         this.s_Pivot = s_Pivot;
-        SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
+        this.s_Shooter = s_Shooter;
 
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
@@ -49,10 +49,28 @@ public class aimToSpeaker extends Command {
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double brakeVal = MathUtil.applyDeadband(brakeSup.getAsDouble(), Constants.stickDeadband);
-        Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed);
-        s_Swerve.visionDrive(translation, (calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getRadians()) * 70, true, brakeVal);
+        Translation2d translation = new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed);
+
+        s_Swerve.visionDrive(translation,
+                (calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getRadians()) * 70, true, true, brakeVal);
+
+        /* Used for figuring out how we should shoot */
         s_Pivot.setPosition(PivotPosition.SPEAKER);
-        s_Pivot.setDesiredPostion(-calculatedRequiredShooterAngle() - 28);
+        s_Shooter.setShooterState(ShooterState.RUNNING);
+
+        // s_Pivot.updateSpeakerAngle();
+
+        // the -4 is purely for backlash adjustment
+        // s_Pivot.setDesiredPostion(calculatedRequiredShooterAngle());
+        // s_Pivot.setDesiredPostion(SmartDashboard.getNumber("Pivot position for
+        // array", 0));
+
+        s_Swerve.setWithinRequiredHeading(Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
+                - Math.abs(calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180))
+                        .getDegrees())) < SwerveConstants.ANGLE_TOLERANCE_DEGREES);
+        SmartDashboard.putNumber("Is our auto aligned heading aligned?",
+                Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
+                        - Math.abs(calculateRequiredHeading().rotateBy(Rotation2d.fromDegrees(180)).getDegrees())));
         SmartDashboard.putNumber("robot pose heading", calculateRequiredHeading().getDegrees());
         SmartDashboard.putNumber("calculated shooter angle", calculatedRequiredShooterAngle());
     }

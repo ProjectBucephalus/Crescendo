@@ -19,8 +19,12 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathHolonomic;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -131,37 +135,89 @@ public class Swerve extends SubsystemBase {
      * @param fieldRelative
      * @param isOpenLoop
      */
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop,
-            double brakeVal) {
-        if (!usingVisionAlignment) {
-            SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                    fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                            translation.getX(),
-                            translation.getY(),
-                            rotation,
-                            getHeading())
-                            : new ChassisSpeeds(
-                                    translation.getX(),
-                                    translation.getY(),
-                                    rotation));
-            SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
-                    Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
-            for (SwerveModule mod : mSwerveMods) {
+    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) 
+    {
+        SmartDashboard.putBoolean("Egotistic?", !fieldRelative);
+        if (!usingVisionAlignment) 
+        {
+            SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates
+            (
+                fieldRelative ? 
+                ChassisSpeeds.fromFieldRelativeSpeeds
+                (
+                    translation.getX(),
+                    translation.getY(),
+                    rotation,
+                    getHeading()
+                )
+                : new ChassisSpeeds
+                (   
+                    translation.getX(),
+                    translation.getY(),
+                    rotation
+                )
+            );
+            
+            SwerveDriveKinematics.desaturateWheelSpeeds
+                (swerveModuleStates, SwerveConstants.maxSpeed * (map(brakeVal, 0, 1, SwerveConstants.brakeIntensity, 1)));
+            
+            for (SwerveModule mod : mSwerveMods) 
+            {
                 mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
             }
         }
     }
 
-    public void visionDrive(Translation2d translation, double rotation, boolean isOpenLoop, double brakeVal) {
-        SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                ChassisSpeeds.fromFieldRelativeSpeeds(
-                        translation.getX(),
-                        translation.getY(),
-                        rotation,
-                        getHeading()));
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
-                Constants.Swerve.maxSpeed * (map(brakeVal, 0, 1, Constants.Swerve.brakeIntensity, 1)));
-        for (SwerveModule mod : mSwerveMods) {
+    //     /**
+    //  * Returns a command that will execute a quasistatic test in the given direction.
+    //  *
+    //  * @param direction The direction (forward or reverse) to run the test in
+    //  */
+    // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    //     return m_sysIdRoutine.quasistatic(direction);
+    // }
+
+    // /**
+    //  * Returns a command that will execute a dynamic test in the given direction.
+    //  *
+    //  * @param direction The direction (forward or reverse) to run the test in
+    //  */
+    // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    //     return m_sysIdRoutine.dynamic(direction);
+    // }
+
+    /**
+     * Swerve magic
+     * 
+     * @param translation
+     * @param rotation
+     * @param isOpenLoop
+     * @param brakeVal
+     * @author 5985
+     */
+    public void visionDrive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) 
+    {
+        SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates
+        (
+            fieldRelative ? 
+            ChassisSpeeds.fromFieldRelativeSpeeds
+            (
+                translation.getX(),
+                translation.getY(),
+                rotation,
+                getHeading()
+            )
+            : new ChassisSpeeds
+            (   
+                translation.getX(),
+                translation.getY(),
+                rotation
+            )
+        );
+        SwerveDriveKinematics.desaturateWheelSpeeds
+            (swerveModuleStates, SwerveConstants.maxSpeed * (map(brakeVal, 0, 1, SwerveConstants.brakeIntensity, 1)));
+        for (SwerveModule mod : mSwerveMods) 
+        {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
     }
@@ -383,11 +439,19 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Pose X (Estimated)", getEstimatedPose().getX());
         SmartDashboard.putNumber("Pose Y (Estimated)", getEstimatedPose().getY());
         SmartDashboard.putNumber("Rotaton (Estimated)", getEstimatedPose().getRotation().getDegrees());
-        SmartDashboard.putNumber("Pose X (PhotonPoseEstimator)", poseEstimator.getEstimatedPosition().getX());
-        SmartDashboard.putNumber("Pose Y (PhotonPoseEstimator)", poseEstimator.getEstimatedPosition().getY());
-        SmartDashboard.putNumber("Rotaton (PhotonPoseEstimator)",
-                poseEstimator.getEstimatedPosition().getRotation().getDegrees());
 
+        SmartDashboard.putBoolean("usingVisionAlignment", usingVisionAlignment);
+
+        SmartDashboard.putNumber("distance to target", PhotonUtils.getDistanceToPose(getEstimatedPose(), FieldConstants.flipPose(FieldConstants.translationToPose2d(FieldConstants.SPEAKER))));
+        
+
+        // Do this in either robot or subsystem init
+        SmartDashboard.putData("Field", m_field);
+
+    }
+
+    public void simulationPeriodic() {
+        // resetEstimatedOdometry();
     }
 
 }
