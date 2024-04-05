@@ -171,8 +171,9 @@ public class RobotContainer {
         driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_RumbleController));
 
         /* Pass in codriver for controller to receive rumble */
-        driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, s_Intake, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS))).onFalse(new PullNoteSequence(s_Intake));
-       
+        driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, s_Intake, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+        driver.leftBumper()    .onTrue(new PushNoteSequence(s_Intake)).onFalse(new PullNoteSequence(s_Intake));
+
         /* Pass in driver for controller to receive rumble when note in intake*/
         driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())) .onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
 
@@ -190,7 +191,7 @@ public class RobotContainer {
         // coDriver.leftTrigger() .onTrue(new ShooterFeed(s_Intake)).onFalse(new ShooterIdle(s_Shooter).alongWith(new InstantCommand(()->s_Intake.setIntakeStatus(IntakeStatus.STOPPED))));
         coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
         coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)); 
-        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake).andThen(new InstantCommand(()->s_Intake.setIndexerState(IndexerState.OUT)))).onFalse(new IntakeStop(s_Intake).andThen(new InstantCommand(()->s_Intake.setIndexerState(IndexerState.STOPPED)))); //Indexer out.
+        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake)); //Indexer out.
         coDriver.rightBumper() .onTrue(new IntakeSpit(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.OUT)))).onFalse(new IntakeStop(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.IDLE))));
 
         coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));

@@ -30,13 +30,7 @@ public class aimToSpeakerSequence extends ParallelCommandGroup {
                 new CheckPrepStatsAndRumble(s_Pivot, s_Shooter, s_Swerve, xboxController),
                 new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
                 //new ActiveSetShooter(shooter, shooterPivot, this::getShootValues),
-                new aimToSpeaker(s_Swerve, translationSup, strafeSup, brakeSup, s_Pivot, s_Shooter),
-                //new WaitCommand(0.5),
-                new IntakeSpit(s_Intake),
-                new WaitCommand(0.03),
-                new IntakeStop(s_Intake),
-                new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.IN_FOR_SHOOTING))
-                
+                new aimToSpeaker(s_Swerve, translationSup, strafeSup, brakeSup, s_Pivot, s_Shooter)             
         );
         
     }

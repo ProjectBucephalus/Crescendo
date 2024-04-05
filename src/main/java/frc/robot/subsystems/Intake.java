@@ -131,7 +131,7 @@ public class Intake extends SubsystemBase
                 useBeamBreak = false;
                 break;
             case IN:
-                setIndexerState(IndexerState.IN);
+                setIndexerState(IndexerState.OUT);
                 setIntakeSpeed(Constants.Intake.intakeSpeedIn, false);
                 useBeamBreak = false;
                 break;

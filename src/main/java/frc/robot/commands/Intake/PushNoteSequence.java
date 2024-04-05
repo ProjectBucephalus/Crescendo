@@ -9,21 +9,20 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Intake.IndexerState;
-import frc.robot.subsystems.Intake.IntakeStatus;
 
-public class PullNoteSequence extends SequentialCommandGroup{
+public class PushNoteSequence extends SequentialCommandGroup{
     
     Intake s_Intake;
     
-    public PullNoteSequence(Intake s_Intake) 
+    public PushNoteSequence(Intake s_Intake) 
     {
         this.s_Intake = s_Intake;
         addCommands
-        (   
-            new WaitCommand(0.5),
-            new IntakeSuck(s_Intake),
-            new WaitCommand(0.05),
-            new IntakeStop(s_Intake)
+        (
+            new IntakeSpit(s_Intake),
+            new WaitCommand(0.035),
+            new IntakeStop(s_Intake),
+            new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.IN_FOR_SHOOTING))
         );
     }
 }
