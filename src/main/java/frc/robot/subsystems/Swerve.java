@@ -51,8 +51,8 @@ public class Swerve extends SubsystemBase {
     public SwerveDrivePoseEstimator poseEstimator;
     public PhotonPoseEstimator photonPoseEstimatorFront;
     public PhotonPoseEstimator photonPoseEstimatorBack;
-    public PhotonCamera frontCam = new PhotonCamera(Constants.Vision.backCamName);
-    public PhotonCamera backCam = new PhotonCamera(Constants.Vision.frontCamName);
+    public PhotonCamera frontCam = new PhotonCamera(Constants.Vision.frontCamName);
+    public PhotonCamera backCam = new PhotonCamera(Constants.Vision.backCamName);
 
     public boolean usingVisionAlignment = false;
 
