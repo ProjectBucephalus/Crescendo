@@ -84,7 +84,7 @@ public class RobotContainer {
     private final int MANUAL_SHOOTER_AXIS = XboxController.Axis.kRightY.value;
 
     /* Subsystems */
-    private final RumbleController s_RumbleController = new RumbleController(driver.getHID(), coDriver.getHID());
+    final RumbleController s_RumbleController = new RumbleController(driver.getHID(), coDriver.getHID());
     private final Swerve s_Swerve = new Swerve();
     private final Intake s_Intake = new Intake(s_RumbleController);
     private final Pivot s_Pivot = new Pivot(s_Swerve);
