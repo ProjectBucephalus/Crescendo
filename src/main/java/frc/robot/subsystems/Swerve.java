@@ -638,25 +638,25 @@ public class Swerve extends SubsystemBase
         //final Optional<EstimatedRobotPose> 
         visionEstimatedPoseFront = photonPoseEstimatorFront.update();
         if (visionEstimatedPoseFront.isPresent()) {
-            SmartDashboard.putBoolean("Using Vision", true);
+            SmartDashboard.putBoolean("Using Front Vision", true);
             //final EstimatedRobotPose 
             estimatedRobotPose = visionEstimatedPoseFront.get();
             poseEstimator.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds,
                     confidenceCalculator(estimatedRobotPose));
         } else {
-            SmartDashboard.putBoolean("Using Vision", false);
+            SmartDashboard.putBoolean("Using Front Vision", false);
         }
 
         //final Optional<EstimatedRobotPose> 
         visionEstimatedPoseBack = photonPoseEstimatorBack.update();
         if (visionEstimatedPoseBack.isPresent()) {
-            SmartDashboard.putBoolean("Using Vision", true);
+            SmartDashboard.putBoolean("Using Back Vision", true);
             //final EstimatedRobotPose 
             estimatedRobotPose = visionEstimatedPoseBack.get();
             poseEstimator.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds,
                     confidenceCalculator(estimatedRobotPose));
         } else {
-            SmartDashboard.putBoolean("Using Vision", false);
+            SmartDashboard.putBoolean("Using Back Vision", false);
         }
 
         poseEstimator.update(getGyro(), getModulePositions());
