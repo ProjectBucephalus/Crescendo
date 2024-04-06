@@ -7,14 +7,16 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class RumbleController extends SubsystemBase{
+public class RumbleController extends SubsystemBase
+{
     XboxController driver;
     XboxController coDriver;
 
     private boolean intakeRumble = false;
     private boolean aimRumble = false;
 
-    public enum Controllers {
+    public enum Controllers 
+    {
         DRIVER,
         CODRIVER
     }
@@ -55,20 +57,25 @@ public class RumbleController extends SubsystemBase{
      */
     public void setRumble(Controllers con, double intensity) 
     {
-        if (con == Controllers.DRIVER) {
-            if (driver != null) {
+        if (con == Controllers.DRIVER) 
+        {
+            if (driver != null) 
+            {
                 driver.setRumble(RumbleType.kBothRumble, intensity);
             }
         }
-        if (con == Controllers.CODRIVER) {
-            if (coDriver != null) {
+        if (con == Controllers.CODRIVER) 
+        {
+            if (coDriver != null) 
+            {
                 coDriver.setRumble(RumbleType.kBothRumble, intensity);
             }
         }
     }
 
     @Override
-    public void periodic() {
+    public void periodic() 
+    {
         if (intakeRumble)
         {
             setRumble(Controllers.DRIVER, 1);
