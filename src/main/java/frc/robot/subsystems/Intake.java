@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.RumbleController;
-import frc.lib.util.RumbleController.Controllers;
 import frc.robot.Constants;
 import frc.robot.IDConstants;
+import frc.robot.subsystems.RumbleController.Controllers;
+import frc.robot.subsystems.RumbleController.RumbleStates;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -245,12 +245,12 @@ public class Intake extends SubsystemBase
 
         if (doRumbleWithNote && !getBeamBreak() && !hasRumbled) {
             // start the rumble with intensity 1
-            s_RumbleController.setRumble(Controllers.DRIVER, 1, RumbleType.kBothRumble);
+            s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, true);
             //System.out.println("Rumble started.");
             hasRumbled = true; // set the flag to true
         } else if (getBeamBreak() && hasRumbled) {
             // stop the rumble
-            s_RumbleController.setRumble(Controllers.DRIVER, 0, RumbleType.kBothRumble);
+            s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
             //System.out.println("Rumble stopped.");
             hasRumbled = false; // reset the flag to false
         }
