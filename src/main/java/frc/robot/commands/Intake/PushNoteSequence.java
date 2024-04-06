@@ -20,7 +20,7 @@ public class PushNoteSequence extends SequentialCommandGroup{
         addCommands
         (
             new IntakeSpit(s_Intake),
-            new WaitCommand(0.035),
+            new WaitCommand(0.04),
             new IntakeStop(s_Intake),
             new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.IN_FOR_SHOOTING))
         );

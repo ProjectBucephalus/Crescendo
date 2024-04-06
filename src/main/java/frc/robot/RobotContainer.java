@@ -190,7 +190,8 @@ public class RobotContainer {
 
         // coDriver.leftTrigger() .onTrue(new ShooterFeed(s_Intake)).onFalse(new ShooterIdle(s_Shooter).alongWith(new InstantCommand(()->s_Intake.setIntakeStatus(IntakeStatus.STOPPED))));
         coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
-        coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)); 
+        coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)).onFalse(new ShooterIdle(s_Shooter));
+        coDriver.leftBumper()   .onTrue(new PushNoteSequence(s_Intake)).onFalse(new PullNoteSequence(s_Intake)); 
         coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake)); //Indexer out.
         coDriver.rightBumper() .onTrue(new IntakeSpit(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.OUT)))).onFalse(new IntakeStop(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.IDLE))));
 

@@ -246,11 +246,13 @@ public class Intake extends SubsystemBase
         if (doRumbleWithNote && !getBeamBreak()){// && !hasRumbled) {
             // start the rumble with intensity 1
             s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, true);
+            SmartDashboard.putBoolean("Intake Rumble?", true);
             //System.out.println("Rumble started.");
             //hasRumbled = true; // set the flag to true
-        } else if (getBeamBreak()){//} && hasRumbled) {
+        } else if (getBeamBreak() || !doRumbleWithNote){//} && hasRumbled) {
             // stop the rumble
             s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
+            SmartDashboard.putBoolean("Intake Rumble?", false);
             //System.out.println("Rumble stopped.");
             //hasRumbled = false; // reset the flag to false
         }

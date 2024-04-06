@@ -27,7 +27,7 @@ public final class Constants
 
     public static final double stickDeadband = 0.3;
     public static final double hasNoteRumble = 1;
-    public static final double isAlignedToNoteRumble = 0.5;
+    public static final double isAlignedToNoteRumble = 0.3;
 
     public static final double[] distancesFromSpeaker = { 1.8,    2, 2.5,  3, 3.5,  4, 5, 6 }; // distances in meters
     // TODO Values to calibrate: 3.5
@@ -137,17 +137,17 @@ public final class Constants
         public static final double pivotKD = 0.0; //0.03
         public static final double pivotKG = 0.85; //0.5
         public static final double pivotKRes = -0.25; // -0.25
-        public static final double pivotDampingGain = 0.2;
+        public static final double pivotDampingGain = 2;
         public static final double pivotManualGain = 0.25;
 
         /* Thresholds for damping to take effect */
-        public static final double pivotDeployDampingThreshold = 20;
+        public static final double pivotDeployDampingThreshold = 15;
         public static final double pivotStowDampingThreshold = -5;
         /** Acceptable rotations per second of the mechanism towards endstops, manual control reaches 0.4 */
         public static final double pivotDampingSpeed = 0.4;
         
         /** Seconds to ramp power to new value */
-        public static final double openLoopRamp = 0.1; 
+        public static final double openLoopRamp = 0.2; 
 
         /** Degrees to Stow where Resistance begins*/
         public static final double pivotResStowThreshold = -50; // set to <= -40 for no Resistance in Stow direction
@@ -234,7 +234,7 @@ public final class Constants
     public static final class AutoConstants 
     { 
         /** Max drivebase speed, in meters per second */
-        public static final double kMaxSpeedMetersPerSecond = 2;
+        public static final double kMaxSpeedMetersPerSecond = 3;
         /** Max drivebase acceleration, in meters per second per second */
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         /** Max drivebase rotational speed, in radians per second */
