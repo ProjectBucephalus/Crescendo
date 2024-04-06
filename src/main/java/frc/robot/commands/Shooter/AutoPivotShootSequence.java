@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.Intake.IntakeAndDeployPivot;
+import frc.robot.commands.Intake.PushNoteSequence;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
@@ -37,6 +38,7 @@ public class AutoPivotShootSequence extends SequentialCommandGroup{
                 new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
                 new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.SPEAKER)),
                 // this finishes when no note is in intake (beam break) or after SHOOT_TIME in the command.
+                new PushNoteSequence(s_Intake),
                 new WaitCommand(0.8),
                 new ShootSequence(s_Shooter, s_Intake, s_Swerve),
                 new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),

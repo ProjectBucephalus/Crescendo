@@ -248,7 +248,7 @@ public class Intake extends SubsystemBase
             s_RumbleController.setRumble(Controllers.DRIVER, 1, RumbleType.kBothRumble);
             //System.out.println("Rumble started.");
             hasRumbled = true; // set the flag to true
-        } else if (getBeamBreak() || hasRumbled) {
+        } else if (getBeamBreak() && hasRumbled) {
             // stop the rumble
             s_RumbleController.setRumble(Controllers.DRIVER, 0, RumbleType.kBothRumble);
             //System.out.println("Rumble stopped.");

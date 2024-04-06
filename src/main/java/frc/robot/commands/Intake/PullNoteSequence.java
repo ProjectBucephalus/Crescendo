@@ -20,7 +20,8 @@ public class PullNoteSequence extends SequentialCommandGroup{
         this.s_Intake = s_Intake;
         addCommands
         (   
-            new WaitCommand(0.5),
+            new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.STOPPED)),
+            new WaitCommand(0.2),
             new IntakeSuck(s_Intake),
             new WaitCommand(0.05),
             new IntakeStop(s_Intake)
