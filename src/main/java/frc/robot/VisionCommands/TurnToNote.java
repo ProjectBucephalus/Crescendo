@@ -91,7 +91,7 @@ public class TurnToNote extends Command
                     ); 
                 } else if (rumbleSet) {
                     rumbleSet = false;
-                    s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
+                    s_RumbleController.setRumbleStatus(RumbleStates.AIM, false);
                     System.out.println("turning off Rumble");
                 }
             }
@@ -101,7 +101,7 @@ public class TurnToNote extends Command
                 
                 if (rumbleSet) {
                     rumbleSet = false;
-                    s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
+                    s_RumbleController.setRumbleStatus(RumbleStates.AIM, false);
                     System.out.println("turning off Rumble");
                 }
                 
@@ -132,7 +132,7 @@ public class TurnToNote extends Command
         s_Swerve.setVisionAlignmentBool(false);
         if (rumbleSet) {
                     rumbleSet = false;
-                    s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
+                    s_RumbleController.setRumbleStatus(RumbleStates.AIM, false);
                 }
     }
 

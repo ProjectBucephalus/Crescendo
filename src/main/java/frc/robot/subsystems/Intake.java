@@ -41,7 +41,7 @@ public class Intake extends SubsystemBase
     private boolean useBeamBreak = false;
 
     // For rumbling with note flag
-    private boolean hasRumbled = false;
+    //private boolean hasRumbled = false;
 
     private boolean useStabiliserLimitSwitch = true;
 
@@ -243,16 +243,16 @@ public class Intake extends SubsystemBase
         SmartDashboard.putNumber("Intake RPS", mIntake.getVelocity().getValueAsDouble());
         
 
-        if (doRumbleWithNote && !getBeamBreak() && !hasRumbled) {
+        if (doRumbleWithNote && !getBeamBreak()){// && !hasRumbled) {
             // start the rumble with intensity 1
             s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, true);
             //System.out.println("Rumble started.");
-            hasRumbled = true; // set the flag to true
-        } else if (getBeamBreak() && hasRumbled) {
+            //hasRumbled = true; // set the flag to true
+        } else if (getBeamBreak()){//} && hasRumbled) {
             // stop the rumble
             s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
             //System.out.println("Rumble stopped.");
-            hasRumbled = false; // reset the flag to false
+            //hasRumbled = false; // reset the flag to false
         }
         
         // Prints the beamBreakBool to the Smart Dashboard

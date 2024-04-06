@@ -53,7 +53,8 @@ public final class Constants
 
         public static final Transform3d frontCamToRobot = new Transform3d
         ( 
-                0.275, -0.17, 0.19,
+            // y direction is inverted from physical coordinates for some reason
+                0.275, 0.17, 0.19,
                 new Rotation3d(Units.degreesToRadians(90),Units.degreesToRadians(38), Units.degreesToRadians(0))
         ); // Meters and Radians (roll, pitch, yaw)
 
