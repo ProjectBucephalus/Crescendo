@@ -14,6 +14,7 @@ public class RumbleController extends SubsystemBase
 
     private boolean intakeRumble = false;
     private boolean aimRumble = false;
+    private boolean shootRumble = false;
 
     public enum Controllers 
     {
@@ -24,7 +25,8 @@ public class RumbleController extends SubsystemBase
     public enum RumbleStates 
     {
         INTAKE,
-        AIM
+        AIM,
+        SHOOTREADY
     }
 
     public RumbleController(XboxController driver, XboxController coDriver) 
@@ -45,17 +47,21 @@ public class RumbleController extends SubsystemBase
                 aimRumble = rumbleValue;
                 break;
 
+            case SHOOTREADY:
+                shootRumble = rumbleValue;
+                break;
+
             default:
                 break;
         }
     }
 
     /**
-     * Do not use outside of PointAndPathFindCommand or this subsystem
+     * Do not use outside of this subsystem
      * @param con Controller to set rumble of
      * @param intensity The intensity to set the rumble to
      */
-    public void setRumble(Controllers con, double intensity) 
+    private void setRumble(Controllers con, double intensity) 
     {
         if (con == Controllers.DRIVER) 
         {
@@ -73,8 +79,7 @@ public class RumbleController extends SubsystemBase
         }
     }
 
-    @Override
-    public void periodic() 
+    private void driverRumbleControl()
     {
         if (intakeRumble)
         {
@@ -88,5 +93,24 @@ public class RumbleController extends SubsystemBase
         {
             setRumble(Controllers.DRIVER, 0);
         }
+    }
+    
+    private void coDriverRumbleControl()
+    {
+        if (shootRumble)
+        {
+            setRumble(Controllers.CODRIVER, 1);
+        }
+        else 
+        {
+            setRumble(Controllers.CODRIVER, 0);
+        }
+    }
+
+    @Override
+    public void periodic() 
+    {
+        driverRumbleControl();
+        coDriverRumbleControl();
     }
 }

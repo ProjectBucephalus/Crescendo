@@ -19,15 +19,16 @@ import frc.robot.subsystems.Shooter.ShootPosition;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake.IndexerState;
 import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.RumbleController;
 
 public class aimToSpeakerSequence extends ParallelCommandGroup {
 
     /** Creates a new PrepareSpeakerShot. */
-    public aimToSpeakerSequence(Swerve s_Swerve, Shooter s_Shooter, Pivot s_Pivot, Intake s_Intake, XboxController xboxController, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup) {
+    public aimToSpeakerSequence(Swerve s_Swerve, Shooter s_Shooter, Pivot s_Pivot, Intake s_Intake, RumbleController s_RumbleController, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup) {
 
         addCommands(
                 // set shoot mode, so that TriggerShot can be a single command/button
-                new CheckPrepStatsAndRumble(s_Pivot, s_Shooter, s_Swerve, xboxController),
+                new CheckPrepStatsAndRumble(s_Pivot, s_Shooter, s_Swerve, s_RumbleController),
                 new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
                 //new ActiveSetShooter(shooter, shooterPivot, this::getShootValues),
                 new aimToSpeaker(s_Swerve, translationSup, strafeSup, brakeSup, s_Pivot, s_Shooter)             

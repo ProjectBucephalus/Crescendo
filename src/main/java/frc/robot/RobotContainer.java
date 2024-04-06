@@ -171,7 +171,7 @@ public class RobotContainer {
         driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_RumbleController));
 
         /* Pass in codriver for controller to receive rumble */
-        driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, s_Intake, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+        driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, s_Intake, s_RumbleController, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
         driver.leftBumper()    .onTrue(new PushNoteSequence(s_Intake)).onFalse(new PullNoteSequence(s_Intake));
 
         /* Pass in driver for controller to receive rumble when note in intake*/
