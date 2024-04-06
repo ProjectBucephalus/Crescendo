@@ -13,8 +13,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import frc.lib.util.RumbleController;
-import frc.lib.util.RumbleController.Controllers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -23,7 +21,9 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.subsystems.RumbleController;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.RumbleController.Controllers;
 import frc.robot.VisionCommands.AlignToTrap;
 
 public class PointAndPathFindCommand extends SequentialCommandGroup {
@@ -53,7 +53,7 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
                 AutoBuilder.followPath(path),
                 new AlignToTrap(s_Swerve, targetLocation)
         );
-        s_RumbleController.setRumble(Controllers.CODRIVER, 1, RumbleType.kBothRumble);
+        s_RumbleController.setRumble(Controllers.CODRIVER, 1);
 
     }
 }

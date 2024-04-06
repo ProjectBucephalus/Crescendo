@@ -13,12 +13,13 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.util.RumbleController;
-import frc.lib.util.RumbleController.Controllers;
 import frc.robot.Constants;
 import frc.robot.SwerveConstants;
 import frc.robot.subsystems.NoteVision;
+import frc.robot.subsystems.RumbleController;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.RumbleController.Controllers;
+import frc.robot.subsystems.RumbleController.RumbleStates;
 
 public class TurnToNote extends Command 
 {
@@ -77,7 +78,7 @@ public class TurnToNote extends Command
                 {       
                     if (!rumbleSet){
                         rumbleSet = true;
-                        s_RumbleController.setRumble(Controllers.DRIVER, Constants.isAlignedToNoteRumble, RumbleType.kBothRumble);
+                        s_RumbleController.setRumbleStatus(RumbleStates.AIM, true);
                         System.out.println("set Rumble");
                     }
                     System.out.println(rumbleSet);
@@ -90,7 +91,7 @@ public class TurnToNote extends Command
                     ); 
                 } else if (rumbleSet) {
                     rumbleSet = false;
-                    s_RumbleController.setRumble(Controllers.DRIVER, 0, RumbleType.kLeftRumble);
+                    s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
                     System.out.println("turning off Rumble");
                 }
             }
@@ -100,7 +101,7 @@ public class TurnToNote extends Command
                 
                 if (rumbleSet) {
                     rumbleSet = false;
-                    s_RumbleController.setRumble(Controllers.DRIVER, 0, RumbleType.kLeftRumble);
+                    s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
                     System.out.println("turning off Rumble");
                 }
                 
@@ -131,7 +132,7 @@ public class TurnToNote extends Command
         s_Swerve.setVisionAlignmentBool(false);
         if (rumbleSet) {
                     rumbleSet = false;
-                    s_RumbleController.setRumble(Controllers.DRIVER, 0, RumbleType.kLeftRumble);
+                    s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
                 }
     }
 
