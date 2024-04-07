@@ -238,7 +238,7 @@ public class RobotContainer {
     }
     private void configureAutos() {
         // List of start locations
-        List<String> autonamesDropdown = Arrays.asList("S1-S2", "S3-S2", "S1-S2-S3", "S3-S2-S1", "S2-S1", "S1-C1", "C4", "C5", "S3-C4-C5", "W" );
+        List<String> autonamesDropdown = Arrays.asList("S1-S2", "S3-S2", "S1-S2-S3", "S3-S2-S1", "S2-S1", "S1-C1", "C4", "C5", "S3-C4-C5", "W", "Q79" );
 
         m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
         m_startLocation.addOption("Center", FieldConstants.ROBOT_START_2);
