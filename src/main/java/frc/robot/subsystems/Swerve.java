@@ -50,6 +50,7 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -144,11 +145,11 @@ public class Swerve extends SubsystemBase
 //               // WPILog with this subsystem's name ("drive")
 //               this));
 
-    public Swerve() {
+    public Swerve(SendableChooser<Pose2d> m_startLocation) {
         // Define and initialise gyro, as well as applying config
         gyro = new Pigeon2(IDConstants.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
-        gyro.setYaw(0);
+        gyro.setYaw(m_startLocation.getSelected().getRotation().getDegrees());
 
         // Define and initialise list of swerve modules
         mSwerveMods = new SwerveModule[] {

@@ -51,11 +51,21 @@ public class GetMulitNote extends SequentialCommandGroup {
 
         // add all the fetching+shooting NOTE blocks
         for (Translation2d note : noteLocations) {
-            if (FieldConstants.DUMMY_NOTE_WAIT_FLAG.equals(note) || noteLocations.length == 0) {
+            if (FieldConstants.DUMMY_NOTE_WAIT_FLAG.equals(note) || noteLocations.length == 0)
+            {
                 addCommands(new WaitCommand(7));
-            } else if (FieldConstants.isCenterNote(note)) {
+            }
+            else if (FieldConstants.DUMMY_NOTE_GOTOMID_FLAG.equals(note)) 
+            {          
+                addCommands(new WaitCommand(5));
+                addCommands(new InstantCommand(() -> s_Swerve.makePathFollowingCommand(PathPlannerPath.fromPathFile("GoToMid"))));
+            } 
+            else if (FieldConstants.isCenterNote(note)) 
+            {
                 addCommands(new GetCentreNote(note, s_Swerve, noteVision, s_Shooter, s_Pivot, s_Intake));
-            } else {
+            } 
+            else 
+            {
                 addCommands(new GetStageNote(note, s_Swerve, noteVision, s_Shooter, s_Pivot, s_Intake));
             }
         }

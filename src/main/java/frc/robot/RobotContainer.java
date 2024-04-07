@@ -83,17 +83,17 @@ public class RobotContainer {
     private final int MANUAL_CLIMB_AXIS = XboxController.Axis.kLeftY.value;
     private final int MANUAL_SHOOTER_AXIS = XboxController.Axis.kRightY.value;
 
+    private final SendableChooser<String> m_chosenAuto = new SendableChooser<>();
+    private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();
+
     /* Subsystems */
     final RumbleController s_RumbleController = new RumbleController(driver.getHID(), coDriver.getHID());
-    private final Swerve s_Swerve = new Swerve();
+    private final Swerve s_Swerve = new Swerve(m_startLocation);
     private final Intake s_Intake = new Intake(s_RumbleController);
     private final Pivot s_Pivot = new Pivot(s_Swerve);
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
     private final NoteVision s_NoteVision = new NoteVision(s_Swerve);
-
-    private final SendableChooser<String> m_chosenAuto = new SendableChooser<>();
-    private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();
 
     private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -238,7 +238,7 @@ public class RobotContainer {
     }
     private void configureAutos() {
         // List of start locations
-        List<String> autonamesDropdown = Arrays.asList("S1-S2", "S3-S2", "S1-S2-S3", "S3-S2-S1", "S2-S1", "S1-C1", "C4", "C5", "S3-C4-C5", "W" );
+        List<String> autonamesDropdown = Arrays.asList("S1-S2", "S3-S2", "S1-S2-S3", "S3-S2-S1", "S2-S1", "S1-C1", "C4", "C5", "S3-C4-C5", "W", "Q79" );
 
         m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
         m_startLocation.addOption("Center", FieldConstants.ROBOT_START_2);
