@@ -62,20 +62,20 @@ public class RumbleController extends SubsystemBase
      * @param con Controller to set rumble of
      * @param intensity The intensity to set the rumble to
      */
-    private void setRumble(Controllers con, double intensity) 
+    private void setRumble(Controllers con, double intensity, RumbleType rumbleType) 
     {
         if (con == Controllers.DRIVER) 
         {
             if (driver != null) 
             {
-                driver.setRumble(RumbleType.kBothRumble, intensity);
+                driver.setRumble(rumbleType, intensity);
             }
         }
         if (con == Controllers.CODRIVER) 
         {
             if (coDriver != null) 
             {
-                coDriver.setRumble(RumbleType.kBothRumble, intensity);
+                coDriver.setRumble(rumbleType, intensity);
             }
         }
     }
@@ -84,15 +84,19 @@ public class RumbleController extends SubsystemBase
     {
         if (intakeRumble)
         {
-            setRumble(Controllers.DRIVER, Constants.hasNoteRumble);
-        }
-        else if (aimRumble)
-        {
-            setRumble(Controllers.DRIVER, Constants.isAlignedToNoteRumble);
+            setRumble(Controllers.DRIVER, 1, RumbleType.kRightRumble);
         }
         else 
         {
-            setRumble(Controllers.DRIVER, 0);
+            setRumble(Controllers.DRIVER, 0, RumbleType.kRightRumble);
+        }
+        if (aimRumble)
+        {
+            setRumble(Controllers.DRIVER, 1, RumbleType.kLeftRumble);
+        }
+        else
+        {
+            setRumble(Controllers.DRIVER, 0, RumbleType.kLeftRumble);
         }
     }
     
@@ -100,11 +104,11 @@ public class RumbleController extends SubsystemBase
     {
         if (shootRumble)
         {
-            setRumble(Controllers.CODRIVER, 1);
+            setRumble(Controllers.CODRIVER, 1, RumbleType.kBothRumble);
         }
         else 
         {
-            setRumble(Controllers.CODRIVER, 0);
+            setRumble(Controllers.CODRIVER, 0, RumbleType.kBothRumble);
         }
     }
 
