@@ -211,7 +211,7 @@ public final class Constants
         /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */
         public static final double maxShootDistance = 7;
         /** Shooter Angle for hard-coded lob */
-        public static final double halfCourtAngle = 20;
+        public static final double halfCourtAngle = 57;
     }
 
     public static final class Climber 
