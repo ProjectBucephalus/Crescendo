@@ -83,17 +83,17 @@ public class RobotContainer {
     private final int MANUAL_CLIMB_AXIS = XboxController.Axis.kLeftY.value;
     private final int MANUAL_SHOOTER_AXIS = XboxController.Axis.kRightY.value;
 
+    private final SendableChooser<String> m_chosenAuto = new SendableChooser<>();
+    private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();
+
     /* Subsystems */
     final RumbleController s_RumbleController = new RumbleController(driver.getHID(), coDriver.getHID());
-    private final Swerve s_Swerve = new Swerve();
+    private final Swerve s_Swerve = new Swerve(m_startLocation);
     private final Intake s_Intake = new Intake(s_RumbleController);
     private final Pivot s_Pivot = new Pivot(s_Swerve);
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
     private final NoteVision s_NoteVision = new NoteVision(s_Swerve);
-
-    private final SendableChooser<String> m_chosenAuto = new SendableChooser<>();
-    private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();
 
     private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
