@@ -90,7 +90,10 @@ public class Robot extends TimedRobot {
     if (!autoPopulator.equals(m_prevAuto)) {
       SmartDashboard.putString("Auto Chooser", autoPopulator);
       m_prevAuto = autoPopulator;
-    }        
+    }
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.AIM, false);
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.SHOOTREADY, false);
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
