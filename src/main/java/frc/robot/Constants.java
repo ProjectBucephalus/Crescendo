@@ -179,7 +179,7 @@ public final class Constants
         /* Shooter speeds */
         public static final double runningTopShooterSpeed = 0.9;
         public static final double runningBottomShooterSpeed = 0.9; // AMP TOP: 0.450000 bottom: 0.05
-        public static final double shooterIdleSpeed = 0.5;
+        public static final double shooterIdleSpeed = 0.6;
         public static final double shooterEjectSpeed = -0.5;
         public static final double shooterLobSpeed = 0.5;
         public static final double trapTopShooterSpeed = 0;

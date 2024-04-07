@@ -57,8 +57,8 @@ public class GetMulitNote extends SequentialCommandGroup {
             }
             else if (FieldConstants.DUMMY_NOTE_GOTOMID_FLAG.equals(note)) 
             {          
-                addCommands(new WaitCommand(5));
-                addCommands(new InstantCommand(() -> s_Swerve.makePathFollowingCommand(PathPlannerPath.fromPathFile("GoToMid"))));
+                addCommands(new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.STOWED)), new WaitCommand(5), 
+                new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(PathPlannerPath.fromPathFile("GoToMid")), Set.of(s_Swerve)));
             } 
             else if (FieldConstants.isCenterNote(note)) 
             {
