@@ -53,7 +53,8 @@ public class GetMulitNote extends SequentialCommandGroup {
         for (Translation2d note : noteLocations) {
             if (FieldConstants.DUMMY_NOTE_WAIT_FLAG.equals(note) || noteLocations.length == 0)
             {
-                addCommands(new WaitCommand(7));
+                addCommands(new WaitCommand(10),
+                new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(PathPlannerPath.fromPathFile("Start_3 to Leave")), Set.of(s_Swerve)));
             }
             else if (FieldConstants.DUMMY_NOTE_GOTOMID_FLAG.equals(note)) 
             {          
