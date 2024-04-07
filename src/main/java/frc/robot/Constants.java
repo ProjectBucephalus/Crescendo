@@ -234,9 +234,9 @@ public final class Constants
     public static final class AutoConstants 
     { 
         /** Max drivebase speed, in meters per second */
-        public static final double kMaxSpeedMetersPerSecond = 4;
+        public static final double kMaxSpeedMetersPerSecond = 6;
         /** Max drivebase acceleration, in meters per second per second */
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 4;
         /** Max drivebase rotational speed, in radians per second */
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI; // was pi?
         /** Max drivebase rotational acceleration, in radians per second per second */

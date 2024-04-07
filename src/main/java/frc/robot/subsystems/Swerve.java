@@ -149,7 +149,7 @@ public class Swerve extends SubsystemBase
         // Define and initialise gyro, as well as applying config
         gyro = new Pigeon2(IDConstants.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
-        gyro.setYaw(m_startLocation.getSelected().getRotation().getDegrees());
+        gyro.setYaw(0);
 
         // Define and initialise list of swerve modules
         mSwerveMods = new SwerveModule[] {
