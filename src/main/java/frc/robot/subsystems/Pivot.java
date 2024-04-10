@@ -60,7 +60,8 @@ public class Pivot extends SubsystemBase {
         SPEAKER,
         AMP_MANUAL,
         TRAP_MANUAL,
-        SPEAKER_MANUAL
+        SPEAKER_MANUAL,
+        LOB
     };
 
     public enum FlapPosition {
@@ -115,6 +116,9 @@ public class Pivot extends SubsystemBase {
                 break;
             case SPEAKER_MANUAL:
                 moveArmToAngle(50);
+                break;
+            case LOB:
+                moveArmToAngle(Constants.Shooter.halfCourtAngle);
                 break;
         }
     }

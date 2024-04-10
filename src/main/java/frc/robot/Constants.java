@@ -209,7 +209,7 @@ public final class Constants
         public static final double shooterPivotOffsetBack = 0.17;
 
         /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */
-        public static final double maxShootDistance = 8.5;
+        public static final double maxShootDistance = 7.5;
         /** Shooter Angle for hard-coded lob */
         public static final double halfCourtAngle = 57;
     }
