@@ -214,17 +214,19 @@ public final class Constants
         /** Metres of pivot behind robot centre */
         public static final double shooterPivotOffsetBack = 0.17;
 
-        /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */
-        public static final double maxShootDistance = 7.5;
-        /** Shooter Angle for hard-coded lob */
-        public static final double halfCourtAngle = 57;
-
         /* Current Limit Values*/
         public static final int shooterCurrentLimit = 40;
         public static final int shooterCurrentThreshold = 60;
         public static final double shooterCurrentThresholdTime = 0.1;
         public static final boolean shooterEnableCurrentLimit = true;
         public static final int shooterStatorCurrentLimit = 120;
+
+        /* Lob values */
+        public static final double bottomShooterLobSpeed = 0.6;
+        public static final double topShooterLobSpeed = 0.6;
+        public static final double lobAngle = 57;
+        /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */
+        public static final double outOfWingX = 6;
     }
 
     public static final class Climber 
@@ -235,12 +237,17 @@ public final class Constants
         
         /* Climber real world values */
         public static final double maxExtensionSpoolRotations = 2.6;
-        public static final double motorToSpoolGearRatio = 100;
-        public static final double maxRevolutions = maxExtensionSpoolRotations * motorToSpoolGearRatio;
+        public static final double planetary1Ratio = 3;
+        public static final double planetary2Ratio = 10;
+        public static final double planetaryRatio = (planetary1Ratio * planetary2Ratio);
+        public static final double climberGearIn = 18;
+        public static final double climberGearOut = 60;
+        public static final double climberGearRatio = planetaryRatio * (climberGearOut / climberGearIn);
+        public static final double maxRevolutions = maxExtensionSpoolRotations * climberGearRatio;
         
         /* Climber positions */
         public static final double climberDownPos = 0;
-        public static final double climberUpPos = maxExtensionSpoolRotations * motorToSpoolGearRatio;
+        public static final double climberUpPos = maxExtensionSpoolRotations * climberGearRatio;
 
     }
 

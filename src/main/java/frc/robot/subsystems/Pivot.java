@@ -116,7 +116,7 @@ public class Pivot extends SubsystemBase {
                 moveArmToAngle(50);
                 break;
             case LOB:
-                moveArmToAngle(Constants.Shooter.halfCourtAngle);
+                moveArmToAngle(Constants.Shooter.lobAngle);
                 break;
         }
     }
@@ -385,19 +385,18 @@ public class Pivot extends SubsystemBase {
     public double calculatedRequiredShooterAngle() 
     {
         double targetHeightOverShooter = Constants.Shooter.targetHeightOverShooter;
-        double targetDistanceOffset = Constants.Shooter.targetDistanceOffset;
         double shooterPivotOffsetUp = Constants.Shooter.shooterPivotOffsetUp;
         double shooterPivotOffsetBack = Constants.Shooter.shooterPivotOffsetBack;
         double targetAngle;
         double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
         double shooterDrop = Constants.Shooter.verticalAccelerationConstant * (Math.pow(targetDistance,2) + Math.pow(targetHeightOverShooter,2));
 
-        if (targetDistance > Constants.Shooter.maxShootDistance) 
+        if (pose.getX() > Constants.Shooter.outOfWingX) 
         {
-            return Constants.Shooter.halfCourtAngle;
+            return Constants.Shooter.lobAngle;
         }
 
-        targetDistance += shooterPivotOffsetBack - targetDistanceOffset;
+        targetDistance += shooterPivotOffsetBack;
 
         targetAngle = Math.atan(targetHeightOverShooter/targetDistance);
         targetDistance += shooterPivotOffsetUp * Math.tan(targetAngle);

@@ -40,7 +40,8 @@ public class Shooter extends SubsystemBase {
         STOPPED,
         IDLE,
         OUT,
-        TRAP
+        TRAP,
+        LOB
     };
 
     /**
@@ -107,6 +108,12 @@ public class Shooter extends SubsystemBase {
                 driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Top Speed", 0);
                 mTopShooter.setControl(driveDutyCycle);
                 break;
+            case LOB:
+                driveDutyCycle.Output = Constants.Shooter.bottomShooterLobSpeed;
+                mBottomShooter.setControl(driveDutyCycle);
+
+                driveDutyCycle.Output = Constants.Shooter.topShooterLobSpeed;
+                mTopShooter.setControl(driveDutyCycle);
             default:
                 break;
         }
