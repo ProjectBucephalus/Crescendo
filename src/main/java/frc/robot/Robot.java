@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.util.PathPlannerLogging;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.RumbleController.RumbleStates;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,6 +29,10 @@ public class Robot extends TimedRobot {
   private boolean m_prevIsRedAlliance = true;
   private String m_prevAuto = "";
 
+  private Field2d autoPosition = new Field2d();
+
+
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -33,6 +41,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    SmartDashboard.putData("Field", autoPosition);
     m_robotContainer = new RobotContainer();
   }
 
@@ -49,6 +58,17 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    if (isSimulation()) {
+      
+      
+      
+      PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+        // Do whatever you want with the pose here
+        m_robotContainer.getSwerve().resetEstimatedOdometry(pose);
+        
+      });
+      
+    }
     CommandScheduler.getInstance().run();
   }
 
@@ -68,23 +88,34 @@ public class Robot extends TimedRobot {
     if (!autoPopulator.equals(m_prevAuto)) {
       SmartDashboard.putString("Auto Chooser", autoPopulator);
       m_prevAuto = autoPopulator;
-    }        
+    }
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.AIM, false);
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.SHOOTREADY, false);
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
-  public void autonomousInit() {
+  public void autonomousInit() 
+  {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
+    if (m_autonomousCommand != null) 
+    {
       m_autonomousCommand.schedule();
     }
+    m_robotContainer.getSwerve().gyro.setYaw(m_robotContainer.m_startLocation.getSelected().getRotation().getDegrees());
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() 
+  {
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.AIM, false);
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.SHOOTREADY, false);
+  }
 
   @Override
   public void teleopInit() {

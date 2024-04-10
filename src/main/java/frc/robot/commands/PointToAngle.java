@@ -1,17 +1,9 @@
 package frc.robot.commands;
 
-import org.photonvision.PhotonUtils;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.FieldConstants;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -75,8 +67,7 @@ public class PointToAngle extends Command {
 
     @Override
     public boolean isFinished() {
-        // return (Math.abs(s_Swerve.getEstimatedPose().getRotation().getDegrees()
-        //         - Math.abs(calculateRequiredHeading())) < SwerveConstants.ANGLE_TOLERANCE_DEGREES);
+        // return (Math.abs(-calculateRequiredHeading()/10)<SwerveConstants.ANGLE_TOLERANCE_DEGREES);
         return false;
     }
 }

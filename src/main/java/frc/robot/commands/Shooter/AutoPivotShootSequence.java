@@ -3,10 +3,13 @@ package frc.robot.commands.Shooter;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.Intake.IntakeAndDeployPivot;
+import frc.robot.commands.Intake.PushNoteSequence;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Pivot.PivotPosition;
 import frc.robot.subsystems.Shooter.ShooterState;
 
@@ -16,17 +19,32 @@ import frc.robot.subsystems.Shooter.ShooterState;
 public class AutoPivotShootSequence extends SequentialCommandGroup{
     
     public AutoPivotShootSequence(Pivot s_Pivot, Intake s_Intake, Shooter s_Shooter, Swerve s_Swerve) {
-        addCommands(
-            // If not done already
-            new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
-            new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.SPEAKER)),
-            // this finishes when no note is in intake (beam break) or after SHOOT_TIME in the command.
-            new WaitCommand(0.8),
-            new ShootSequence(s_Shooter, s_Intake, s_Swerve),
-            new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
-            new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.DEPLOYED)),
-            new WaitCommand(0.2)
-        );
+        // addCommands(
+        //     // If not done already
+        //     new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
+        //     new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.SPEAKER)),
+        //     // this finishes when no note is in intake (beam break) or after SHOOT_TIME in the command.
+        //     new WaitCommand(0.5),
+        //     new ShootSequence(s_Shooter, s_Intake, s_Swerve),
+        //     new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
+        //     new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.DEPLOYED)),
+        //     new IntakeAndDeployPivot(s_Pivot, s_Intake, null),
+        //     new WaitCommand(0.2)
+        // );
+
+        
+            addCommands(
+                // If not done already
+                new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
+                new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.SPEAKER)),
+                // this finishes when no note is in intake (beam break) or after SHOOT_TIME in the command.
+                new PushNoteSequence(s_Intake),
+                new WaitCommand(0.8),
+                new ShootSequence(s_Shooter, s_Intake, s_Swerve),
+                new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
+                new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.DEPLOYED)),
+                new WaitCommand(0.2)
+            );
     }
 
 

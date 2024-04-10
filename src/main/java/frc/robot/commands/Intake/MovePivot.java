@@ -50,7 +50,12 @@ public class MovePivot extends Command {
         else if (manualActive)
         {
             s_Pivot.setArmMotorSpeeds(0);
+            s_Pivot.moveArmToAngle(s_Pivot.getPivotPos());
             manualActive = false;
+        }
+        else
+        {
+            s_Pivot.pivotPDGCycle();
         }
     }
 }

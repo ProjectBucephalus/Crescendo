@@ -1,4 +1,4 @@
-package frc.robot.commands.Shooter;
+package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -9,21 +9,22 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Intake.IndexerState;
+import frc.robot.subsystems.Intake.IntakeStatus;
 
-public class ShootSequence extends SequentialCommandGroup{
+public class PullNoteSequence extends SequentialCommandGroup{
     
-    Shooter s_Shooter;
     Intake s_Intake;
-    Swerve s_Swerve;
     
-    public ShootSequence(Shooter s_Shooter, Intake s_Intake, Swerve s_Swerve) 
+    public PullNoteSequence(Intake s_Intake) 
     {
-        this.s_Shooter = s_Shooter;
         this.s_Intake = s_Intake;
-        this.s_Swerve = s_Swerve;
         addCommands
-        (
-            new ShootSequenceBasic(s_Shooter, s_Intake)
+        (   
+            new InstantCommand(() -> s_Intake.setIndexerState(IndexerState.STOPPED)),
+            new WaitCommand(0.2),
+            new IntakeSuck(s_Intake),
+            new WaitCommand(0.05),
+            new IntakeStop(s_Intake)
         );
     }
 }

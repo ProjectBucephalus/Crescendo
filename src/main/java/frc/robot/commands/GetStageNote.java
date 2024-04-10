@@ -7,17 +7,16 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.FieldConstants;
-import frc.robot.commands.Intake.GetBeamBreak;
 import frc.robot.commands.Intake.IntakeAndDeployPivot;
 import frc.robot.commands.Shooter.AutoPivotShootSequence;
-import frc.robot.commands.Shooter.ShootSequence;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NoteVision;
 import frc.robot.subsystems.Shooter;
@@ -36,17 +35,55 @@ public class GetStageNote extends GetNote {
             throw new IllegalArgumentException("target note param must be a stage note: S1 S2 S3");
         }
 
+        // addCommands
+        // (
+        //     new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
+        //     new IntakeAndDeployPivot(s_Pivot, s_Intake, null),
+        //     new IntakeSuck(s_Intake),
+        //     new WaitCommand(0.2),
+        //     new IntakeStop(s_Intake),
+        //     new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
+        //     new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(getInitialPath()), Set.of(s_Swerve)),
+        //     new ParallelDeadlineGroup(
+        //         new SequentialCommandGroup
+        //         (
+        //             new GetBeamBreak(s_Intake), 
+        //             new WaitCommand(1), 
+        //             new GetBeamBreak(s_Intake)
+        //         ),
+        //         new SequentialCommandGroup
+        //         (
+        //             new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
+        //             new WaitCommand(0.1),
+        //             new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve)
+        //         )
+        //     )
+        // );
+
+
         addCommands(
-                new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
-                new IntakeAndDeployPivot(s_Pivot, s_Intake, null),
-                new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(getInitialPath()), Set.of(s_Swerve)),
-                new ParallelDeadlineGroup(
-                        new GetBeamBreak(s_Intake),
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
-                                new WaitCommand(0.1),
-                                new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve))),
-                new ShootSequence(s_Shooter, s_Intake, s_Swerve));
+            new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
+            new IntakeAndDeployPivot(s_Pivot, s_Intake, null),
+            new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(getInitialPath()), Set.of(s_Swerve)),
+            new ConditionalCommand
+            (
+                new SequentialCommandGroup(new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.IN_WITH_BEAM_BREAK)), new WaitCommand(0.2)),
+                new WaitCommand(0),
+                () -> s_Intake.getBeamBreak()
+            ),
+            new ConditionalCommand
+            (
+                new WaitCommand(0),
+                new SequentialCommandGroup
+                (
+                    new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
+                    new WaitCommand(0.1),
+                    new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve)
+                ),
+                () -> s_Intake.getBeamBreak()
+            )
+        );
+            //new ShootSequence(s_Shooter, s_Intake, s_Swerve));
     }
 
     private PathPlannerPath getInitialPath() {

@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CTREConfigs;
 import frc.robot.Constants;
 import frc.robot.IDConstants;
 
@@ -38,7 +39,8 @@ public class Shooter extends SubsystemBase {
         RUNNING,
         STOPPED,
         IDLE,
-        OUT
+        OUT,
+        TRAP
     };
 
     /**
@@ -52,7 +54,12 @@ public class Shooter extends SubsystemBase {
         TRAP,
     };
 
-    public Shooter() {
+    public Shooter() 
+    {
+        SmartDashboard.putNumber("Shooter Bottom Speed", 0);
+        SmartDashboard.putNumber("Shooter Top Speed", 0);
+        mBottomShooter.getConfigurator().apply(CTREConfigs.bottomShooterMotorFXConfig);
+        mTopShooter.getConfigurator().apply(CTREConfigs.topShooterMotorFXConfig);
     }
 
     /**
@@ -61,10 +68,12 @@ public class Shooter extends SubsystemBase {
      * @param state Enum representing the desired status of the shooter
      * @author 5985
      */
-    public void setShooterState(ShooterState state) {
+    public void setShooterState(ShooterState state) 
+    {
         SmartDashboard.putString("Current State of Shooter Motors for sim", state.name());
 
-        switch (state) {
+        switch (state) 
+        {
             case RUNNING:
                 driveDutyCycle.Output = Constants.Shooter.runningBottomShooterSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
@@ -78,7 +87,7 @@ public class Shooter extends SubsystemBase {
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case IDLE:
-                System.out.println("idle");
+                //System.out.println("idle");
                 driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
 
@@ -86,11 +95,18 @@ public class Shooter extends SubsystemBase {
                 mTopShooter.setControl(driveDutyCycle);
                 break;
             case OUT:
-                driveDutyCycle.Output = -0.5;
+                driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
 
-                driveDutyCycle.Output = -0.5;
+                driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
                 mTopShooter.setControl(driveDutyCycle);
+            case TRAP:
+                driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Bottom Speed", 0);
+                mBottomShooter.setControl(driveDutyCycle);
+
+                driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Top Speed", 0);
+                mTopShooter.setControl(driveDutyCycle);
+                break;
             default:
                 break;
         }
@@ -115,14 +131,13 @@ public class Shooter extends SubsystemBase {
      * @author Aidan
      */
     public boolean rpmWithinTolerance() {
-        return mTopShooter.getVelocity().getValueAsDouble() > Constants.Shooter.ShooterAcceptableVelocity;
+        return mTopShooter.getVelocity().getValueAsDouble() > Constants.Shooter.shooterVelocityTolerance;
 
     }
 
     @Override
     public void periodic() {
         // Prints info to Smart Dashboard
-        SmartDashboard.putString("Where am I shooting", getShootPosition().name());
         SmartDashboard.putString("Current State of Motors for sim", getShootPosition().name());
 
         SmartDashboard.putNumber("Top Shooter RPS", mTopShooter.getVelocity().getValueAsDouble());

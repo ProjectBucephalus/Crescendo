@@ -8,15 +8,15 @@ import frc.robot.subsystems.Pivot.PivotPosition;
  * Move to intake position command
  * @author 5985
  */
-public class MovePivotToPosition extends Command {
-    public boolean isFinished = false;
+public class MovePivotToAngle extends Command {
+    public boolean isFinished = true;
     private Pivot s_Pivot;
-    private PivotPosition position;
+    private double angle;
     
 
-    public MovePivotToPosition(Pivot s_Pivot, PivotPosition position) {
+    public MovePivotToAngle(Pivot s_Pivot, double angle) {
         this.s_Pivot = s_Pivot;
-        this.position = position;
+        this.angle = angle;
     }
 
     public void initialize() {
@@ -26,11 +26,10 @@ public class MovePivotToPosition extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        s_Pivot.setPosition(position);
+        s_Pivot.setDesiredPostion(angle);
     }
 
-    @Override
     public boolean isFinished() {
-        return true;
+        return isFinished;
     }
 }
