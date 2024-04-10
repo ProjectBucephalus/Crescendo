@@ -104,7 +104,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() 
-    {
+    {   
         s_Swerve.setDefaultCommand
         (
             new TeleopSwerve
@@ -245,6 +245,8 @@ public class RobotContainer {
         m_chosenAuto.setDefaultOption("S1-S2", "S1-S2");
 
         m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
+
+        SmartDashboard.putNumber("AutoWait", 0);
 
         SmartDashboard.putData("Start Location", m_startLocation);
 
