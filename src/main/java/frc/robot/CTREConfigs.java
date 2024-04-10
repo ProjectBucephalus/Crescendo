@@ -8,6 +8,10 @@ public final class CTREConfigs {
     public TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
     public static TalonFXConfiguration leftPivotMotorFXConfig = new TalonFXConfiguration();
     public static TalonFXConfiguration rightPivotMotorFXConfig = new TalonFXConfiguration();
+    public static TalonFXConfiguration bottomShooterMotorFXConfig = new TalonFXConfiguration();
+    public static TalonFXConfiguration topShooterMotorFXConfig = new TalonFXConfiguration();
+    public static TalonFXConfiguration intakeMotorFXConfig = new TalonFXConfiguration();
+    public static TalonFXConfiguration indexerMotorFXConfig = new TalonFXConfiguration();
 
     public CANcoderConfiguration swerveCANcoderConfig = new CANcoderConfiguration();
 
@@ -29,6 +33,8 @@ public final class CTREConfigs {
         swerveAngleFXConfig.CurrentLimits.SupplyCurrentLimit = SwerveConstants.angleCurrentLimit;
         swerveAngleFXConfig.CurrentLimits.SupplyCurrentThreshold = SwerveConstants.angleCurrentThreshold;
         swerveAngleFXConfig.CurrentLimits.SupplyTimeThreshold = SwerveConstants.angleCurrentThresholdTime;
+        swerveAngleFXConfig.CurrentLimits.StatorCurrentLimit = SwerveConstants.angleStatorLimit;
+        swerveAngleFXConfig.CurrentLimits.StatorCurrentLimitEnable = SwerveConstants.angleEnableCurrentLimit;
 
         /* PID Config */
         swerveAngleFXConfig.Slot0.kP = SwerveConstants.angleKP;
@@ -48,6 +54,8 @@ public final class CTREConfigs {
         swerveDriveFXConfig.CurrentLimits.SupplyCurrentLimit = SwerveConstants.driveCurrentLimit;
         swerveDriveFXConfig.CurrentLimits.SupplyCurrentThreshold = SwerveConstants.driveCurrentThreshold;
         swerveDriveFXConfig.CurrentLimits.SupplyTimeThreshold = SwerveConstants.driveCurrentThresholdTime;
+        swerveDriveFXConfig.CurrentLimits.StatorCurrentLimit = SwerveConstants.driveStatorLimit;
+        swerveDriveFXConfig.CurrentLimits.StatorCurrentLimitEnable = SwerveConstants.driveEnableCurrentLimit;
 
         /* PID Config */
         swerveDriveFXConfig.Slot0.kP = SwerveConstants.driveKP;
@@ -77,6 +85,8 @@ public final class CTREConfigs {
         leftPivotMotorFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.Intake.pivotCurrentThreshold;
         leftPivotMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Intake.pivotCurrentThresholdTime;
         leftPivotMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Intake.pivotCurrentLimit;
+        leftPivotMotorFXConfig.CurrentLimits.StatorCurrentLimit = Constants.Intake.pivotStatorLimit;
+        leftPivotMotorFXConfig.CurrentLimits.StatorCurrentLimitEnable = Constants.Intake.pivotEnableCurrentLimit;
 
         /* PID Config */
         // leftPivotMotorFXConfig.Slot0.kP = Constants.Intake.pivotKP;
@@ -96,6 +106,8 @@ public final class CTREConfigs {
         rightPivotMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Intake.pivotCurrentThreshold;
         rightPivotMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Intake.pivotCurrentThresholdTime;
         rightPivotMotorFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.Intake.pivotCurrentLimit;
+        rightPivotMotorFXConfig.CurrentLimits.StatorCurrentLimit = Constants.Intake.pivotStatorLimit;
+        rightPivotMotorFXConfig.CurrentLimits.StatorCurrentLimitEnable = Constants.Intake.pivotEnableCurrentLimit;
  
 
         /* PID Config */
@@ -110,6 +122,27 @@ public final class CTREConfigs {
         leftPivotMotorFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = Constants.Intake.openLoopRamp;
         
 
-        
+        /* Shooter Motor Current Limits */
+        topShooterMotorFXConfig.CurrentLimits.SupplyCurrentLimitEnable =  Constants.Shooter.shooterEnableCurrentLimit;
+        topShooterMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Shooter.shooterCurrentThreshold;
+        topShooterMotorFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.Shooter.shooterCurrentLimit;
+        topShooterMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Shooter.shooterCurrentThresholdTime;
+        topShooterMotorFXConfig.CurrentLimits.StatorCurrentLimit = Constants.Shooter.shooterStatorCurrentLimit;
+        topShooterMotorFXConfig.CurrentLimits.StatorCurrentLimitEnable = Constants.Shooter.shooterEnableCurrentLimit;
+
+        bottomShooterMotorFXConfig.CurrentLimits.SupplyCurrentLimitEnable =  Constants.Shooter.shooterEnableCurrentLimit;
+        bottomShooterMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Shooter.shooterCurrentThreshold;
+        bottomShooterMotorFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.Shooter.shooterCurrentLimit;
+        bottomShooterMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Shooter.shooterCurrentThresholdTime;
+        bottomShooterMotorFXConfig.CurrentLimits.StatorCurrentLimit = Constants.Shooter.shooterStatorCurrentLimit;
+        bottomShooterMotorFXConfig.CurrentLimits.StatorCurrentLimitEnable = Constants.Shooter.shooterEnableCurrentLimit;
+
+        /* Indexer Motor Current Limits */
+        indexerMotorFXConfig.CurrentLimits.SupplyCurrentLimitEnable =  Constants.Shooter.shooterEnableCurrentLimit;
+        indexerMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Shooter.shooterCurrentThreshold;
+        indexerMotorFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.Shooter.shooterCurrentLimit;
+        indexerMotorFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.Shooter.shooterCurrentThresholdTime;
+        indexerMotorFXConfig.CurrentLimits.StatorCurrentLimit = Constants.Shooter.shooterStatorCurrentLimit;
+        indexerMotorFXConfig.CurrentLimits.StatorCurrentLimitEnable = Constants.Shooter.shooterEnableCurrentLimit;
     }
 }

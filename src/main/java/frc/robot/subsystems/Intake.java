@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CTREConfigs;
 import frc.robot.Constants;
 import frc.robot.IDConstants;
 import frc.robot.subsystems.RumbleController.RumbleStates;
@@ -94,6 +95,8 @@ public class Intake extends SubsystemBase
     public Intake(RumbleController s_RumbleController) 
     {
         this.s_RumbleController = s_RumbleController;
+        mIntake.getConfigurator().apply(CTREConfigs.intakeMotorFXConfig);
+        mIndexer.getConfigurator().apply(CTREConfigs.indexerMotorFXConfig);
     }
 
     /**

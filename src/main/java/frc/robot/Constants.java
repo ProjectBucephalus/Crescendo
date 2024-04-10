@@ -145,11 +145,12 @@ public final class Constants
         /** Degrees to Deploy where Resistance begins*/
         public static final double pivotResDeployThreshold = 45; // set to >= 60 for no Resistance in Deploy direction
 
-        /* Current limit values */
-        public static final int pivotCurrentLimit = 38;
-        public static final int pivotCurrentThreshold = 65;
+        /* Pivot Current Limits */
+        public static final int pivotCurrentLimit = 40;
+        public static final int pivotCurrentThreshold = 60;
         public static final double pivotCurrentThresholdTime = 0.1;
-        public static final boolean pivotEnableCurrentLimit = false;
+        public static final boolean pivotEnableCurrentLimit = true;
+        public static final int pivotStatorLimit = 80;
         
         /* Intake Speeds */
         public static final double intakeSpeedShoot = 1;
@@ -162,6 +163,20 @@ public final class Constants
         public static final double indexSpeedOut = -0.35;
         public static final double indexSpeedInWithLimit = -0.4;
         public static final double indexSpeedShoot = 0.5;
+
+        /* Intake Current Limits */
+        public static final int intakeCurrentLimit = 40;
+        public static final int intakeCurrentThreshold = 60;
+        public static final double intakeCurrentThresholdTime = 0.1;
+        public static final boolean intakeEnableCurrentLimit = true;
+        public static final int intakeStatorLimit = 80;
+
+        /* Indexer Current Limits */
+        public static final int indexerCurrentLimit = intakeCurrentLimit;
+        public static final int indexerCurrentThreshold = intakeCurrentThreshold;
+        public static final double indexerCurrentThresholdTime = intakeCurrentThresholdTime;
+        public static final boolean indexerEnableCurrentLimit = true;
+        public static final int indexerStatorLimit = intakeStatorLimit;
 
     }
 
@@ -203,6 +218,13 @@ public final class Constants
         public static final double maxShootDistance = 7.5;
         /** Shooter Angle for hard-coded lob */
         public static final double halfCourtAngle = 57;
+
+        /* Current Limit Values*/
+        public static final int shooterCurrentLimit = 40;
+        public static final int shooterCurrentThreshold = 60;
+        public static final double shooterCurrentThresholdTime = 0.1;
+        public static final boolean shooterEnableCurrentLimit = true;
+        public static final int shooterStatorCurrentLimit = 120;
     }
 
     public static final class Climber 

@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CTREConfigs;
 import frc.robot.Constants;
 import frc.robot.IDConstants;
 
@@ -57,6 +58,8 @@ public class Shooter extends SubsystemBase {
     {
         SmartDashboard.putNumber("Shooter Bottom Speed", 0);
         SmartDashboard.putNumber("Shooter Top Speed", 0);
+        mBottomShooter.getConfigurator().apply(CTREConfigs.bottomShooterMotorFXConfig);
+        mTopShooter.getConfigurator().apply(CTREConfigs.topShooterMotorFXConfig);
     }
 
     /**
