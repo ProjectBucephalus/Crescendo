@@ -1,21 +1,15 @@
 package frc.robot.commands;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.FieldConstants;
-import frc.robot.commands.Shooter.AutoPivotShootSequence;
-import frc.robot.commands.Shooter.ShootSequence;
 import frc.robot.commands.Shooter.ShootSequenceBasic;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;

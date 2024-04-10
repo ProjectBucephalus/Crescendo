@@ -20,17 +20,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.VisionCommands.AimToSpeakerNoDrive;
 import frc.robot.VisionCommands.TurnToNote;
 import frc.robot.VisionCommands.aimToSpeakerSequence;
 import frc.robot.commands.GetMulitNote;
 import frc.robot.commands.PointAndPathFindCommand;
-import frc.robot.commands.PointToAngle;
 import frc.robot.commands.StabiliserBar;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
@@ -48,8 +44,6 @@ import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Climber.ClimberPosition;
-import frc.robot.subsystems.Intake.IndexerState;
-import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Intake.StabiliserPos;
 
 /**
@@ -84,7 +78,7 @@ public class RobotContainer {
     private final int MANUAL_SHOOTER_AXIS = XboxController.Axis.kRightY.value;
 
     private final SendableChooser<String> m_chosenAuto = new SendableChooser<>();
-    private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();
+    public final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();
 
     /* Subsystems */
     final RumbleController s_RumbleController = new RumbleController(driver.getHID(), coDriver.getHID());
