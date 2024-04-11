@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.RobotContainer;
 import frc.robot.SwerveConstants;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
@@ -61,7 +62,7 @@ public class aimToSpeaker extends Command {
 
         /* Used for figuring out how we should shoot */
         s_Pivot.setPosition(PivotPosition.SPEAKER);
-        if (pose.getX() > Constants.Shooter.outOfWingX)
+        if ((FieldConstants.isRedAlliance() && pose.getX() < Constants.Shooter.outOfRedWingX) || (!FieldConstants.isRedAlliance() && pose.getX() > Constants.Shooter.outOfBlueWingX))
         {
             s_Shooter.setShooterState(ShooterState.LOB);
         }
@@ -108,7 +109,7 @@ public class aimToSpeaker extends Command {
 
     public Rotation2d calculateRequiredHeading(Pose2d pose) {
         Translation2d aimTranslation;
-        if (pose.getX() > Constants.Shooter.outOfWingX)
+        if ((FieldConstants.isRedAlliance() && pose.getX() < Constants.Shooter.outOfRedWingX) || (!FieldConstants.isRedAlliance() && pose.getX() > Constants.Shooter.outOfBlueWingX))
         {
             aimTranslation = FieldConstants.LOB_TARGET;
         }

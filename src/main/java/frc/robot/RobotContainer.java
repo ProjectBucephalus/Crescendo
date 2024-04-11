@@ -175,8 +175,16 @@ public class RobotContainer {
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
        
         driver.a()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
-        driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.RIGHT_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
-        driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.LEFT_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
+        if(FieldConstants.isRedAlliance())
+        {
+            driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.SOURCE_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
+            driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController)); 
+        }
+        else
+        {
+            driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.SOURCE_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
+            driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController)); 
+        }
         driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.BACK_STAGE, PathPlannerPath.fromPathFile("Line Up With Back Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
         
         
@@ -234,7 +242,7 @@ public class RobotContainer {
         // List of start locations
         List<String> autonamesDropdown = Arrays.asList("S1-S2", "S3-S2", "S1-S2-S3", "S3-S2-S1", "S2-S1", "S1-C1", "C4", "C5", "S3-C4-C5", "W", "Q79" );
 
-        m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
+        m_startLocation.setDefaultOption("Source Side", FieldConstants.ROBOT_START_1);
         m_startLocation.addOption("Center", FieldConstants.ROBOT_START_2);
         m_startLocation.addOption("Amp Side", FieldConstants.ROBOT_START_3);
 
@@ -244,7 +252,7 @@ public class RobotContainer {
 
         m_chosenAuto.setDefaultOption("S1-S2", "S1-S2");
 
-        m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
+        m_startLocation.setDefaultOption("Source Side", FieldConstants.ROBOT_START_1);
 
         SmartDashboard.putNumber("AutoWait", 0);
 

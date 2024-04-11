@@ -70,8 +70,8 @@ public class FieldConstants {
     /* Driver pathfinding controlls in teleop */
     public static final Transform2d AMP = new Transform2d(0, 5.54, Rotation2d.fromDegrees(90));
     public static final Transform2d BACK_STAGE = new Transform2d(5.77, 4.11, Rotation2d.fromDegrees(180));
-    public static final Transform2d LEFT_STAGE = new Transform2d(4.44, 4.87, Rotation2d.fromDegrees(-60));
-    public static final Transform2d RIGHT_STAGE = new Transform2d(4.43, 3.32, Rotation2d.fromDegrees(60));
+    public static final Transform2d AMP_STAGE = new Transform2d(4.44, 4.87, Rotation2d.fromDegrees(-60));
+    public static final Transform2d SOURCE_STAGE = new Transform2d(4.43, 3.32, Rotation2d.fromDegrees(60));
 
     private static final Map<String, Translation2d> s_noteNameMap = new HashMap<>() {
         {

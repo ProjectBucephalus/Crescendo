@@ -226,7 +226,8 @@ public final class Constants
         public static final double topShooterLobSpeed = 0.6;
         public static final double lobAngle = 57;
         /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */
-        public static final double outOfWingX = 6;
+        public static final double outOfBlueWingX = 6;
+        public static final double outOfRedWingX = 10.5;
     }
 
     public static final class Climber 

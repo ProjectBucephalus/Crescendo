@@ -391,7 +391,7 @@ public class Pivot extends SubsystemBase {
         double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
         double shooterDrop = Constants.Shooter.verticalAccelerationConstant * (Math.pow(targetDistance,2) + Math.pow(targetHeightOverShooter,2));
 
-        if (pose.getX() > Constants.Shooter.outOfWingX) 
+        if ((FieldConstants.isRedAlliance() && pose.getX() < Constants.Shooter.outOfRedWingX) || (!FieldConstants.isRedAlliance() && pose.getX() > Constants.Shooter.outOfBlueWingX)) 
         {
             return Constants.Shooter.lobAngle;
         }
