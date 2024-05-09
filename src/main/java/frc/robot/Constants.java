@@ -123,14 +123,13 @@ public final class Constants
         public static final InvertedValue rightPivotMotorDirection = InvertedValue.CounterClockwise_Positive;
 
         /* Gain values */
-        public static final double pivotKP = 0.2; //0.3
+        public static final double pivotKP = 0.15;  //0.2 //0.3
         public static final double pivotKI = 0;
         public static final double pivotKD = 0.0; //0.03
         public static final double pivotKG = 0.85; //0.5
         public static final double pivotKRes = -0.25; // -0.25
-        public static final double pivotDampingGain = 2;
+        public static final double pivotDampingGain = 1.5; //2;
         public static final double pivotManualGain = 0.25;
-
         /* Thresholds for damping to take effect */
         public static final double pivotDeployDampingThreshold = 15;
         public static final double pivotStowDampingThreshold = -5;
@@ -183,16 +182,17 @@ public final class Constants
     public static final class Shooter 
     {
         /* Shooter speeds */
-        public static final double runningTopShooterSpeed = 0.87; //0.9
-        public static final double runningBottomShooterSpeed = 0.87; //0.9 // AMP TOP: 0.450000 bottom: 0.05
-        public static final double shooterIdleSpeed = 0.6;
+        public static final double runningTopShooterSpeed = 0.9; //0.9
+        public static final double runningBottomShooterSpeed = 0.9; //0.75; //0.9 // AMP TOP: 0.450000 bottom: 0.05
+        public static final double shooterIdleSpeed = 0.5;
         public static final double shooterEjectSpeed = -0.5;
-        public static final double shooterLobSpeed = 0.5;
+        //public static final double shooterLobSpeed = 0.5; //unused, see lob values below
         public static final double trapTopShooterSpeed = 0;
         public static final double trapBottomShooterSpeed = 0;
 
-        /** Acceptable velocity for the shooter to be off by, in rotations per second (?) */
-        public static final double shooterVelocityTolerance = 80;
+        /** Minimum velocity for the shooter to start rumbling at, in rotations per second (?) */
+        public static final double shooterVelocityTolerance = 82; //80
+       
 
         // public static final double horizontalShooterAngle = 20;
 
@@ -200,13 +200,13 @@ public final class Constants
         public static final double openLoopRamp = 0;
         
         /** Effective velocity of the ring coming out of the shooter, in meters per second */
-        public static final double shooterVelocity = 15.5;
+        public static final double shooterVelocity = 30; //15.5;
         public static final double gravity = 9.8;
 
         public static final double verticalAccelerationConstant = gravity / (2 * Math.pow(shooterVelocity,2));
 
         /** Metres of target point over shooter exit */
-        public static final double targetHeightOverShooter = 1.6;
+        public static final double targetHeightOverShooter = 1.6; //1.45; //1.415; //1.6;
         /** Metres of target point in front of tag */
         public static final double targetDistanceOffset = 0.2;
         /** Metres of shooter exit over pivot axis */
@@ -222,9 +222,11 @@ public final class Constants
         public static final int shooterStatorCurrentLimit = 120;
 
         /* Lob values */
-        public static final double bottomShooterLobSpeed = 0.6;
-        public static final double topShooterLobSpeed = 0.6;
-        public static final double lobAngle = 57;
+        public static final double bottomShooterLobSpeed = 0.3;
+        public static final double topShooterLobSpeed = 0.3;
+        public static final double lobAngle = 45;
+        public static final double lobVelocityTolerance = 35; //80 * topShooterLobSpeed;
+
         /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */
         public static final double outOfBlueWingX = 6;
         public static final double outOfRedWingX = 10.5;

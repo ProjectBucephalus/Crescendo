@@ -33,7 +33,7 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
      */
 
      
-    public PointAndPathFindCommand(Swerve s_Swerve, Transform2d targetLocation, PathPlannerPath path, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotatSup, RumbleController s_RumbleController) {
+    public PointAndPathFindCommand(Swerve s_Swerve, Transform2d targetLocation, PathPlannerPath path, RumbleController s_RumbleController) {
         this.s_RumbleController = s_RumbleController;
         // Create the constraints to use while pathfinding. The constraints defined in
         PathConstraints constraints = new PathConstraints(
@@ -48,7 +48,7 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
                 AutoBuilder.followPath(path),
                 new AlignToTrap(s_Swerve, targetLocation)
         );
-        s_RumbleController.setRumbleStatus(RumbleStates.SHOOTREADY, true);
+        //s_RumbleController.setRumbleStatus(RumbleStates.SHOOTREADY, true); //obsolete, used for trap shooting
 
     }
 }

@@ -9,7 +9,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-
+import frc.robot.Constants;
 import frc.robot.commands.CheckPrepStatsAndRumble;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Shooter.ShootPosition;
@@ -27,7 +27,7 @@ public class aimToAmpSequence extends ParallelCommandGroup {
                 new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.AMP)),
                 new InstantCommand(() -> s_Swerve.setWithinRequiredHeading(true)),
                 //new aimToAmp(s_Swerve, translationSup, strafeSup, brakeSup, s_Pivot), // this is where we add out auto movement
-                new CheckPrepStatsAndRumble(s_Pivot, s_Shooter, s_Swerve, s_RumbleController)
+                new CheckPrepStatsAndRumble(s_Pivot, s_Shooter, s_Swerve, s_RumbleController, Constants.Shooter.shooterVelocityTolerance)
         );
         
     }

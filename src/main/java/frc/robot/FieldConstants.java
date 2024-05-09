@@ -45,7 +45,7 @@ public class FieldConstants {
     public static final Translation2d DUMMY_NOTE_WAIT_FLAG = new Translation2d(NOTE_S_X, 0);
     public static final Translation2d DUMMY_NOTE_GOTOMID_FLAG = new Translation2d(NOTE_C_X - 0.1, NOTE_C_3.getY());
 
-    public static final Translation2d SPEAKER = new Translation2d(0.2, 5.54);
+    public static final Translation2d SPEAKER = new Translation2d(Constants.Shooter.targetDistanceOffset, 5.54);
 
     public static final Translation2d LOB_TARGET = new Translation2d(0, 7);
 
@@ -69,9 +69,9 @@ public class FieldConstants {
 
     /* Driver pathfinding controlls in teleop */
     public static final Transform2d AMP = new Transform2d(0, 5.54, Rotation2d.fromDegrees(90));
-    public static final Transform2d BACK_STAGE = new Transform2d(5.77, 4.11, Rotation2d.fromDegrees(180));
-    public static final Transform2d AMP_STAGE = new Transform2d(4.44, 4.87, Rotation2d.fromDegrees(-60));
-    public static final Transform2d SOURCE_STAGE = new Transform2d(4.43, 3.32, Rotation2d.fromDegrees(60));
+    public static final Transform2d BACK_STAGE = new Transform2d(6, 4.11, Rotation2d.fromDegrees(180));
+    public static final Transform2d AMP_STAGE = new Transform2d(4.31, 5.09, Rotation2d.fromDegrees(-60));
+    public static final Transform2d SOURCE_STAGE = new Transform2d(4.31, 3.1, Rotation2d.fromDegrees(60));
 
     private static final Map<String, Translation2d> s_noteNameMap = new HashMap<>() {
         {
