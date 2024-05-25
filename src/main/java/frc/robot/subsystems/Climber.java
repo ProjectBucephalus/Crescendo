@@ -35,7 +35,8 @@ public class Climber extends SubsystemBase
     public boolean leftCalibrated = true;
     public boolean rightCalibrated = true;
 
-    public Climber() {
+    public Climber() 
+    {
         leftClimbMotorFXConfig.Slot0.kP = 100;
         leftClimbMotorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         leftClimbMotorFXConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;  
@@ -203,12 +204,14 @@ public class Climber extends SubsystemBase
     }
 
 
-    public boolean getLeftLimit() {
+    public boolean getLeftLimit() 
+    {
         return leftClimberSwitch.get();
     }
 
 
-    public boolean getRightLimit() {
+    public boolean getRightLimit() 
+    {
         return leftClimberSwitch.get();
     }
 
