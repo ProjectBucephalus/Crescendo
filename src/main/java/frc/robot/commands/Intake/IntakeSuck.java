@@ -8,16 +8,13 @@ import frc.robot.subsystems.Intake.IntakeStatus;
  * Intake suck command
  * @author 5985
  */
-public class IntakeSuck extends Command {
-
+public class IntakeSuck extends Command 
+{
     Intake s_Intake;
 
-    public IntakeSuck(Intake s_Intake) {
+    public IntakeSuck(Intake s_Intake) 
+    {
         this.s_Intake = s_Intake;
-    }
-
-    public void initialize() {
-
     }
 
     // Called every time the scheduler runs while the command is scheduled.

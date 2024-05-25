@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.NoteVision;
 
-public class MonitorForNote extends Command {
+public class MonitorForNote extends Command 
+{
     // distance to NOTE where we just go for it
     private static final double MIN_DISTANCE_END_CHECKS = 1.5; // meters
 
@@ -29,7 +30,8 @@ public class MonitorForNote extends Command {
     private double m_distanceToNote;
 
     public MonitorForNote(NoteVision noteVision, Supplier<Pose2d> poseProvider, Translation2d blueNotePosition,
-            Command commandToCancel) {
+            Command commandToCancel) 
+    {
         m_poseProvider = poseProvider;
         m_blueNotePosition = blueNotePosition;
         m_noteVision = noteVision;
@@ -38,48 +40,52 @@ public class MonitorForNote extends Command {
 
     // Called when the command is initially scheduled.
     @Override
-    public void initialize() {
+    public void initialize() 
+    {
         m_notePosition = FieldConstants.flipTranslation(m_blueNotePosition);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {
-
+    public void execute() 
+    {
         Pose2d robotPose = m_poseProvider.get();
         m_distanceToNote = robotPose.getTranslation().getDistance(m_notePosition);
 
         if (m_distanceToNote >= NoteVision.MIN_VISIBLE_DISTANCE
                 && m_distanceToNote <= NoteVision.MAX_VISIBLE_DISTANCE) {
-            if (m_noteVision.checkForNote(robotPose, m_notePosition)) {
+            if (m_noteVision.checkForNote(robotPose, m_notePosition)) 
+            {
                 m_missedNoteCount = 0;
-            } else {
+            } 
+            else 
+            {
                 m_missedNoteCount++;
             }
 
-        } else {
+        } 
+        else 
+        {
             m_missedNoteCount = 0;
         }
 
     }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
-    }
-
     // Returns true when the command should end.
     @Override
-    public boolean isFinished() {
+    public boolean isFinished() 
+    {
 
-        if (m_distanceToNote < MIN_DISTANCE_END_CHECKS) {
+        if (m_distanceToNote < MIN_DISTANCE_END_CHECKS) 
+        {
             // got to this distance seeing the NOTE, so just go for it. No more checks
             return true;
         }
 
         // if we are in vision range of the NOTE and have not seen it for N cycles,
         // abort this command group
-        if (m_missedNoteCount >= NUM_SUCCESSIVE_FAILURES) {
+        if (m_missedNoteCount >= NUM_SUCCESSIVE_FAILURES) 
+        {
             System.out.println("MonitorForNote cancelling command. distance=" + m_distanceToNote);
             if (m_commandToCancel != null)
                 CommandScheduler.getInstance().cancel(m_commandToCancel);

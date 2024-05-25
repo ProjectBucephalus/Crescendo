@@ -31,11 +31,6 @@ public class RightStage extends SequentialCommandGroup
             (
                 new PointAndPathFindCommand(s_Swerve, FieldConstants.SOURCE_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), s_RumbleController)
             );
-        }
-
-        
+        }   
     }
-
-    
-
 }
