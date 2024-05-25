@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -98,6 +100,20 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() 
   {
+    m_robotContainer.configureButtonBindings();
+    
+
+    if (FieldConstants.isRedAlliance()) 
+    {
+      m_robotContainer.getSwerve().gyro.setYaw(m_robotContainer.getSwerve().getEstimatedPose().getRotation().getDegrees() + 180);
+    }
+    else 
+    {
+      m_robotContainer.getSwerve().gyro.setYaw(m_robotContainer.getSwerve().getEstimatedPose().getRotation().getDegrees());
+    }
+
+
+    
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -105,7 +121,15 @@ public class Robot extends TimedRobot {
     {
       m_autonomousCommand.schedule();
     }
-    m_robotContainer.getSwerve().gyro.setYaw(m_robotContainer.m_startLocation.getSelected().getRotation().getDegrees());
+    //m_robotContainer.getSwerve().gyro.setYaw(FieldConstants.flipPose(m_robotContainer.m_startLocation.getSelected()).getRotation().getDegrees());
+    
+    
+
+    //m_robotContainer.getSwerve().swerveOdometry.resetPosition
+    //(
+    //  FieldConstants.flipPose(m_robotContainer.m_startLocation.getSelected()).getRotation(), 
+    //  m_robotContainer.getSwerve().getModulePositions(), FieldConstants.flipPose(m_robotContainer.m_startLocation.getSelected())
+    //);
   }
 
   /** This function is called periodically during autonomous. */
@@ -126,6 +150,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
   }
 
   /** This function is called periodically during operator control. */

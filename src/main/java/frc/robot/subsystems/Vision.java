@@ -72,7 +72,7 @@ public class Vision extends SubsystemBase
      */
     public boolean checkAndUpdateResult(PhotonPipelineResult cam, Transform3d camToRobot) 
     {
-        if (cam.getMultiTagResult().estimatedPose.isPresent) // Runs if the estimated pose from the input cam is valid and exists
+        if (cam.getMultiTagResult().estimatedPose.isPresent && cam.getMultiTagResult().estimatedPose.ambiguity <= 0.2) // Runs if the estimated pose from the input cam is valid and exists
         {
             // Defines a Transform3d to represent the field-relative position of the input camera, 
             // then sets it to the best pose estimation from the camera result

@@ -1,9 +1,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.FieldConstants;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -21,7 +23,8 @@ public class PointToAngle extends Command {
 
     public PointToAngle(Swerve s_Swerve, Transform2d target) {
         this.s_Swerve = s_Swerve;
-        targetRotation = target.getRotation().getDegrees();
+        Pose2d shootingPose = new Pose2d(target.getTranslation(), target.getRotation());
+        targetRotation = FieldConstants.flipPose(shootingPose).getRotation().getDegrees();
 
     }
 

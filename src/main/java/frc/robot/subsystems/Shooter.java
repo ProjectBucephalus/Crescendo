@@ -40,7 +40,8 @@ public class Shooter extends SubsystemBase {
         STOPPED,
         IDLE,
         OUT,
-        TRAP
+        TRAP,
+        LOB
     };
 
     /**
@@ -107,6 +108,12 @@ public class Shooter extends SubsystemBase {
                 driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Top Speed", 0);
                 mTopShooter.setControl(driveDutyCycle);
                 break;
+            case LOB:
+                driveDutyCycle.Output = Constants.Shooter.bottomShooterLobSpeed;
+                mBottomShooter.setControl(driveDutyCycle);
+
+                driveDutyCycle.Output = Constants.Shooter.topShooterLobSpeed;
+                mTopShooter.setControl(driveDutyCycle);
             default:
                 break;
         }
@@ -122,6 +129,7 @@ public class Shooter extends SubsystemBase {
         return shooterMode;
     }
 
+
     /**
      * Checks if shooter RPM is within acceptable tolerance.
      * TODO not implimented yet
@@ -130,8 +138,18 @@ public class Shooter extends SubsystemBase {
      * @author 5985
      * @author Aidan
      */
-    public boolean rpmWithinTolerance() {
-        return mTopShooter.getVelocity().getValueAsDouble() > Constants.Shooter.shooterVelocityTolerance;
+    public boolean rpmWithinTolerance(double minShooterRPS) {
+
+        if(minShooterRPS == Constants.Shooter.lobVelocityTolerance)
+        {
+            SmartDashboard.putString("SHOOTREADY State", "LOB");
+         return mTopShooter.getVelocity().getValueAsDouble() < minShooterRPS;
+        }
+        else
+        {
+            SmartDashboard.putString("SHOOTREADY State", "SPEAKER");
+            return mTopShooter.getVelocity().getValueAsDouble() > minShooterRPS;
+        }
 
     }
 
