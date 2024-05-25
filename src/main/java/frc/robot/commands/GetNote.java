@@ -18,10 +18,11 @@ import frc.robot.subsystems.Shooter;
 
 // This abstract class represents a command group for getting notes during autonomous mode.
 // It defines a set of paths to navigate to different note locations on the field.
-public abstract class GetNote extends SequentialCommandGroup {
+public abstract class GetNote extends SequentialCommandGroup 
+{
 
-    
-    protected static final Map<Translation2d, String[]> s_pathLookup = new HashMap<>() {
+    protected static final Map<Translation2d, String[]> s_pathLookup = new HashMap<>() 
+    {
         {
             put(FieldConstants.NOTE_C_1, new String[] { "Start_1 to Note_C_1", "Start_2 to Note_C_1", "Note_C_1 to Shoot_1" });
             put(FieldConstants.NOTE_C_2, new String[] { "Start_1 to Note_C_2", "Start_2 to Note_C_2", "Shoot_1 to Note_C_2", "Note_C_2 to Shoot_1" });
@@ -40,18 +41,22 @@ public abstract class GetNote extends SequentialCommandGroup {
     protected final Swerve s_Swerve;
     protected final Translation2d m_targetNote; 
 
-    private void initPaths(String[] pathnameArray) {
-        for(int i=0; i<pathnameArray.length-1; i++) {
+    private void initPaths(String[] pathnameArray) 
+    {
+        for(int i=0; i<pathnameArray.length-1; i++) 
+        {
             // Load each path from file and add its starting pose to the candidate start paths.
             PathPlannerPath path = FieldConstants.loadPath(pathnameArray[i]);
-            if (path != null) {
+            if (path != null) 
+            {
                 Pose2d startPose = path.getStartingDifferentialPose();
                 m_candidateStartPaths.put(startPose, path);
             }
         }
     }
 
-    public GetNote(Translation2d targetNote, Swerve s_Swerve, NoteVision noteVision, Shooter shooter, Intake intake) {
+    public GetNote(Translation2d targetNote, Swerve s_Swerve, NoteVision noteVision, Shooter shooter, Intake intake) 
+    {
         this.m_targetNote = targetNote;
         this.s_Swerve = s_Swerve;
         initPaths(s_pathLookup.get(targetNote));

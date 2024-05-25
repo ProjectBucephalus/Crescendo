@@ -32,10 +32,6 @@ public class LeftStage extends SequentialCommandGroup
                 new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), s_RumbleController)
             );
         }
-
-        
+       
     }
-
-    
-
 }

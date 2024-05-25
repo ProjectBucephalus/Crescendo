@@ -16,7 +16,8 @@ import edu.wpi.first.wpilibj2.command.Command;
  * teleop swerve command
  * @author 5985
  */
-public class TeleopSwerve extends Command {    
+public class TeleopSwerve extends Command 
+{    
     private Swerve s_Swerve;    
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
@@ -36,7 +37,8 @@ public class TeleopSwerve extends Command {
     }
 
     @Override
-    public void execute() {
+    public void execute() 
+    {
         /* Get Values, Deadband*/
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
@@ -44,7 +46,8 @@ public class TeleopSwerve extends Command {
         double brakeVal = MathUtil.applyDeadband(brakeAxis.getAsDouble(), Constants.stickDeadband);
 
         /* Drive */
-        s_Swerve.drive(
+        s_Swerve.drive
+        (
             new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
             rotationVal * SwerveConstants.maxAngularVelocity, 
             !robotCentricSup.getAsBoolean(), 

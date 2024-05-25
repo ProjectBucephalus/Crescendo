@@ -27,7 +27,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
 
-public class NoteVision extends SubsystemBase {
+public class NoteVision extends SubsystemBase 
+{
     // Plot vision solutions
     public static final boolean PLOT_NOTES = true;
     private static final double ALLOWED_POSITION_ERROR = .2;
@@ -50,8 +51,10 @@ public class NoteVision extends SubsystemBase {
     // Swerve for notes plotting
     private Swerve s_Swerve;
 
-    public NoteVision(Swerve s_Swerve) {
-        if (true /* Constants.USING_SIM */) {
+    public NoteVision(Swerve s_Swerve) 
+    {
+        if (true /* Constants.USING_SIM */) 
+        {
             // initialize a simulated camera. Must be done after creating the tag layout
             initializeSimulation();
         }
@@ -65,25 +68,30 @@ public class NoteVision extends SubsystemBase {
         SmartDashboard.putData("Notes Poses", m_notes);
     }
 
-    public void updateSimulation(Pose2d pose) {
+    public void updateSimulation(Pose2d pose) 
+    {
         m_visionSim.update(pose);
     }
 
     // Get visible NOTEs in robot-centric coordinates
-    public List<Translation2d> getNotes() {
+    public List<Translation2d> getNotes() 
+    {
         List<Translation2d> positions = new ArrayList<Translation2d>();
 
-        if (!m_noteCamera.isConnected()) {
+        if (!m_noteCamera.isConnected()) 
+        {
             SmartDashboard.putString("Note Camera: ", "Disconnected");
             return positions;
-        } else {
+        } else 
+        {
             SmartDashboard.putString("Note Camera: ", "Connected");
         }
 
         var results = m_noteCamera.getLatestResult();
         List<PhotonTrackedTarget> targets = results.getTargets();
 
-        for (PhotonTrackedTarget tgt : targets) {
+        for (PhotonTrackedTarget tgt : targets) 
+        {
             // this calc assumes pitch angle is positive UP, so flip the camera's pitch
             // note that PV target angles are in degrees
             double d = Math.abs(Constants.Vision.noteCamToRobot.getZ() /
@@ -101,20 +109,23 @@ public class NoteVision extends SubsystemBase {
      * relative function and pass in robot pose and use photonutils get rotation to
      * pose.
      */
-    public List<Double> getNotesYaw() {
+    public List<Double> getNotesYaw() 
+    {
         List<Double> positions = new ArrayList<Double>();
 
         if (!m_noteCamera.isConnected()) {
             SmartDashboard.putString("Note Camera: ", "Disconnected");
             return positions;
-        } else {
+        } else 
+        {
             SmartDashboard.putString("Note Camera: ", "Connected");
         }
 
         var results = m_noteCamera.getLatestResult();
         List<PhotonTrackedTarget> targets = results.getTargets();
 
-        for (PhotonTrackedTarget tgt : targets) {
+        for (PhotonTrackedTarget tgt : targets) 
+        {
             double yaw = (tgt.getYaw());
             positions.add(yaw);
         }
@@ -122,10 +133,12 @@ public class NoteVision extends SubsystemBase {
     }
 
     // get visible NOTEs, in field-centric positions
-    public List<Translation2d> getNotes(Pose2d robotPose) {
+    public List<Translation2d> getNotes(Pose2d robotPose) 
+    {
         List<Translation2d> positions = new ArrayList<Translation2d>();
 
-        if (!m_noteCamera.isConnected()) {
+        if (!m_noteCamera.isConnected()) 
+        {
             return positions;
         }
 
@@ -133,7 +146,8 @@ public class NoteVision extends SubsystemBase {
         double robotY = robotPose.getY();
         double robotRotation = robotPose.getRotation().getRadians();
 
-        for (PhotonTrackedTarget tgt : m_noteCamera.getLatestResult().getTargets()) {
+        for (PhotonTrackedTarget tgt : m_noteCamera.getLatestResult().getTargets()) 
+        {
             // this calc assumes pitch angle is positive UP, so flip the camera's pitch
             // note that PV target angles are in degrees
             double d = Math.abs(Constants.Vision.noteCamToRobot.getZ() /
@@ -150,8 +164,10 @@ public class NoteVision extends SubsystemBase {
         return positions;
     }
 
-    public boolean checkForNote(Pose2d robotPose, Translation2d wantedNote) {
-        if (!m_noteCamera.isConnected()) {
+    public boolean checkForNote(Pose2d robotPose, Translation2d wantedNote) 
+    {
+        if (!m_noteCamera.isConnected()) 
+        {
             return false;
         }
 
@@ -160,7 +176,8 @@ public class NoteVision extends SubsystemBase {
         double robotRotation = robotPose.getRotation().getRadians();
 
         // goes through the found targets and checks if the wanted note pose is visible.
-        for (PhotonTrackedTarget tgt : m_noteCamera.getLatestResult().getTargets()) {
+        for (PhotonTrackedTarget tgt : m_noteCamera.getLatestResult().getTargets()) 
+        {
             // this calc assumes pitch angle is positive UP, so flip the camera's pitch
             // note that PV target angles are in degrees
             double d = Math.abs(Constants.Vision.noteCamToRobot.getZ() /
@@ -173,7 +190,8 @@ public class NoteVision extends SubsystemBase {
             double fieldCentricNoteY = robotY + d * Math.sin(noteAngle);
             Translation2d notePosition = new Translation2d(fieldCentricNoteX, fieldCentricNoteY);
 
-            if (notePosition.getDistance(wantedNote) <= ALLOWED_POSITION_ERROR) {
+            if (notePosition.getDistance(wantedNote) <= ALLOWED_POSITION_ERROR) 
+            {
                 return true;
             }
         }
@@ -182,7 +200,8 @@ public class NoteVision extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {
+    public void periodic() 
+    {
         // DEBUG
         List<Translation2d> notes = getNotes(s_Swerve.getEstimatedPose());
         SmartDashboard.putNumber("noteVision nFound", notes.size());
@@ -194,7 +213,8 @@ public class NoteVision extends SubsystemBase {
 
     }
 
-    private void initializeSimulation() {
+    private void initializeSimulation() 
+    {
         m_visionSim = new VisionSystemSim("NoteVision");
 
         // roughly our Logitech camera

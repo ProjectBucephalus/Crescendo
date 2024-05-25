@@ -11,8 +11,8 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Intake.IndexerState;
 import frc.robot.subsystems.Intake.IntakeStatus;
 
-public class PullNoteSequence extends SequentialCommandGroup{
-    
+public class PullNoteSequence extends SequentialCommandGroup
+{  
     Intake s_Intake;
     
     public PullNoteSequence(Intake s_Intake) 

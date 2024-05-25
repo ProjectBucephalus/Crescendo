@@ -8,7 +8,8 @@ import frc.robot.subsystems.Intake.StabiliserPos;
  * PointToAngle Command
  * @author Alec
  */
-public class StabiliserBar extends Command {
+public class StabiliserBar extends Command 
+{
     Intake sIntake;
     StabiliserPos pos;
     public StabiliserBar(Intake sIntake, StabiliserPos pos)

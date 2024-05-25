@@ -15,13 +15,15 @@ import frc.robot.subsystems.Swerve;
  * @author Aidan
  * @author 5985
  */
-public class PointToAngle extends Command {
+public class PointToAngle extends Command 
+{
     private Swerve s_Swerve;
     private double targetRotation;
 
     private PIDController pid = new PIDController(0.1, 0, 2);
 
-    public PointToAngle(Swerve s_Swerve, Transform2d target) {
+    public PointToAngle(Swerve s_Swerve, Transform2d target) 
+    {
         this.s_Swerve = s_Swerve;
         Pose2d shootingPose = new Pose2d(target.getTranslation(), target.getRotation());
         targetRotation = FieldConstants.flipPose(shootingPose).getRotation().getDegrees();
@@ -29,7 +31,8 @@ public class PointToAngle extends Command {
     }
 
     @Override
-    public void execute() {
+    public void execute() 
+    {
         // var turningVal =
         // pid.calculate(s_Swerve.getEstimatedPose().getRotation().getDegrees(),
         // targetRotation);
@@ -42,25 +45,30 @@ public class PointToAngle extends Command {
     }
 
     @Override
-    public void initialize() {
+    public void initialize() 
+    {
         pid.reset();
         s_Swerve.setVisionAlignmentBool(true);
     }
 
     @Override
-    public void end(boolean end) {
+    public void end(boolean end) 
+    {
         s_Swerve.setVisionAlignmentBool(false);
     }
 
-    public double calculateRequiredHeading() {
+    public double calculateRequiredHeading() 
+    {
         var pose = s_Swerve.getEstimatedPose();
         // flip the pose so the alignments work on the other side of the field.
         double requiredHeading = pose.getRotation().getDegrees() - targetRotation;
         
         // Adjust the required heading to keep it within a reasonable range
-        if (requiredHeading > 180) {
+        if (requiredHeading > 180) 
+        {
             requiredHeading -= 360; // Keep the heading within -180 to 180 degrees
-        } else if (requiredHeading < -180) {
+        } else if (requiredHeading < -180) 
+        {
             requiredHeading += 360; // Keep the heading within -180 to 180 degrees
         }
         
@@ -69,7 +77,8 @@ public class PointToAngle extends Command {
     
 
     @Override
-    public boolean isFinished() {
+    public boolean isFinished() 
+    {
         // return (Math.abs(-calculateRequiredHeading()/10)<SwerveConstants.ANGLE_TOLERANCE_DEGREES);
         return false;
     }
