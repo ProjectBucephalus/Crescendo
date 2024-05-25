@@ -20,19 +20,13 @@ public class ClimberExtend extends Command
         addRequirements(s_Climber);
     }
 
-    public void initialize() {
-
-    }
-
     public void execute() 
     {
         s_Climber.setClimberPosition(ClimberPosition.UP);
     }
 
-    public void end() {
-    }
-
-    public boolean isFinished() {
+    public boolean isFinished() 
+    {
         return true;
         // return s_Climber.getRightLimit() && s_Climber.getLeftLimit();
     }
