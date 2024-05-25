@@ -154,8 +154,8 @@ public class Swerve extends SubsystemBase
                 getGyroYaw(),
                 getModulePositions(),
                 new Pose2d(),
-                Constants.Vision.STATE_STANDARD_DEVIATIONS,
-                Constants.Vision.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
+                Constants.Vision.stateStandardDeviations,
+                Constants.Vision.visionMeasurementStandardDeviations);
 
         // Define and initialise PhotonPoseEstimators
         photonPoseEstimatorFront = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCam,
@@ -543,19 +543,19 @@ public class Swerve extends SubsystemBase
                 (
                         1,
                         (estimation.targetsUsed.get(0).getPoseAmbiguity()
-                                + Constants.Vision.POSE_AMBIGUITY_SHIFTER)
-                                * Constants.Vision.POSE_AMBIGUITY_MULTIPLIER);
+                                + Constants.Vision.poseAmbiguityShifter)
+                                * Constants.Vision.poseAmbiguityMultilplier);
         double confidenceMultiplier = Math.max(
                 1,
                 (Math.max(
                         1,
-                        Math.max(0, smallestDistance - Constants.Vision.NOISY_DISTANCE_METERS)
-                                * Constants.Vision.DISTANCE_WEIGHT)
+                        Math.max(0, smallestDistance - Constants.Vision.noisyDistanceMeters)
+                                * Constants.Vision.distanceWeight)
                         * poseAmbiguityFactor)
                         / (1
-                                + ((estimation.targetsUsed.size() - 1) * Constants.Vision.TAG_PRESENCE_WEIGHT)));
+                                + ((estimation.targetsUsed.size() - 1) * Constants.Vision.tagPresenceWeight)));
 
-        return Constants.Vision.VISION_MEASUREMENT_STANDARD_DEVIATIONS.times(confidenceMultiplier);
+        return Constants.Vision.visionMeasurementStandardDeviations.times(confidenceMultiplier);
     }
 
     /**
