@@ -147,12 +147,7 @@ public class Pivot extends SubsystemBase
         pivotPDGCycle();
     }
 
-    // .withLimitForwardMotion(rightDeploySwitch.get())
-    // .withLimitForwardMotion(leftDeploySwitch.get())
-
-    // .withLimitReverseMotion(rightStowSwitch.get())
-    // .withLimitReverseMotion(leftStowSwitch.get())
-
+   
     /**
      * Moves the arm to a set position, in degrees
      * @param inputAngle The real-world angle to move the arm to in degrees.
