@@ -21,10 +21,12 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.Swerve;
 
-public class GetMulitNote extends SequentialCommandGroup {
+public class GetMulitNote extends SequentialCommandGroup 
+{
 
     public GetMulitNote(Translation2d[] noteLocations, Swerve s_Swerve, NoteVision noteVision,
-            Shooter s_Shooter, Pivot s_Pivot, Intake s_Intake, Climber s_Climber) {
+            Shooter s_Shooter, Pivot s_Pivot, Intake s_Intake, Climber s_Climber) 
+    {
         // for (Translation2d note : noteLocations) {
         //     if (!FieldConstants.DUMMY_NOTE_WAIT_FLAG.equals(note)) {
         //         addCommands(new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve));

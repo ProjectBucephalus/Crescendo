@@ -10,8 +10,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Intake.IndexerState;
 
-public class PushNoteSequence extends SequentialCommandGroup{
-    
+public class PushNoteSequence extends SequentialCommandGroup
+{    
     Intake s_Intake;
     
     public PushNoteSequence(Intake s_Intake) 
