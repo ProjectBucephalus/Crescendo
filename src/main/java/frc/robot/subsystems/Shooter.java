@@ -9,7 +9,8 @@ import frc.robot.CTREConfigs;
 import frc.robot.Constants;
 import frc.robot.IDConstants;
 
-public class Shooter extends SubsystemBase {
+public class Shooter extends SubsystemBase 
+{
     // motors
     private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
 
@@ -20,22 +21,12 @@ public class Shooter extends SubsystemBase {
     private ShootPosition shooterMode = ShootPosition.SPEAKER;
 
     /**
-     * Enum representing the status of the indexer roller (OPEN for running, CLOSED
-     * for stopped)
-     * 
-     * @author 5985
-     */
-    public enum FlapPosition {
-        OPEN,
-        CLOSED,
-    };
-
-    /**
      * Enum representing the status of the shooter
      * 
      * @author 5985
      */
-    public enum ShooterState {
+    public enum ShooterState 
+    {
         RUNNING,
         STOPPED,
         IDLE,
@@ -49,7 +40,8 @@ public class Shooter extends SubsystemBase {
      * 
      * @author 5985
      */
-    public enum ShootPosition {
+    public enum ShootPosition 
+    {
         AMP,
         SPEAKER,
         TRAP,
@@ -57,8 +49,6 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() 
     {
-        SmartDashboard.putNumber("Shooter Bottom Speed", 0);
-        SmartDashboard.putNumber("Shooter Top Speed", 0);
         mBottomShooter.getConfigurator().apply(CTREConfigs.bottomShooterMotorFXConfig);
         mTopShooter.getConfigurator().apply(CTREConfigs.topShooterMotorFXConfig);
     }
@@ -71,64 +61,62 @@ public class Shooter extends SubsystemBase {
      */
     public void setShooterState(ShooterState state) 
     {
-        SmartDashboard.putString("Current State of Shooter Motors for sim", state.name());
-
         switch (state) 
         {
             case RUNNING:
                 driveDutyCycle.Output = Constants.Shooter.runningBottomShooterSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
-
                 driveDutyCycle.Output = Constants.Shooter.runningTopShooterSpeed;
                 mTopShooter.setControl(driveDutyCycle);
                 break;
+
             case STOPPED:
                 driveDutyCycle.Output = 0;
                 mBottomShooter.setControl(driveDutyCycle);
                 mTopShooter.setControl(driveDutyCycle);
                 break;
+
             case IDLE:
-                //System.out.println("idle");
                 driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
-
                 driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
                 mTopShooter.setControl(driveDutyCycle);
                 break;
+
             case OUT:
                 driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
-
                 driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
                 mTopShooter.setControl(driveDutyCycle);
+            
             case TRAP:
                 driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Bottom Speed", 0);
                 mBottomShooter.setControl(driveDutyCycle);
-
                 driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Top Speed", 0);
                 mTopShooter.setControl(driveDutyCycle);
                 break;
+
             case LOB:
                 driveDutyCycle.Output = Constants.Shooter.bottomShooterLobSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
-
                 driveDutyCycle.Output = Constants.Shooter.topShooterLobSpeed;
                 mTopShooter.setControl(driveDutyCycle);
+                break;
+
             default:
                 break;
         }
-        // SmartDashboard.putNumber("bottomShooterSpeed", bottomSpeed);
-        // SmartDashboard.putNumber("topShooterSpeed", topSpeed);
     }
 
-    public void setShooterPosition(ShootPosition pos) {
+    public void setShooterPosition(ShootPosition pos) 
+    {
         shooterMode = pos;
     }
 
-    public ShootPosition getShootPosition() {
+    public ShootPosition getShootPosition() 
+    {
         return shooterMode;
     }
-
 
     /**
      * Checks if shooter RPM is within acceptable tolerance.
@@ -138,26 +126,24 @@ public class Shooter extends SubsystemBase {
      * @author 5985
      * @author Aidan
      */
-    public boolean rpmWithinTolerance(double minShooterRPS) {
-
-        if(minShooterRPS == Constants.Shooter.lobVelocityTolerance)
+    public boolean rpmWithinTolerance(double minShooterRPS) 
+    {
+        if (minShooterRPS == Constants.Shooter.lobVelocityTolerance) 
         {
             SmartDashboard.putString("SHOOTREADY State", "LOB");
-         return mTopShooter.getVelocity().getValueAsDouble() < minShooterRPS;
-        }
-        else
+            return mTopShooter.getVelocity().getValueAsDouble() < minShooterRPS;
+        } 
+        else 
         {
             SmartDashboard.putString("SHOOTREADY State", "SPEAKER");
             return mTopShooter.getVelocity().getValueAsDouble() > minShooterRPS;
         }
-
     }
 
     @Override
-    public void periodic() {
+    public void periodic() 
+    {
         // Prints info to Smart Dashboard
-        SmartDashboard.putString("Current State of Motors for sim", getShootPosition().name());
-
         SmartDashboard.putNumber("Top Shooter RPS", mTopShooter.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Bottom Shooter RPS", mBottomShooter.getVelocity().getValueAsDouble());
     }
