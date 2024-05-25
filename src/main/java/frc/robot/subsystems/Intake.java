@@ -261,12 +261,14 @@ public class Intake extends SubsystemBase
         
         if (useBeamBreak && !beamBreakBool)
         {
-            if (timerHasReset == false) {
+            if (timerHasReset == false) 
+            {
                 timerHasReset = true;
-            m_timer.restart();
+                m_timer.restart();
             }
             
-            if (m_timer.hasElapsed(Constants.Intake.extraIntakeTime)) {
+            if (m_timer.hasElapsed(Constants.Intake.extraIntakeTime)) 
+            {
                 setIntakeStatus(IntakeStatus.STOPPED);
                 timerHasReset = false;
             }
@@ -274,7 +276,8 @@ public class Intake extends SubsystemBase
         }
         if (useStabiliserLimitSwitch)
         {
-            if (!StabilserLimit.get()) {
+            if (!StabilserLimit.get()) 
+            {
                 setStabliserPos(StabiliserPos.STOPPED);
             }
         }

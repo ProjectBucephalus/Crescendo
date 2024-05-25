@@ -8,10 +8,12 @@ import frc.robot.subsystems.Climber.BuddyClimbPosition;
  * Deploy buddy climber command to start the spool running
  * @author 5985
  */
-public class DeployBuddyClimber extends Command {
+public class DeployBuddyClimber extends Command 
+{
     private Climber s_Climber;
 
-    public DeployBuddyClimber(Climber s_Climber) {
+    public DeployBuddyClimber(Climber s_Climber) 
+    {
         this.s_Climber = s_Climber;
     }
 
@@ -19,14 +21,13 @@ public class DeployBuddyClimber extends Command {
      * Sets the buddyClimbPosition to the variable RUNNING
      */
     @Override
-    public void execute() {
+    public void execute() 
+    {
         s_Climber.setBuddyClimb(BuddyClimbPosition.RUNNING);
     }
 
-    public boolean isFinished() {
+    public boolean isFinished() 
+    {
         return true;
     }
-
-    
-    
 }
