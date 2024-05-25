@@ -10,7 +10,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Intake.IndexerState;
 
-public class ShootSequence extends SequentialCommandGroup{
+public class ShootSequence extends SequentialCommandGroup
+{
     
     Shooter s_Shooter;
     Intake s_Intake;

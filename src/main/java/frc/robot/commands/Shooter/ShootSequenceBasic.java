@@ -20,7 +20,8 @@ import frc.robot.subsystems.Shooter.ShooterState;
  * @author 5985
  * @author Aidan
  */
-public class ShootSequenceBasic extends Command {
+public class ShootSequenceBasic extends Command 
+{
     /**
      * MAX Total time allowed for the shooter to spin up and shoot if the beam break
      * doesn't work
@@ -42,7 +43,8 @@ public class ShootSequenceBasic extends Command {
     Swerve s_Swerve;
     Timer m_timer = new Timer();
 
-    public ShootSequenceBasic(Shooter s_Shooter, Intake s_Intake) {
+    public ShootSequenceBasic(Shooter s_Shooter, Intake s_Intake) 
+    {
         this.s_Shooter = s_Shooter;
         this.s_Intake = s_Intake;
         
@@ -59,9 +61,11 @@ public class ShootSequenceBasic extends Command {
      * @author Aidan
      */
     @Override
-    public void initialize() {
+    public void initialize() 
+    {
         EJECTED = false;
-        if (s_Shooter.getShootPosition() == ShootPosition.SPEAKER) {
+        if (s_Shooter.getShootPosition() == ShootPosition.SPEAKER) 
+        {
             // speaker shot
             // s_Intake.setIntakeStatus(IntakeStatus.IN);
             s_Shooter.setShooterState(ShooterState.RUNNING);
@@ -76,12 +80,14 @@ public class ShootSequenceBasic extends Command {
             //     SHOOT_SPIN_UP_TIME = 0; // seconds
             // }
         // Not used only speaker
-        } else if (s_Shooter.getShootPosition() == ShootPosition.AMP) {
+        } else if (s_Shooter.getShootPosition() == ShootPosition.AMP) 
+        {
             // amp shot
             SHOOT_TIME = 1.5; // seconds
             SHOOT_SPIN_UP_TIME = 0; // seconds
             s_Intake.setIntakeStatus(IntakeStatus.OUT);
-        } else if (s_Shooter.getShootPosition() == ShootPosition.TRAP) {
+        } else if (s_Shooter.getShootPosition() == ShootPosition.TRAP) 
+        {
             // trap shot
             s_Shooter.setShooterState(ShooterState.TRAP);
             SHOOT_TIME = 1.5; // seconds

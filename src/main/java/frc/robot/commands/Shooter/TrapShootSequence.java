@@ -19,7 +19,8 @@ import frc.robot.subsystems.Shooter.ShootPosition;
  */
 public class TrapShootSequence extends SequentialCommandGroup{
     
-    public TrapShootSequence(Pivot s_Pivot, Intake s_Intake, Shooter s_Shooter, Swerve s_Swerve) {
+    public TrapShootSequence(Pivot s_Pivot, Intake s_Intake, Shooter s_Shooter, Swerve s_Swerve) 
+    {
             addCommands
             (
                 new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.TRAP)),

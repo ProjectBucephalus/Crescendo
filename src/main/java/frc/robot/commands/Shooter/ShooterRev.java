@@ -8,7 +8,8 @@ import frc.robot.subsystems.Shooter.ShooterState;
  * Shooter rev command
  * @author 5985
  */
-public class ShooterRev extends Command {
+public class ShooterRev extends Command 
+{
     private final Shooter s_Shooter;
 
     public ShooterRev(Shooter s_Shooter) 
@@ -17,11 +18,13 @@ public class ShooterRev extends Command {
     }
 
     // Sets shooterState to the variable RUNNING
-    public void execute() {
+    public void execute() 
+    {
         s_Shooter.setShooterState(ShooterState.RUNNING);
     }
 
-    public boolean isFinished() {
+    public boolean isFinished() 
+    {
         return true;
     }
 }
