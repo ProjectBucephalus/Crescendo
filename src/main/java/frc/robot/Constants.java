@@ -56,14 +56,14 @@ public final class Constants
         ); // Meters and Radians (roll, pitch, yaw)
 
 
-        public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
-        public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
-        public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
-        public static final double NOISY_DISTANCE_METERS = 2.5;
-        public static final double DISTANCE_WEIGHT = 7;
-        public static final int TAG_PRESENCE_WEIGHT = 10;
+        public static final double aprilTagAmbiguityThreshold = 0.2;
+        public static final double poseAmbiguityShifter = 0.2;
+        public static final double poseAmbiguityMultilplier = 4;
+        public static final double noisyDistanceMeters = 2.5;
+        public static final double distanceWeight = 7;
+        public static final int tagPresenceWeight = 10;
 
-        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill
+        public static final Matrix<N3, N1> visionMeasurementStandardDeviations = MatBuilder.fill
         (Nat.N3(), Nat.N1(),
                 // if these numbers are less than one, multiplying will do bad things
                 1, // x
@@ -77,7 +77,7 @@ public final class Constants
          * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
          * radians.
          */
-        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), .1, .1, 1);
+        public static final Matrix<N3, N1> stateStandardDeviations = MatBuilder.fill(Nat.N3(), Nat.N1(), .1, .1, 1);
 
         public static final double noteTurnScalarGain = 10;
         public static final double noteTurnPowerGain = 3;
