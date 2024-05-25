@@ -6,10 +6,8 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -60,7 +58,8 @@ public class Pivot extends SubsystemBase {
         SPEAKER,
         AMP_MANUAL,
         TRAP_MANUAL,
-        SPEAKER_MANUAL
+        SPEAKER_MANUAL,
+        LOB
     };
 
     public enum FlapPosition {
@@ -115,6 +114,9 @@ public class Pivot extends SubsystemBase {
                 break;
             case SPEAKER_MANUAL:
                 moveArmToAngle(50);
+                break;
+            case LOB:
+                moveArmToAngle(Constants.Shooter.lobAngle);
                 break;
         }
     }
@@ -383,19 +385,18 @@ public class Pivot extends SubsystemBase {
     public double calculatedRequiredShooterAngle() 
     {
         double targetHeightOverShooter = Constants.Shooter.targetHeightOverShooter;
-        double targetDistanceOffset = Constants.Shooter.targetDistanceOffset;
         double shooterPivotOffsetUp = Constants.Shooter.shooterPivotOffsetUp;
         double shooterPivotOffsetBack = Constants.Shooter.shooterPivotOffsetBack;
         double targetAngle;
         double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
         double shooterDrop = Constants.Shooter.verticalAccelerationConstant * (Math.pow(targetDistance,2) + Math.pow(targetHeightOverShooter,2));
 
-        if (targetDistance > Constants.Shooter.maxShootDistance) 
+        if ((FieldConstants.isRedAlliance() && pose.getX() < Constants.Shooter.outOfRedWingX) || (!FieldConstants.isRedAlliance() && pose.getX() > Constants.Shooter.outOfBlueWingX)) 
         {
-            return Constants.Shooter.halfCourtAngle;
+            return Constants.Shooter.lobAngle;
         }
 
-        targetDistance += shooterPivotOffsetBack - targetDistanceOffset;
+        targetDistance += shooterPivotOffsetBack;
 
         targetAngle = Math.atan(targetHeightOverShooter/targetDistance);
         targetDistance += shooterPivotOffsetUp * Math.tan(targetAngle);

@@ -4,15 +4,16 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.RumbleController.RumbleStates;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -89,23 +90,56 @@ public class Robot extends TimedRobot {
     if (!autoPopulator.equals(m_prevAuto)) {
       SmartDashboard.putString("Auto Chooser", autoPopulator);
       m_prevAuto = autoPopulator;
-    }        
+    }
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.AIM, false);
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.SHOOTREADY, false);
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
-  public void autonomousInit() {
+  public void autonomousInit() 
+  {
+    m_robotContainer.configureButtonBindings();
+    
+
+    if (FieldConstants.isRedAlliance()) 
+    {
+      m_robotContainer.getSwerve().gyro.setYaw(m_robotContainer.getSwerve().getEstimatedPose().getRotation().getDegrees() + 180);
+    }
+    else 
+    {
+      m_robotContainer.getSwerve().gyro.setYaw(m_robotContainer.getSwerve().getEstimatedPose().getRotation().getDegrees());
+    }
+
+
+    
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
+    if (m_autonomousCommand != null) 
+    {
       m_autonomousCommand.schedule();
     }
+    //m_robotContainer.getSwerve().gyro.setYaw(FieldConstants.flipPose(m_robotContainer.m_startLocation.getSelected()).getRotation().getDegrees());
+    
+    
+
+    //m_robotContainer.getSwerve().swerveOdometry.resetPosition
+    //(
+    //  FieldConstants.flipPose(m_robotContainer.m_startLocation.getSelected()).getRotation(), 
+    //  m_robotContainer.getSwerve().getModulePositions(), FieldConstants.flipPose(m_robotContainer.m_startLocation.getSelected())
+    //);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() 
+  {
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.AIM, false);
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
+    m_robotContainer.s_RumbleController.setRumbleStatus(RumbleStates.SHOOTREADY, false);
+  }
 
   @Override
   public void teleopInit() {
@@ -116,6 +150,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
   }
 
   /** This function is called periodically during operator control. */

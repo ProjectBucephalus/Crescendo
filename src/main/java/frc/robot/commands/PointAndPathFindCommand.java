@@ -12,21 +12,16 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import frc.lib.util.RumbleController;
-import frc.lib.util.RumbleController.Controllers;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.FieldConstants;
+import frc.robot.subsystems.RumbleController;
 import frc.robot.subsystems.Swerve;
 import frc.robot.VisionCommands.AlignToTrap;
+import frc.robot.subsystems.RumbleController.RumbleStates;
 
 public class PointAndPathFindCommand extends SequentialCommandGroup {
+    RumbleController s_RumbleController;
 
     /**
      * Constructs a new PointAndPathFind command group.
@@ -38,8 +33,8 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
      */
 
      
-    public PointAndPathFindCommand(Swerve s_Swerve, Transform2d targetLocation, PathPlannerPath path, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotatSup, RumbleController s_RumbleController) {
-
+    public PointAndPathFindCommand(Swerve s_Swerve, Transform2d targetLocation, PathPlannerPath path, RumbleController s_RumbleController) {
+        this.s_RumbleController = s_RumbleController;
         // Create the constraints to use while pathfinding. The constraints defined in
         PathConstraints constraints = new PathConstraints(
                 Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -53,7 +48,7 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
                 AutoBuilder.followPath(path),
                 new AlignToTrap(s_Swerve, targetLocation)
         );
-        s_RumbleController.setRumble(Controllers.CODRIVER, 1, RumbleType.kBothRumble);
+        //s_RumbleController.setRumbleStatus(RumbleStates.SHOOTREADY, true); //obsolete, used for trap shooting
 
     }
 }

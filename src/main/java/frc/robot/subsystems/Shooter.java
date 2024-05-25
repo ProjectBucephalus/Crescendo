@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CTREConfigs;
 import frc.robot.Constants;
 import frc.robot.IDConstants;
 
@@ -39,7 +40,8 @@ public class Shooter extends SubsystemBase {
         STOPPED,
         IDLE,
         OUT,
-        TRAP
+        TRAP,
+        LOB
     };
 
     /**
@@ -57,6 +59,8 @@ public class Shooter extends SubsystemBase {
     {
         SmartDashboard.putNumber("Shooter Bottom Speed", 0);
         SmartDashboard.putNumber("Shooter Top Speed", 0);
+        mBottomShooter.getConfigurator().apply(CTREConfigs.bottomShooterMotorFXConfig);
+        mTopShooter.getConfigurator().apply(CTREConfigs.topShooterMotorFXConfig);
     }
 
     /**
@@ -104,6 +108,12 @@ public class Shooter extends SubsystemBase {
                 driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Top Speed", 0);
                 mTopShooter.setControl(driveDutyCycle);
                 break;
+            case LOB:
+                driveDutyCycle.Output = Constants.Shooter.bottomShooterLobSpeed;
+                mBottomShooter.setControl(driveDutyCycle);
+
+                driveDutyCycle.Output = Constants.Shooter.topShooterLobSpeed;
+                mTopShooter.setControl(driveDutyCycle);
             default:
                 break;
         }
@@ -119,6 +129,7 @@ public class Shooter extends SubsystemBase {
         return shooterMode;
     }
 
+
     /**
      * Checks if shooter RPM is within acceptable tolerance.
      * TODO not implimented yet
@@ -127,8 +138,18 @@ public class Shooter extends SubsystemBase {
      * @author 5985
      * @author Aidan
      */
-    public boolean rpmWithinTolerance() {
-        return mTopShooter.getVelocity().getValueAsDouble() > Constants.Shooter.shooterVelocityTolerance;
+    public boolean rpmWithinTolerance(double minShooterRPS) {
+
+        if(minShooterRPS == Constants.Shooter.lobVelocityTolerance)
+        {
+            SmartDashboard.putString("SHOOTREADY State", "LOB");
+         return mTopShooter.getVelocity().getValueAsDouble() < minShooterRPS;
+        }
+        else
+        {
+            SmartDashboard.putString("SHOOTREADY State", "SPEAKER");
+            return mTopShooter.getVelocity().getValueAsDouble() > minShooterRPS;
+        }
 
     }
 

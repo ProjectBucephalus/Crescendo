@@ -52,15 +52,17 @@ public final class SwerveConstants
         public static final SensorDirectionValue cancoderInvert = chosenModule.cancoderInvert;
 
         /* Swerve Current Limiting */
-        public static final int angleCurrentLimit = 27;
+        public static final int angleCurrentLimit = 30;
         public static final int angleCurrentThreshold = 45;
         public static final double angleCurrentThresholdTime = 0.1;
         public static final boolean angleEnableCurrentLimit = true;
+        public static final int angleStatorLimit = 60;
 
-        public static final int driveCurrentLimit = 38;
-        public static final int driveCurrentThreshold = 65;
+        public static final int driveCurrentLimit = 40;
+        public static final int driveCurrentThreshold = 60;
         public static final double driveCurrentThresholdTime = 0.1;
         public static final boolean driveEnableCurrentLimit = true;
+        public static final int driveStatorLimit = 80;
 
         /*
          * These values are used by the drive falcon to ramp in open loop and closed

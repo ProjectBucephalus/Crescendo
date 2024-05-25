@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -10,12 +8,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.FieldConstants;
-import frc.robot.commands.Shooter.AutoPivotShootSequence;
-import frc.robot.commands.Shooter.ShootSequence;
 import frc.robot.commands.Shooter.ShootSequenceBasic;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
@@ -51,12 +46,23 @@ public class GetMulitNote extends SequentialCommandGroup {
 
         // add all the fetching+shooting NOTE blocks
         for (Translation2d note : noteLocations) {
-            if (FieldConstants.DUMMY_NOTE_WAIT_FLAG.equals(note) || noteLocations.length == 0) {
-                addCommands(new WaitCommand(7));
-            } else if (FieldConstants.isCenterNote(note)) {
-                addCommands(new GetCentreNote(note, s_Swerve, noteVision, s_Shooter, s_Pivot, s_Intake));
-            } else {
-                addCommands(new GetStageNote(note, s_Swerve, noteVision, s_Shooter, s_Pivot, s_Intake));
+            if (FieldConstants.DUMMY_NOTE_WAIT_FLAG.equals(note) || noteLocations.length == 0)
+            {
+                addCommands(new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.STOPPED)), new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.STOWED)), new WaitCommand(SmartDashboard.getNumber("AutoWait", 0)),
+                new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(PathPlannerPath.fromPathFile("Start_3 to Leave")), Set.of(s_Swerve)));
+            }
+            else if (FieldConstants.DUMMY_NOTE_GOTOMID_FLAG.equals(note)) 
+            {          
+                addCommands(new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.STOWED)), new WaitCommand(SmartDashboard.getNumber("AutoWait", 0)), 
+                new DeferredCommand(() -> s_Swerve.makePathFollowingCommand(PathPlannerPath.fromPathFile("GoToMid")), Set.of(s_Swerve)));
+            } 
+            else if (FieldConstants.isCenterNote(note)) 
+            {   
+                addCommands(new WaitCommand(SmartDashboard.getNumber("AutoWait", 0)), new GetCentreNote(note, s_Swerve, noteVision, s_Shooter, s_Pivot, s_Intake));
+            } 
+            else 
+            {
+                addCommands(new WaitCommand(SmartDashboard.getNumber("AutoWait", 0)), new GetStageNote(note, s_Swerve, noteVision, s_Shooter, s_Pivot, s_Intake));
             }
         }
     }

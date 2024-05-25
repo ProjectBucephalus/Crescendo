@@ -43,8 +43,11 @@ public class FieldConstants {
     public static final Translation2d RED_NOTE_S_3 = new Translation2d(FIELD_LENGTH - NOTE_S_X, 7.00);
 
     public static final Translation2d DUMMY_NOTE_WAIT_FLAG = new Translation2d(NOTE_S_X, 0);
+    public static final Translation2d DUMMY_NOTE_GOTOMID_FLAG = new Translation2d(NOTE_C_X - 0.1, NOTE_C_3.getY());
 
-    public static final Translation2d SPEAKER = new Translation2d(0, 5.54);
+    public static final Translation2d SPEAKER = new Translation2d(Constants.Shooter.targetDistanceOffset, 5.54);
+
+    public static final Translation2d LOB_TARGET = new Translation2d(0, 7);
 
     public static final Pose2d ROBOT_NOTE_C_1 = new Pose2d(7.85, 0.78, Rotation2d.fromDegrees(0));
     public static final Pose2d ROBOT_NOTE_C_2 = new Pose2d(7.85, 2.44, Rotation2d.fromDegrees(0));
@@ -66,9 +69,9 @@ public class FieldConstants {
 
     /* Driver pathfinding controlls in teleop */
     public static final Transform2d AMP = new Transform2d(0, 5.54, Rotation2d.fromDegrees(90));
-    public static final Transform2d BACK_STAGE = new Transform2d(5.65, 4.11, Rotation2d.fromDegrees(0));
-    public static final Transform2d LEFT_STAGE = new Transform2d(4.3, 3, Rotation2d.fromDegrees(120));
-    public static final Transform2d RIGHT_STAGE = new Transform2d(4.3, 5.0, Rotation2d.fromDegrees(-120));
+    public static final Transform2d BACK_STAGE = new Transform2d(6, 4.11, Rotation2d.fromDegrees(180));
+    public static final Transform2d AMP_STAGE = new Transform2d(4.31, 5.09, Rotation2d.fromDegrees(-60));
+    public static final Transform2d SOURCE_STAGE = new Transform2d(4.31, 3.1, Rotation2d.fromDegrees(60));
 
     private static final Map<String, Translation2d> s_noteNameMap = new HashMap<>() {
         {
@@ -83,17 +86,19 @@ public class FieldConstants {
             put("S3", FieldConstants.BLUE_NOTE_S_3);
 
             put("W", FieldConstants.DUMMY_NOTE_WAIT_FLAG);
+            put("Q79", FieldConstants.DUMMY_NOTE_GOTOMID_FLAG);
         }
     };
 
     public static Translation2d[] buildNoteList(String noteSequence) {
         
         String[] separateNoteNames = noteSequence.split("\\s*-\\s*");
-        Translation2d[] noteCoordList = new Translation2d[separateNoteNames.length];
 
         if (noteSequence.length() == 0) {
             separateNoteNames = new String[] { "W" };
         }
+
+        Translation2d[] noteCoordList = new Translation2d[separateNoteNames.length];
 
         for (int i = 0; i < separateNoteNames.length; i++) {
             Translation2d foundNote = s_noteNameMap.get(separateNoteNames[i].toUpperCase());

@@ -12,26 +12,25 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.lib.util.RumbleController;
 import frc.robot.VisionCommands.AimToSpeakerNoDrive;
 import frc.robot.VisionCommands.TurnToNote;
 import frc.robot.VisionCommands.aimToSpeakerSequence;
 import frc.robot.commands.GetMulitNote;
+import frc.robot.commands.LeftStage;
 import frc.robot.commands.PointAndPathFindCommand;
-import frc.robot.commands.PointToAngle;
+import frc.robot.commands.RightStage;
 import frc.robot.commands.StabiliserBar;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.BuddyClimb.DeployBuddyClimber;
@@ -43,14 +42,15 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NoteVision;
 import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.RumbleController;
+import frc.robot.subsystems.RumbleController.RumbleStates;
 import frc.robot.subsystems.Pivot.PivotPosition;
 import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Climber.ClimberPosition;
-import frc.robot.subsystems.Intake.IndexerState;
-import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Intake.StabiliserPos;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -83,17 +83,17 @@ public class RobotContainer {
     private final int MANUAL_CLIMB_AXIS = XboxController.Axis.kLeftY.value;
     private final int MANUAL_SHOOTER_AXIS = XboxController.Axis.kRightY.value;
 
+    private final SendableChooser<String> m_chosenAuto = new SendableChooser<>();
+    public final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();
+
     /* Subsystems */
-    private final RumbleController s_RumbleController = new RumbleController(driver.getHID(), coDriver.getHID());
-    private final Swerve s_Swerve = new Swerve();
+    final RumbleController s_RumbleController = new RumbleController(driver.getHID(), coDriver.getHID());
+    private final Swerve s_Swerve = new Swerve(m_startLocation);
     private final Intake s_Intake = new Intake(s_RumbleController);
     private final Pivot s_Pivot = new Pivot(s_Swerve);
     private final Climber s_Climber = new Climber();
     private final Shooter s_Shooter = new Shooter();
     private final NoteVision s_NoteVision = new NoteVision(s_Swerve);
-
-    private final SendableChooser<String> m_chosenAuto = new SendableChooser<>();
-    private final SendableChooser<Pose2d> m_startLocation = new SendableChooser<>();
 
     private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -110,7 +110,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() 
-    {
+    {   
         s_Swerve.setDefaultCommand
         (
             new TeleopSwerve
@@ -161,7 +161,7 @@ public class RobotContainer {
      * it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
-    private void configureButtonBindings() {
+    public void configureButtonBindings() {
         /* Driver Buttons */
 
         //driver.back()          .onTrue(new InstantCommand(s_Swerve::lockWheels, s_Swerve)); // TODO 
@@ -171,32 +171,35 @@ public class RobotContainer {
         driver.leftTrigger()   .whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_RumbleController));
 
         /* Pass in codriver for controller to receive rumble */
-        driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, coDriver.getHID(), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
-       
+        driver.leftBumper()    .whileTrue(new aimToSpeakerSequence(s_Swerve,s_Shooter,s_Pivot, s_Intake, s_RumbleController, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(BRAKE_AXIS)));
+        driver.leftBumper()    .onTrue(new PushNoteSequence(s_Intake)).onFalse(new PullNoteSequence(s_Intake));
+        driver.leftBumper()    .onFalse(new InstantCommand(() -> s_RumbleController.setRumbleStatus(RumbleStates.SHOOTREADY, false)));
+
         /* Pass in driver for controller to receive rumble when note in intake*/
         driver.rightBumper()   .whileTrue(new IntakeAndDeployPivot(s_Pivot, s_Intake, driver.getHID())) .onFalse(new StopIntakeAndStow(s_Pivot, s_Intake));
 
         driver.povUp()         .onTrue(new UnlockClimber(s_Climber));
         driver.povDown()       .onTrue(new LockClimber(s_Climber));
        
-        driver.a()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
-        driver.b()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.RIGHT_STAGE, PathPlannerPath.fromPathFile("Line Up With Right Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
-        driver.x()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.LEFT_STAGE, PathPlannerPath.fromPathFile("Line Up With Left Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
-        driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.BACK_STAGE, PathPlannerPath.fromPathFile("Line Up With Back Stage"), () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), s_RumbleController));
+        driver.a()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.AMP, PathPlannerPath.fromPathFile("Line Up With Amp"), s_RumbleController));
+        driver.x()             .whileTrue(new LeftStage(s_Swerve, s_RumbleController));
+        driver.b()             .whileTrue(new RightStage(s_Swerve, s_RumbleController));
+        driver.y()             .whileTrue(new PointAndPathFindCommand(s_Swerve, FieldConstants.BACK_STAGE, PathPlannerPath.fromPathFile("Line Up With Back Stage"), s_RumbleController));
         
         
         /* Co-Driver Buttons */
 
         // coDriver.leftTrigger() .onTrue(new ShooterFeed(s_Intake)).onFalse(new ShooterIdle(s_Shooter).alongWith(new InstantCommand(()->s_Intake.setIntakeStatus(IntakeStatus.STOPPED))));
         coDriver.leftTrigger() .onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
-        coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)); 
-        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake).andThen(new InstantCommand(()->s_Intake.setIndexerState(IndexerState.OUT)))).onFalse(new IntakeStop(s_Intake).andThen(new InstantCommand(()->s_Intake.setIndexerState(IndexerState.STOPPED)))); //Indexer out.
+        coDriver.leftBumper()  .onTrue(new ShooterRev(s_Shooter)).onFalse(new ShooterIdle(s_Shooter));
+        coDriver.leftBumper()   .onTrue(new PushNoteSequence(s_Intake)).onFalse(new PullNoteSequence(s_Intake)); 
+        coDriver.rightTrigger().onTrue(new IntakeSuck(s_Intake)).onFalse(new IntakeStop(s_Intake)); //Indexer out.
         coDriver.rightBumper() .onTrue(new IntakeSpit(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.OUT)))).onFalse(new IntakeStop(s_Intake).alongWith(new InstantCommand(()->s_Shooter.setShooterState(ShooterState.IDLE))));
 
         coDriver.x()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.DEPLOYED));
         coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.AMP)); //speaker base
         coDriver.a()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.STOWED));
-        //coDriver.y()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.SPEAKER));
+        coDriver.b()           .onTrue(new MovePivotToPosition(s_Pivot, PivotPosition.LOB));
 
         coDriver.povRight()    .onTrue(new StabiliserBar(s_Intake, StabiliserPos.IN)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
         coDriver.povLeft()     .onTrue(new StabiliserBar(s_Intake, StabiliserPos.OUT)).onFalse(new StabiliserBar(s_Intake, StabiliserPos.STOPPED));
@@ -236,9 +239,9 @@ public class RobotContainer {
     }
     private void configureAutos() {
         // List of start locations
-        List<String> autonamesDropdown = Arrays.asList("S1-S2", "S3-S2", "S1-S2-S3", "S3-S2-S1", "S2-S1", "S1-C1", "C4", "C5", "S3-C4-C5", "W" );
+        List<String> autonamesDropdown = Arrays.asList("S1-S2", "S3-S2", "S1-S2-S3", "S3-S2-S1", "S2-S1", "C1-C2", "C4", "C5", "S3-C4-C5", "W", "Q79" );
 
-        m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
+        m_startLocation.setDefaultOption("Source Side", FieldConstants.ROBOT_START_1);
         m_startLocation.addOption("Center", FieldConstants.ROBOT_START_2);
         m_startLocation.addOption("Amp Side", FieldConstants.ROBOT_START_3);
 
@@ -248,7 +251,9 @@ public class RobotContainer {
 
         m_chosenAuto.setDefaultOption("S1-S2", "S1-S2");
 
-        m_startLocation.setDefaultOption("NotAmp Side", FieldConstants.ROBOT_START_1);
+        m_startLocation.setDefaultOption("Source Side", FieldConstants.ROBOT_START_1);
+
+        SmartDashboard.putNumber("AutoWait", 0);
 
         SmartDashboard.putData("Start Location", m_startLocation);
 

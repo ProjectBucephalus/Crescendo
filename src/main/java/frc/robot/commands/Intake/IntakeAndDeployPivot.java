@@ -47,7 +47,7 @@ public class IntakeAndDeployPivot extends Command {
     }
 
     public boolean isFinished() {
-        s_Intake.rumbleWithNote(false);
+        //s_Intake.rumbleWithNote(false);
         return isFinished;
     }
 }

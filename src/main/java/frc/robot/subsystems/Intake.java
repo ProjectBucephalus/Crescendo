@@ -1,21 +1,16 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
-import edu.wpi.first.units.Time;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.RumbleController;
-import frc.lib.util.RumbleController.Controllers;
+import frc.robot.CTREConfigs;
 import frc.robot.Constants;
 import frc.robot.IDConstants;
+import frc.robot.subsystems.RumbleController.RumbleStates;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -41,7 +36,7 @@ public class Intake extends SubsystemBase
     private boolean useBeamBreak = false;
 
     // For rumbling with note flag
-    private boolean hasRumbled = false;
+    //private boolean hasRumbled = false;
 
     private boolean useStabiliserLimitSwitch = true;
 
@@ -100,6 +95,8 @@ public class Intake extends SubsystemBase
     public Intake(RumbleController s_RumbleController) 
     {
         this.s_RumbleController = s_RumbleController;
+        mIntake.getConfigurator().apply(CTREConfigs.intakeMotorFXConfig);
+        mIndexer.getConfigurator().apply(CTREConfigs.indexerMotorFXConfig);
     }
 
     /**
@@ -131,7 +128,7 @@ public class Intake extends SubsystemBase
                 useBeamBreak = false;
                 break;
             case IN:
-                setIndexerState(IndexerState.IN);
+                setIndexerState(IndexerState.OUT);
                 setIntakeSpeed(Constants.Intake.intakeSpeedIn, false);
                 useBeamBreak = false;
                 break;
@@ -243,16 +240,18 @@ public class Intake extends SubsystemBase
         SmartDashboard.putNumber("Intake RPS", mIntake.getVelocity().getValueAsDouble());
         
 
-        if (doRumbleWithNote && !getBeamBreak() && !hasRumbled) {
+        if (doRumbleWithNote && !getBeamBreak()){// && !hasRumbled) {
             // start the rumble with intensity 1
-            s_RumbleController.setRumble(Controllers.DRIVER, 1, RumbleType.kBothRumble);
+            s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, true);
+            SmartDashboard.putBoolean("Intake Rumble?", true);
             //System.out.println("Rumble started.");
-            hasRumbled = true; // set the flag to true
-        } else if (getBeamBreak() || hasRumbled) {
+            //hasRumbled = true; // set the flag to true
+        } else if (getBeamBreak() || !doRumbleWithNote){//} && hasRumbled) {
             // stop the rumble
-            s_RumbleController.setRumble(Controllers.DRIVER, 0, RumbleType.kBothRumble);
+            s_RumbleController.setRumbleStatus(RumbleStates.INTAKE, false);
+            SmartDashboard.putBoolean("Intake Rumble?", false);
             //System.out.println("Rumble stopped.");
-            hasRumbled = false; // reset the flag to false
+            //hasRumbled = false; // reset the flag to false
         }
         
         // Prints the beamBreakBool to the Smart Dashboard
