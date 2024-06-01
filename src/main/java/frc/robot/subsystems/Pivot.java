@@ -115,7 +115,7 @@ public class Pivot extends SubsystemBase
                 moveArmToAngle(50);
                 break;
             case LOB:
-                moveArmToAngle(Constants.Shooter.lobAngle);
+                moveArmToAngle(Constants.Shooter.midWingLobAngle);
                 break;
         }
     }
@@ -387,9 +387,19 @@ public class Pivot extends SubsystemBase
         double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
         double shooterDrop = Constants.Shooter.verticalAccelerationConstant * (Math.pow(targetDistance,2) + Math.pow(targetHeightOverShooter,2));
 
+        //true = out of own wing 
         if ((FieldConstants.isRedAlliance() && pose.getX() < Constants.Shooter.outOfRedWingX) || (!FieldConstants.isRedAlliance() && pose.getX() > Constants.Shooter.outOfBlueWingX)) 
         {
-            return Constants.Shooter.lobAngle;
+          // true = in opposite wing flase = in mid wing
+            if ((FieldConstants.isRedAlliance() && pose.getX() < Constants.Shooter.outOfBlueWingX) || (!FieldConstants.isRedAlliance() && pose.getX() > Constants.Shooter.outOfRedWingX)) 
+           {
+             return Constants.Shooter.farWingLobAngle;
+           }
+           else 
+           {
+             return Constants.Shooter.midWingLobAngle;
+           }
+            
         }
 
         targetDistance += shooterPivotOffsetBack;

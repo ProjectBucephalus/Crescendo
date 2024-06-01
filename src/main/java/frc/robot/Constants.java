@@ -224,7 +224,8 @@ public final class Constants
         /* Lob values */
         public static final double bottomShooterLobSpeed = 0.3;
         public static final double topShooterLobSpeed = 0.3;
-        public static final double lobAngle = 45;
+        public static final double midWingLobAngle = 45;
+        public static final double farWingLobAngle = 60;
         public static final double lobVelocityTolerance = 35; //80 * topShooterLobSpeed;
 
         /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */
