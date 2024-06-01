@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.VisionCommands.aimToSpeaker;
 import frc.robot.commands.Intake.GetBeamBreak;
 import frc.robot.commands.Intake.IntakeAndDeployPivot;
 import frc.robot.commands.Shooter.AutoPivotShootSequence;
@@ -30,8 +32,7 @@ import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Shooter.ShootPosition;
 import frc.robot.subsystems.Shooter.ShooterState;
 
-public class GetCentreNote extends GetNote {
-
+public class GetCentreNote extends GetNote {    
     private PathPlannerPath m_returnPath;
 
     private void setReturnPath(Translation2d targetNote) {
@@ -71,10 +72,13 @@ public class GetCentreNote extends GetNote {
                         () -> s_Intake.getBeamBreak()),
                 new ConditionalCommand(
                         new WaitCommand(0),
-                        new SequentialCommandGroup(
+                        new SequentialCommandGroup
+                        (
                                 new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
                                 s_Swerve.makePathFollowingCommand(m_returnPath),
-                                new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve)),
+                                new aimToSpeaker(s_Swerve, null, null, null, s_Pivot, s_Shooter),
+                                new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve)
+                        ),
                         () -> s_Intake.getBeamBreak()));
     }
 

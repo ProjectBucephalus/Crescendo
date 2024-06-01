@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.FieldConstants;
+import frc.robot.VisionCommands.aimToSpeaker;
 import frc.robot.commands.Intake.IntakeAndDeployPivot;
 import frc.robot.commands.Shooter.AutoPivotShootSequence;
 import frc.robot.subsystems.Swerve;
@@ -80,6 +81,7 @@ public class GetStageNote extends GetNote
                 (
                     new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
                     new WaitCommand(0.1),
+                    new aimToSpeaker(s_Swerve, null, null, null, s_Pivot, s_Shooter),
                     new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve)
                 ),
                 () -> s_Intake.getBeamBreak()
