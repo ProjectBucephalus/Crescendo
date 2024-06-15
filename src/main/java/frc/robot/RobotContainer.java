@@ -166,7 +166,7 @@ public class RobotContainer
         /* Driver Buttons */
 
         //driver.back().onTrue(new InstantCommand(s_Swerve::lockWheels, s_Swerve)); // TODO 
-        driver.start().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        driver.start().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading())).onTrue(new InstantCommand(() -> s_Swerve.resetEstimatedOdometry(new Pose2d(s_Swerve.getPose().getTranslation(), new Rotation2d()))));
         driver.back().onTrue(new ShootSequence(s_Shooter, s_Intake, s_Swerve));
         // made this the same as the robot centric so they act as one func
         driver.leftTrigger().whileTrue(new TurnToNote(s_Swerve, s_NoteVision, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis), () -> -driver.getRawAxis(rotationAxis), () -> -driver.getRawAxis(BRAKE_AXIS), s_RumbleController));
