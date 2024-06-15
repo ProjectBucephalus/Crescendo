@@ -522,8 +522,11 @@ public class Swerve extends SubsystemBase
      */
     public void periodic() 
     {
-
-        swerveOdometry.update(getGyroYaw(), getModulePositions());
+        if((gyro.getYaw().getValueAsDouble() < 10 && gyro.getYaw().getValueAsDouble() > -10) && (gyro.getPitch().getValueAsDouble() < 10 && gyro.getPitch().getValueAsDouble() > -10))
+        {
+            swerveOdometry.update(getGyroYaw(), getModulePositions());
+            poseEstimator.update(getGyro(), getModulePositions());
+        }
 
         m_field.setRobotPose(getEstimatedPose());
 
@@ -553,8 +556,6 @@ public class Swerve extends SubsystemBase
         {
             SmartDashboard.putBoolean("Using Back Vision", false);
         }
-
-        poseEstimator.update(getGyro(), getModulePositions());
 
         for (SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
