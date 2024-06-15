@@ -47,10 +47,12 @@ public class CheckPrepStatsAndRumble extends Command {
             if (s_Shooter.rpmWithinTolerance(minShooterRPS)) 
             {
                 // Sets rumble
+                //System.out.println("rumbling");
                 s_RumbleController.setRumbleStatus(RumbleStates.SHOOTREADY, true);
             } 
             else
             {
+                //System.out.println("not rumbling");
                 s_RumbleController.setRumbleStatus(RumbleStates.SHOOTREADY, false);
             }
         }

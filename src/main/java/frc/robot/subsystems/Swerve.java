@@ -12,6 +12,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import java.util.Optional;
 
+import javax.swing.plaf.basic.BasicSliderUI.TrackListener;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -46,6 +48,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Swerve extends SubsystemBase 
 {
+    // For showing the stored tip postition on AdvantageScope
+    private final Field2d storedPoseDisplay = new Field2d();
 
     // Creates a poseEstimator object, which stores and estimates the robot's field relative pose
     public SwerveDriveOdometry swerveOdometry;
@@ -81,12 +85,22 @@ public class Swerve extends SubsystemBase
     private Optional<EstimatedRobotPose> visionEstimatedPoseFront, visionEstimatedPoseBack;
     private EstimatedRobotPose estimatedRobotPose;
 
+    /** Tracks whether the robot was tipped last cycle */
+    private boolean trackTipped = false;
+
+    /** Stores the pose when the robot tips */
+    private Pose2d storePose = new Pose2d();
+
+    
+
     public Swerve(SendableChooser<Pose2d> m_startLocation) 
     {
         // Define and initialise gyro, as well as applying config
         gyro = new Pigeon2(IDConstants.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
+
+        SmartDashboard.putData("TipField", storedPoseDisplay);
 
         // Define and initialise list of swerve modules
         mSwerveMods = new SwerveModule[] 
@@ -521,11 +535,34 @@ public class Swerve extends SubsystemBase
      * TODO docs
      */
     public void periodic() 
-    {
+    {   
+        
 
-        swerveOdometry.update(getGyroYaw(), getModulePositions());
+        if((gyro.getRoll().getValueAsDouble() < 10 && gyro.getRoll().getValueAsDouble() > -10) && (gyro.getPitch().getValueAsDouble() < 10 && gyro.getPitch().getValueAsDouble() > -10))
+        {
+            
+            if (trackTipped == true) 
+            {   
+               swerveOdometry.resetPosition(getGyro(), getModulePositions(), storePose);
+               poseEstimator.resetPosition(getGyro(), getModulePositions(), storePose);
+            }
+            trackTipped = false;
+            swerveOdometry.update(getGyroYaw(), getModulePositions());
+            poseEstimator.update(getGyro(), getModulePositions());
+        }
+        else if (trackTipped == false)
+        {   
+            trackTipped = true;
+            storePose = getEstimatedPose();
+        }
 
         m_field.setRobotPose(getEstimatedPose());
+
+        // Do this in either robot periodic or subsystem periodic
+        storedPoseDisplay.setRobotPose(storePose);
+
+        SmartDashboard.putNumber("Roll", gyro.getRoll().getValueAsDouble());
+        SmartDashboard.putNumber("Pitch", gyro.getPitch().getValueAsDouble());
 
         //final Optional<EstimatedRobotPose> 
         visionEstimatedPoseFront = photonPoseEstimatorFront.update();
@@ -553,8 +590,6 @@ public class Swerve extends SubsystemBase
         {
             SmartDashboard.putBoolean("Using Back Vision", false);
         }
-
-        poseEstimator.update(getGyro(), getModulePositions());
 
         for (SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
