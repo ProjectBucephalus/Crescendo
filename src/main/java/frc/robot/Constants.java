@@ -34,6 +34,7 @@ public final class Constants
         /* Offsets */
         // relative position of the camera on the robot to the robot center
         // pitch is the Y angle, and it is positive down
+        //+x front, +y left, +z up
         public static final Transform3d backCamToRobot = new Transform3d
         ( 
                 //-0.18, -0.18, 0.44, // This is the actuall coordinates of the camera on the robot
@@ -51,6 +52,7 @@ public final class Constants
 
         public static final Transform3d noteCamToRobot = new Transform3d
         (
+            
                 0.32, 0, 0.45,
                 new Rotation3d(0, Units.degreesToRadians(20), Units.degreesToRadians(0))
         ); // Meters and Radians (roll, pitch, yaw)
