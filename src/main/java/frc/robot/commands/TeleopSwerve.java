@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
@@ -44,6 +45,10 @@ public class TeleopSwerve extends Command
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
         double brakeVal = MathUtil.applyDeadband(brakeAxis.getAsDouble(), Constants.stickDeadband);
+        if (SmartDashboard.getBoolean("Test Mode", false)) 
+        {
+            brakeVal = Math.min(brakeVal + 0.25, 1);
+        }
 
         /* Drive */
         s_Swerve.drive
