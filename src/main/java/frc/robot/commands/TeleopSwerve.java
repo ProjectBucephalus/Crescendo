@@ -45,9 +45,10 @@ public class TeleopSwerve extends Command
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
         double brakeVal = MathUtil.applyDeadband(brakeAxis.getAsDouble(), Constants.stickDeadband);
+        SmartDashboard.putNumber("BrakeValUnchanged", brakeVal);
         if (SmartDashboard.getBoolean("Test Mode", false)) 
         {
-            brakeVal = Math.max(brakeVal - 0.25, -1);
+            brakeVal = Math.max(brakeVal - 0.85, -1);
         }
 
         /* Drive */

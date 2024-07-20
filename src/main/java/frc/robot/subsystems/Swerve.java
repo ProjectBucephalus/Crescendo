@@ -177,6 +177,7 @@ public class Swerve extends SubsystemBase
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) 
     {
+        SmartDashboard.putNumber("BrakeVal", brakeVal);
         SmartDashboard.putBoolean("Egotistic?", !fieldRelative);
         if (!usingVisionAlignment) 
         {
