@@ -166,6 +166,20 @@ public class Swerve extends SubsystemBase
 
     }
 
+    // *** Restore drive function to 364 base code
+    // *** Impliment overload drive function with double:brakeVal additional input
+    // *** Want variables/inputs for min/max speed so we can change modes without recompiling code
+    // *** Min/Max speed as subsystem variables, default to constants, getter/setter functions to be used externally
+    // *** Also want to steer based on target headding
+    public void drive(...,brakeVal,newTarget OR deltaTarget overloads) //Pseudo-code
+    {
+        translation = translation.times(brakeVal); //include max/min values here, possibly as additional function
+        target = newTarget;
+        target = target + (rotationAxis * steeringScalar);
+        rotation = (heading - target) * rotationScalar; // Replacing stick with calculated value
+        drive(...);
+    }
+
     /**
      * 364 Magic
      * 
