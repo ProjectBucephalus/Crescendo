@@ -173,21 +173,9 @@ public class Swerve extends SubsystemBase
         Pose2d target = newTarget;
 
         //target = target + (rotationAxis * steeringScalar);
-        rotation = calculateAngleToTarget(getPose(), target) * SwerveConstants.rotateToTargetScalar; // Replacing stick with calculated value
+        rotation = PhotonUtils.getYawToPose(getPose(), target).getDegrees() * SwerveConstants.rotateToTargetScalar; // Replacing stick with calculated value
 
         drive(translation, rotation, fieldRelative, isOpenLoop, brakeVal);
-    }
-
-    public static double calculateAngleToTarget(Pose2d robotPose, Pose2d target)
-    {
-        double angleToTarget;
-        
-        double xToTarget = robotPose.getX() - target.getX();
-        double yToTarget = robotPose.getY() - target.getY();
-
-        angleToTarget = Math.atan(xToTarget / yToTarget);
-
-        return angleToTarget;
     }
 
     // *** Restore drive function to 364 base code
