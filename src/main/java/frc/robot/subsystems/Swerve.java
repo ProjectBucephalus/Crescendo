@@ -52,7 +52,7 @@ public class Swerve extends SubsystemBase
     private final Field2d storedPoseDisplay = new Field2d();
 
     // Creates a poseEstimator object, which stores and estimates the robot's field relative pose
-    public SwerveDriveOdometry swerveOdometry;
+    public static SwerveDriveOdometry swerveOdometry;
     public SwerveDrivePoseEstimator poseEstimator;
     
     // Creates photonPoseEstimator objects for both cameras, which estimate the camera's pose relative to the field
@@ -69,12 +69,12 @@ public class Swerve extends SubsystemBase
     // set to true initially so that if we manually set the angle and dont use any auto functions it will still shoot
     private boolean alignedToTarget = true;
 
-    public boolean usingVisionAlignment = false;
+    public static boolean usingVisionAlignment = false;
 
     final AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); 
 
     /** List of swerve module motors */
-    public SwerveModule[] mSwerveMods;
+    public static SwerveModule[] mSwerveMods;
     
     /** Robot's gyro [X Right, Y Forward, Z Up] */
     public Pigeon2 gyro;
@@ -91,7 +91,8 @@ public class Swerve extends SubsystemBase
     /** Stores the pose when the robot tips */
     private Pose2d storePose = new Pose2d();
 
-    
+    private static double brakeMin = SwerveConstants.defaultBrakeMin;
+    private static double brakeMax = SwerveConstants.defaultBrakeMax;
 
     public Swerve(SendableChooser<Pose2d> m_startLocation) 
     {
@@ -166,18 +167,58 @@ public class Swerve extends SubsystemBase
 
     }
 
+    public static void drive(Translation2d translation, boolean fieldRelative, boolean isOpenLoop, double brakeVal, Pose2d newTarget)
+    {
+        double rotation;
+        Pose2d target = newTarget;
+
+        //target = target + (rotationAxis * steeringScalar);
+        rotation = calculateAngleToTarget(getPose(), target) * SwerveConstants.rotateToTargetScalar; // Replacing stick with calculated value
+
+        drive(translation, rotation, fieldRelative, isOpenLoop, brakeVal);
+    }
+
+    public static double calculateAngleToTarget(Pose2d robotPose, Pose2d target)
+    {
+        double angleToTarget;
+        
+        double xToTarget = robotPose.getX() - target.getX();
+        double yToTarget = robotPose.getY() - target.getY();
+
+        angleToTarget = Math.atan(xToTarget / yToTarget);
+
+        return angleToTarget;
+    }
+
     // *** Restore drive function to 364 base code
     // *** Impliment overload drive function with double:brakeVal additional input
     // *** Want variables/inputs for min/max speed so we can change modes without recompiling code
     // *** Min/Max speed as subsystem variables, default to constants, getter/setter functions to be used externally
     // *** Also want to steer based on target headding
-    public void drive(...,brakeVal,newTarget OR deltaTarget overloads) //Pseudo-code
+    public static void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) //Pseudo-code
+    {        
+        translation = translation.times(mapBrakeValue(brakeVal));
+        drive(translation, rotation, fieldRelative, isOpenLoop);
+    }
+
+    public static double mapBrakeValue(double brakeVal)
     {
-        translation = translation.times(brakeVal); //include max/min values here, possibly as additional function
-        target = newTarget;
-        target = target + (rotationAxis * steeringScalar);
-        rotation = (heading - target) * rotationScalar; // Replacing stick with calculated value
-        drive(...);
+        double finalBrakeVal;
+
+        double slope = 1.0 * (brakeMax - brakeMin) / (1.0 - 0.0);
+        finalBrakeVal = brakeMin + slope * (brakeVal - 0.0);
+        
+        return finalBrakeVal;
+    }
+
+    public void setBrakeMin(double newBrakeMin)
+    {
+        brakeMin = newBrakeMin;
+    }
+
+    public void setBrakeMax(double newBrakeMax)
+    {
+        brakeMax = newBrakeMax;
     }
 
     /**
@@ -189,9 +230,8 @@ public class Swerve extends SubsystemBase
      * @param isOpenLoop
      * @author 364
      */
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) 
+    public static void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) 
     {
-        SmartDashboard.putNumber("BrakeVal", brakeVal);
         SmartDashboard.putBoolean("Egotistic?", !fieldRelative);
         if (!usingVisionAlignment) 
         {
@@ -213,8 +253,7 @@ public class Swerve extends SubsystemBase
                 )
             );
             
-            SwerveDriveKinematics.desaturateWheelSpeeds
-                (swerveModuleStates, SwerveConstants.maxSpeed * (map(brakeVal, 0, 1, SwerveConstants.brakeIntensity, 1)));
+            SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
             
             for (SwerveModule mod : mSwerveMods) 
             {
@@ -333,7 +372,7 @@ public class Swerve extends SubsystemBase
      * @return The 2d pose of the robot
      * @author 364
      */
-    public Pose2d getPose() 
+    public static Pose2d getPose() 
     {
         return swerveOdometry.getPoseMeters();
     }
@@ -362,7 +401,7 @@ public class Swerve extends SubsystemBase
      * @return The current 2d rotation of the robot
      * @author 364
      */
-    public Rotation2d getHeading() 
+    public static Rotation2d getHeading() 
     {
         return getPose().getRotation();
     }

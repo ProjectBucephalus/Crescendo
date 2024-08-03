@@ -11,8 +11,13 @@ import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class SwerveConstants 
-{
-    public static final boolean invertGyro = false;
+{       
+        public static final double rotateToTargetScalar = 1;
+
+        public static final double defaultBrakeMin = 0.0;
+        public static final double defaultBrakeMax = 1;
+        
+        public static final boolean invertGyro = false;
 
         public static final double brakeIntensity = 0.15; // 0.25 -> Trigger fully pressed -> quarter speed.
 
