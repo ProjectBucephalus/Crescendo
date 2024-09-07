@@ -137,6 +137,15 @@ public final class CTREConfigs {
         bottomShooterMotorFXConfig.CurrentLimits.StatorCurrentLimit = Constants.Shooter.shooterStatorCurrentLimit;
         bottomShooterMotorFXConfig.CurrentLimits.StatorCurrentLimitEnable = Constants.Shooter.shooterEnableCurrentLimit;
 
+        /* Shooter Motor PID */
+        topShooterMotorFXConfig.Slot0.kP = Constants.Shooter.topShooterkP;
+        topShooterMotorFXConfig.Slot0.kI = Constants.Shooter.topShooterkI;
+        topShooterMotorFXConfig.Slot0.kD = Constants.Shooter.topShooterkD;
+        bottomShooterMotorFXConfig.Slot0.kP = Constants.Shooter.bottomShooterkP;
+        bottomShooterMotorFXConfig.Slot0.kI = Constants.Shooter.bottomShooterkI;
+        bottomShooterMotorFXConfig.Slot0.kD = Constants.Shooter.bottomShooterkD;
+
+
         /* Indexer Motor Current Limits */
         indexerMotorFXConfig.CurrentLimits.SupplyCurrentLimitEnable =  Constants.Shooter.shooterEnableCurrentLimit;
         indexerMotorFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.Shooter.shooterCurrentThreshold;

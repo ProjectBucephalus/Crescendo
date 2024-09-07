@@ -233,6 +233,15 @@ public final class Constants
         /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */
         public static final double outOfBlueWingX = 6;
         public static final double outOfRedWingX = 10.5;
+
+        /* Shooter PID */
+        public static final double topShooterkP = 0;
+        public static final double topShooterkI = 0;
+        public static final double topShooterkD = 0;
+        public static final double bottomShooterkP = 0;
+        public static final double bottomShooterkI = 0;
+        public static final double bottomShooterkD = 0;
+
     }
 
     public static final class Climber 

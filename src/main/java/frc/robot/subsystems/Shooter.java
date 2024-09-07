@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,7 +13,7 @@ import frc.robot.IDConstants;
 public class Shooter extends SubsystemBase 
 {
     // motors
-    private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
+    private final VelocityVoltage velocityVoltage = new VelocityVoltage(0).withSlot(0);
 
     public TalonFX mTopShooter = new TalonFX(IDConstants.Intooter.Shooter.mTopShooterID);
     public TalonFX mBottomShooter = new TalonFX(IDConstants.Intooter.Shooter.mBottomShooterID);
@@ -66,16 +67,16 @@ public class Shooter extends SubsystemBase
         switch (state) 
         {
             case RUNNING:
-                driveDutyCycle.Output = Constants.Shooter.runningBottomShooterSpeed;
-                mBottomShooter.setControl(driveDutyCycle);
-                driveDutyCycle.Output = Constants.Shooter.runningTopShooterSpeed;
-                mTopShooter.setControl(driveDutyCycle);
+                velocityVoltage.Velocity = Constants.Shooter.runningBottomShooterSpeed;
+                mBottomShooter.setControl(velocityVoltage);
+                velocityVoltage.Velocity = Constants.Shooter.runningTopShooterSpeed;
+                mTopShooter.setControl(velocityVoltage);
                 break;
 
             case STOPPED:
-                driveDutyCycle.Output = 0;
-                mBottomShooter.setControl(driveDutyCycle);
-                mTopShooter.setControl(driveDutyCycle);
+                velocityVoltage.Velocity = 0;
+                mBottomShooter.setControl(velocityVoltage);
+                mTopShooter.setControl(velocityVoltage);
                 break;
 
             case IDLE:
@@ -83,30 +84,30 @@ public class Shooter extends SubsystemBase
                 {
                     idleSpeed = 0;
                 }
-                driveDutyCycle.Output = idleSpeed;
-                mBottomShooter.setControl(driveDutyCycle);
-                driveDutyCycle.Output = idleSpeed;
-                mTopShooter.setControl(driveDutyCycle);
+                velocityVoltage.Velocity = idleSpeed;
+                mBottomShooter.setControl(velocityVoltage);
+                velocityVoltage.Velocity = idleSpeed;
+                mTopShooter.setControl(velocityVoltage);
                 break;
 
             case OUT:
-                driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
-                mBottomShooter.setControl(driveDutyCycle);
-                driveDutyCycle.Output = Constants.Shooter.shooterEjectSpeed;
-                mTopShooter.setControl(driveDutyCycle);
+                velocityVoltage.Velocity = Constants.Shooter.shooterEjectSpeed;
+                mBottomShooter.setControl(velocityVoltage);
+                velocityVoltage.Velocity = Constants.Shooter.shooterEjectSpeed;
+                mTopShooter.setControl(velocityVoltage);
             
             case TRAP:
-                driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Bottom Speed", 0);
-                mBottomShooter.setControl(driveDutyCycle);
-                driveDutyCycle.Output = SmartDashboard.getNumber("Shooter Top Speed", 0);
-                mTopShooter.setControl(driveDutyCycle);
+                velocityVoltage.Velocity = SmartDashboard.getNumber("Shooter Bottom Speed", 0);
+                mBottomShooter.setControl(velocityVoltage);
+                velocityVoltage.Velocity = SmartDashboard.getNumber("Shooter Top Speed", 0);
+                mTopShooter.setControl(velocityVoltage);
                 break;
 
             case LOB:
-                driveDutyCycle.Output = Constants.Shooter.bottomShooterLobSpeed;
-                mBottomShooter.setControl(driveDutyCycle);
-                driveDutyCycle.Output = Constants.Shooter.topShooterLobSpeed;
-                mTopShooter.setControl(driveDutyCycle);
+                velocityVoltage.Velocity = Constants.Shooter.bottomShooterLobSpeed;
+                mBottomShooter.setControl(velocityVoltage);
+                velocityVoltage.Velocity = Constants.Shooter.topShooterLobSpeed;
+                mTopShooter.setControl(velocityVoltage);
                 break;
 
             default:
