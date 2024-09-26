@@ -17,12 +17,12 @@ import frc.robot.FieldConstants;
 import frc.robot.IDConstants;
 import frc.robot.CTREConfigs;
 
-public class Pivot extends SubsystemBase {
+public class Pivot extends SubsystemBase 
+{
     // motors
     public TalonFX mLeftPivot;
     public TalonFX mRightPivot;
 
-    private final PositionVoltage anglePosition = new PositionVoltage(0);
 
 
     // limit switches
@@ -50,7 +50,8 @@ public class Pivot extends SubsystemBase {
 
     boolean isCalibrated = false;
 
-    public enum PivotPosition {
+    public enum PivotPosition 
+    {
         STOWED,
         DEPLOYED,
         AMP,
@@ -62,12 +63,9 @@ public class Pivot extends SubsystemBase {
         LOB
     };
 
-    public enum FlapPosition {
-        OPEN,
-        CLOSED,
-    };
 
-    public Pivot(Swerve s_Swerve) {
+    public Pivot(Swerve s_Swerve) 
+    {
         this.s_Swerve = s_Swerve;
         
         // Initialises motor controller objects and configures them
@@ -88,7 +86,8 @@ public class Pivot extends SubsystemBase {
      * @author 5985
      * @author Aidan
      */
-    public void setPosition(PivotPosition position) {
+    public void setPosition(PivotPosition position) 
+    {
         SmartDashboard.putString("Pivot Position Status", position.name());
         switch (position) {
             case STOWED:
@@ -116,7 +115,7 @@ public class Pivot extends SubsystemBase {
                 moveArmToAngle(50);
                 break;
             case LOB:
-                moveArmToAngle(Constants.Shooter.lobAngle);
+                moveArmToAngle(Constants.Shooter.midWingLobAngle);
                 break;
         }
     }
@@ -133,7 +132,8 @@ public class Pivot extends SubsystemBase {
      *                   Intake Postive,
      *                   Using limits switches.
      */
-    public void moveArmToAngle(double inputAngle) {
+    public void moveArmToAngle(double inputAngle) 
+    {
         desiredAngle = inputAngle;
         //System.out.println("Moving arm to angle" + inputAngle);
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
@@ -147,12 +147,7 @@ public class Pivot extends SubsystemBase {
         pivotPDGCycle();
     }
 
-    // .withLimitForwardMotion(rightDeploySwitch.get())
-    // .withLimitForwardMotion(leftDeploySwitch.get())
-
-    // .withLimitReverseMotion(rightStowSwitch.get())
-    // .withLimitReverseMotion(leftStowSwitch.get())
-
+   
     /**
      * Moves the arm to a set position, in degrees
      * @param inputAngle The real-world angle to move the arm to in degrees.
@@ -294,7 +289,8 @@ public class Pivot extends SubsystemBase {
      * 
      * @return Boolean, true if current angle is acceptable
      */
-    public boolean angleWithinTolerance() {
+    public boolean angleWithinTolerance() 
+    {
         return Math.abs(desiredAngle - getPivotPos()) < Constants.Intake.pivotAngleTolerance;
     }
 
@@ -391,9 +387,19 @@ public class Pivot extends SubsystemBase {
         double targetDistance = PhotonUtils.getDistanceToPose(pose, FieldConstants.translationToPose2d(FieldConstants.flipTranslation(FieldConstants.SPEAKER)));
         double shooterDrop = Constants.Shooter.verticalAccelerationConstant * (Math.pow(targetDistance,2) + Math.pow(targetHeightOverShooter,2));
 
+        //true = out of own wing 
         if ((FieldConstants.isRedAlliance() && pose.getX() < Constants.Shooter.outOfRedWingX) || (!FieldConstants.isRedAlliance() && pose.getX() > Constants.Shooter.outOfBlueWingX)) 
         {
-            return Constants.Shooter.lobAngle;
+          // true = in opposite wing flase = in mid wing
+            if ((FieldConstants.isRedAlliance() && pose.getX() < Constants.Shooter.outOfBlueWingX) || (!FieldConstants.isRedAlliance() && pose.getX() > Constants.Shooter.outOfRedWingX)) 
+           {
+             return Constants.Shooter.farWingLobAngle;
+           }
+           else 
+           {
+             return Constants.Shooter.midWingLobAngle;
+           }
+            
         }
 
         targetDistance += shooterPivotOffsetBack;

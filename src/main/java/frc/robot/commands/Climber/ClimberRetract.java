@@ -12,7 +12,6 @@ import frc.robot.subsystems.Climber.ClimberPosition;
  */
 public class ClimberRetract extends Command 
 {
-
     public Climber s_Climber;
 
     public ClimberRetract(Climber s_Climber) 
@@ -21,30 +20,13 @@ public class ClimberRetract extends Command
         addRequirements(s_Climber);
     }
 
-    public void initialize() {
-    }
-
     public void execute() 
     {
         s_Climber.setClimberPosition(ClimberPosition.DOWN);
-        // // Retracts until below minimum climber position
-        // if (s_Climber.getPosition() > Constants.Climber.climberDownPos)
-        // {
-        // s_Climber.setSpeed(-1);
-        // // System.out.println(s_Climber.getPosition());
-        // // System.out.println("Running");
-        // }
-        // else
-        // {
-        // s_Climber.setSpeed(0);
-        // isFinished = true;
-        // }
     }
 
-    public void end() {
-    }
-
-    public boolean isFinished() {
+    public boolean isFinished() 
+    {
         return true;
     }
 }

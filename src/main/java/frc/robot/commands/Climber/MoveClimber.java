@@ -12,7 +12,8 @@ import frc.robot.subsystems.Climber;
  * Climber movement command
  * @author 5985
  */
-public class MoveClimber extends Command {
+public class MoveClimber extends Command 
+{
 
     private Climber climber;
     private DoubleSupplier speed;

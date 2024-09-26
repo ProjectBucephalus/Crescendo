@@ -12,6 +12,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import java.util.Optional;
 
+import javax.swing.plaf.basic.BasicSliderUI.TrackListener;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -46,6 +48,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Swerve extends SubsystemBase 
 {
+    // For showing the stored tip postition on AdvantageScope
+    private final Field2d storedPoseDisplay = new Field2d();
 
     // Creates a poseEstimator object, which stores and estimates the robot's field relative pose
     public SwerveDriveOdometry swerveOdometry;
@@ -61,7 +65,6 @@ public class Swerve extends SubsystemBase
 
     // Creates an object representing the field in 2d
     private final Field2d m_field = new Field2d();
-    private final Field2d m_Notesfield = new Field2d();
 
     // set to true initially so that if we manually set the angle and dont use any auto functions it will still shoot
     private boolean alignedToTarget = true;
@@ -69,12 +72,6 @@ public class Swerve extends SubsystemBase
     public boolean usingVisionAlignment = false;
 
     final AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); 
-
-    // Creates config object for the path follower commands
-    private final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
-            new PIDConstants(Constants.AutoConstants.kPXController),
-            new PIDConstants(Constants.AutoConstants.kPYController), Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-            SwerveConstants.trackWidth, new ReplanningConfig());
 
     /** List of swerve module motors */
     public SwerveModule[] mSwerveMods;
@@ -88,59 +85,26 @@ public class Swerve extends SubsystemBase
     private Optional<EstimatedRobotPose> visionEstimatedPoseFront, visionEstimatedPoseBack;
     private EstimatedRobotPose estimatedRobotPose;
 
-//         // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-//     private final MutableMeasure<Voltage> m_appliedVoltage = mutable(BaseUnits.Voltage.of(0));
-//     // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-//     private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-//     // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-//     private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+    /** Tracks whether the robot was tipped last cycle */
+    private boolean trackTipped = false;
 
+    /** Stores the pose when the robot tips */
+    private Pose2d storePose = new Pose2d();
 
-//     // Create a new SysId routine for characterizing the drive.
-//   private final SysIdRoutine m_sysIdRoutine =
-//       new SysIdRoutine(
-//           // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-//           new SysIdRoutine.Config(),
-//           new SysIdRoutine.Mechanism(
-//               // Tell SysId how to plumb the driving voltage to the motors.
-//               (Measure<Voltage> volts) -> {
-//                 m_leftMotor.setVoltage(volts.in(Volts));
-//                 m_rightMotor.setVoltage(volts.in(Volts));
-//               },
-//               // Tell SysId how to record a frame of data for each motor on the mechanism being
-//               // characterized.
-//               log -> {
-//                 // Record a frame for the left motors.  Since these share an encoder, we consider
-//                 // the entire group to be one motor.
-//                 log.motor("drive-left")
-//                     .voltage(
-//                         m_appliedVoltage.mut_replace(
-//                             m_leftMotor.get() * RobotController.getBatteryVoltage(), Volts))
-//                     .linearPosition(m_distance.mut_replace(m_leftEncoder.getDistance(), Meters))
-//                     .linearVelocity(
-//                         m_velocity.mut_replace(m_leftEncoder.getRate(), MetersPerSecond));
-//                 // Record a frame for the right motors.  Since these share an encoder, we consider
-//                 // the entire group to be one motor.
-//                 log.motor("drive-right")
-//                     .voltage(
-//                         m_appliedVoltage.mut_replace(
-//                             m_rightMotor.get() * RobotController.getBatteryVoltage(), Volts))
-//                     .linearPosition(m_distance.mut_replace(m_rightEncoder.getDistance(), Meters))
-//                     .linearVelocity(
-//                         m_velocity.mut_replace(m_rightEncoder.getRate(), MetersPerSecond));
-//               },
-//               // Tell SysId to make generated commands require this subsystem, suffix test state in
-//               // WPILog with this subsystem's name ("drive")
-//               this));
+    
 
-    public Swerve(SendableChooser<Pose2d> m_startLocation) {
+    public Swerve(SendableChooser<Pose2d> m_startLocation) 
+    {
         // Define and initialise gyro, as well as applying config
         gyro = new Pigeon2(IDConstants.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
 
+        SmartDashboard.putData("TipField", storedPoseDisplay);
+
         // Define and initialise list of swerve modules
-        mSwerveMods = new SwerveModule[] {
+        mSwerveMods = new SwerveModule[] 
+        {
                 new SwerveModule(0, SwerveConstants.Mod0.constants),
                 new SwerveModule(1, SwerveConstants.Mod1.constants),
                 new SwerveModule(2, SwerveConstants.Mod2.constants),
@@ -149,19 +113,23 @@ public class Swerve extends SubsystemBase
 
         // Define and initialise pose estimator
         swerveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
-        poseEstimator = new SwerveDrivePoseEstimator(
-                SwerveConstants.swerveKinematics,
-                getGyroYaw(),
-                getModulePositions(),
-                new Pose2d(),
-                Constants.Vision.STATE_STANDARD_DEVIATIONS,
-                Constants.Vision.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
+        poseEstimator = new SwerveDrivePoseEstimator
+        (
+            SwerveConstants.swerveKinematics,
+            getGyroYaw(),
+            getModulePositions(),
+            new Pose2d(),
+            Constants.Vision.stateStandardDeviations,
+            Constants.Vision.visionMeasurementStandardDeviations
+        );
 
         // Define and initialise PhotonPoseEstimators
-        photonPoseEstimatorFront = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCam,
-                Constants.Vision.frontCamToRobot);
-        photonPoseEstimatorBack = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, backCam,
-                Constants.Vision.backCamToRobot);
+        photonPoseEstimatorFront = new PhotonPoseEstimator
+        (layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCam, Constants.Vision.frontCamToRobot);
+        
+        photonPoseEstimatorBack = new PhotonPoseEstimator
+        (layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, backCam, Constants.Vision.backCamToRobot);
+        
         photonPoseEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         photonPoseEstimatorBack.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
@@ -172,14 +140,16 @@ public class Swerve extends SubsystemBase
                 this::resetEstimatedOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                new HolonomicPathFollowerConfig // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                ( 
                         new PIDConstants(10, 0.3, 0.3), // Translation PID constants
                         new PIDConstants(10, 0.3, 0.3), // Rotation PID constants
                         100, // Max module speed, in m/s
                         0.34, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
                 ),
-                () -> {
+                () -> 
+                {
                     // Boolean supplier that controls when the path will be mirrored for the red
                     // alliance
                     // This will flip the path being followed to the red side of the field.
@@ -207,6 +177,7 @@ public class Swerve extends SubsystemBase
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double brakeVal) 
     {
+        SmartDashboard.putNumber("BrakeVal", brakeVal);
         SmartDashboard.putBoolean("Egotistic?", !fieldRelative);
         if (!usingVisionAlignment) 
         {
@@ -237,24 +208,6 @@ public class Swerve extends SubsystemBase
             }
         }
     }
-
-    //     /**
-    //  * Returns a command that will execute a quasistatic test in the given direction.
-    //  *
-    //  * @param direction The direction (forward or reverse) to run the test in
-    //  */
-    // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    //     return m_sysIdRoutine.quasistatic(direction);
-    // }
-
-    // /**
-    //  * Returns a command that will execute a dynamic test in the given direction.
-    //  *
-    //  * @param direction The direction (forward or reverse) to run the test in
-    //  */
-    // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    //     return m_sysIdRoutine.dynamic(direction);
-    // }
 
     /**
      * Swerve magic
@@ -406,8 +359,8 @@ public class Swerve extends SubsystemBase
      */
     public void zeroHeading() 
     {
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(),
-                new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        swerveOdometry.resetPosition
+        (getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
     }
 
     /**
@@ -446,9 +399,7 @@ public class Swerve extends SubsystemBase
     /**
      * 
      */
-    public static double map(double valueCoord1,
-            double startCoord1, double endCoord1,
-            double startCoord2, double endCoord2) 
+    public static double map(double valueCoord1, double startCoord1, double endCoord1, double startCoord2, double endCoord2) 
     {
         double R = (endCoord2 - startCoord2) / (endCoord1 - startCoord1);
         double y = startCoord2 + (valueCoord1 * R) + R;
@@ -499,7 +450,6 @@ public class Swerve extends SubsystemBase
         return usingVisionAlignment;
     }
 
-
     /**
      * Gets the current speed of the robot
      * @return A ChassisSpeeds object representing the current speed of the robot chassis
@@ -517,7 +467,8 @@ public class Swerve extends SubsystemBase
      * @author 5985
      * @author Unknown
      */
-    public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+    public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) 
+    {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
         SwerveModuleState[] targetStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
@@ -530,42 +481,43 @@ public class Swerve extends SubsystemBase
      * @return A matrix representing the confidence of it's pose estimation
      * @author Unknown online repository
      */
-    private Matrix<N3, N1> confidenceCalculator(EstimatedRobotPose estimation) {
+    private Matrix<N3, N1> confidenceCalculator(EstimatedRobotPose estimation) 
+    {
         double smallestDistance = Double.POSITIVE_INFINITY;
-        for (var target : estimation.targetsUsed) {
+        for (var target : estimation.targetsUsed) 
+        {
             var t3d = target.getBestCameraToTarget();
             var distance = Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
             if (distance < smallestDistance)
-                smallestDistance = distance;
+            smallestDistance = distance;
         }
+        
         double poseAmbiguityFactor = estimation.targetsUsed.size() != 1
-                ? 1 : Math.max
+        ? 1 : Math.max
+        (
+            1,
+            (estimation.targetsUsed.get(0).getPoseAmbiguity() + Constants.Vision.poseAmbiguityShifter)
+            * Constants.Vision.poseAmbiguityMultilplier
+        );
+        
+        double confidenceMultiplier = Math.max
+        (
+            1,
+            (
+                Math.max
                 (
-                        1,
-                        (estimation.targetsUsed.get(0).getPoseAmbiguity()
-                                + Constants.Vision.POSE_AMBIGUITY_SHIFTER)
-                                * Constants.Vision.POSE_AMBIGUITY_MULTIPLIER);
-        double confidenceMultiplier = Math.max(
-                1,
-                (Math.max(
-                        1,
-                        Math.max(0, smallestDistance - Constants.Vision.NOISY_DISTANCE_METERS)
-                                * Constants.Vision.DISTANCE_WEIGHT)
-                        * poseAmbiguityFactor)
-                        / (1
-                                + ((estimation.targetsUsed.size() - 1) * Constants.Vision.TAG_PRESENCE_WEIGHT)));
+                    1,
+                    Math.max
+                    (0, smallestDistance - Constants.Vision.noisyDistanceMeters) * Constants.Vision.distanceWeight
+                )
+                * poseAmbiguityFactor
+            )
+            / 
+            (1 + ((estimation.targetsUsed.size() - 1) * Constants.Vision.tagPresenceWeight))
+        );
 
-        return Constants.Vision.VISION_MEASUREMENT_STANDARD_DEVIATIONS.times(confidenceMultiplier);
-    }
-
-    /**
-     * Function to extrapolate and interpolate the values needed for the shooter
-     * pivot based on the current reported distance to the target.
-     * 
-     * @return The value in degrees that the pivot needs to angle to to score in the
-     *         speaker.
-     */
-    
+        return Constants.Vision.visionMeasurementStandardDeviations.times(confidenceMultiplier);
+    }    
 
     /**
      * Takes a path from pathplanner, and turns it into a command to follow that path
@@ -576,83 +528,73 @@ public class Swerve extends SubsystemBase
      */
     public Command makePathFollowingCommand(PathPlannerPath path) 
     {
-        // return new FollowPathHolonomic
-        // (path, this::getEstimatedPose, this::getRobotRelativeSpeeds, this::driveRobotRelative,
-        //         PATH_FOLLOWER_CONFIG,
-        //         () -> {
-        //             // Boolean supplier that controls when the path will be mirrored for the red
-        //             // alliance
-        //             // This will flip the path being followed to the red side of the field.
-        //             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-        //             var alliance = DriverStation.getAlliance();
-        //             if (alliance.isPresent()) {
-        //                 return alliance.get() == DriverStation.Alliance.Red;
-        //             }
-        //             return false;
-        //         }, this
-        // );
-
         return AutoBuilder.followPath(path);
     }
-
-    /**
-     * Lock wheels in x position to resist pushing
-     * @author 5985
-     */
-    public void lockWheels() {
-    //     double lockRadians = Math.toRadians(45);
-    //     for (SwerveModule mod : mSwerveMods) {
-    //         mod.setDesiredState(new SwerveModuleState(), usingVisionAlignment);
-    //     }
-    //     double lockRadians = Math.toRadians(45);
-    //     m_swerveModules[0].set(0.0, lockRadians);
-    //     m_swerveModules[1].set(0.0, -lockRadians);
-    //     m_swerveModules[2].set(0.0, -lockRadians);
-    //     m_swerveModules[3].set(0.0, lockRadians);
-    }
-
-    
-
+ 
     @Override
     /**
      * TODO docs
      */
-    public void periodic() {
+    public void periodic() 
+    {   
+        
 
-        swerveOdometry.update(getGyroYaw(), getModulePositions());
+        if((gyro.getRoll().getValueAsDouble() < 5 && gyro.getRoll().getValueAsDouble() > -5) && (gyro.getPitch().getValueAsDouble() < 5 && gyro.getPitch().getValueAsDouble() > -5))
+        {
+            
+            if (trackTipped == true) 
+            {   
+               swerveOdometry.resetPosition(getGyro(), getModulePositions(), storePose);
+               poseEstimator.resetPosition(getGyro(), getModulePositions(), storePose);
+            }
+            trackTipped = false;
+            swerveOdometry.update(getGyroYaw(), getModulePositions());
+            poseEstimator.update(getGyro(), getModulePositions());
+        }
+        else if (trackTipped == false)
+        {   
+            trackTipped = true;
+            storePose = getEstimatedPose();
+        }
 
         m_field.setRobotPose(getEstimatedPose());
 
+        // Do this in either robot periodic or subsystem periodic
+        storedPoseDisplay.setRobotPose(storePose);
+
+        SmartDashboard.putNumber("Roll", gyro.getRoll().getValueAsDouble());
+        SmartDashboard.putNumber("Pitch", gyro.getPitch().getValueAsDouble());
+
         //final Optional<EstimatedRobotPose> 
         visionEstimatedPoseFront = photonPoseEstimatorFront.update();
-        if (visionEstimatedPoseFront.isPresent()) {
+        if (visionEstimatedPoseFront.isPresent()) 
+        {
             SmartDashboard.putBoolean("Using Front Vision", true);
-            //final EstimatedRobotPose 
             estimatedRobotPose = visionEstimatedPoseFront.get();
-            poseEstimator.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds,
-                    confidenceCalculator(estimatedRobotPose));
-        } else {
+            poseEstimator.addVisionMeasurement
+            (estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds, confidenceCalculator(estimatedRobotPose));
+        } 
+        else 
+        {
             SmartDashboard.putBoolean("Using Front Vision", false);
         }
 
-        //final Optional<EstimatedRobotPose> 
         visionEstimatedPoseBack = photonPoseEstimatorBack.update();
-        if (visionEstimatedPoseBack.isPresent()) {
+        if (visionEstimatedPoseBack.isPresent()) 
+        {
             SmartDashboard.putBoolean("Using Back Vision", true);
-            //final EstimatedRobotPose 
             estimatedRobotPose = visionEstimatedPoseBack.get();
-            poseEstimator.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds,
-                    confidenceCalculator(estimatedRobotPose));
-        } else {
+            poseEstimator.addVisionMeasurement
+            (estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds, confidenceCalculator(estimatedRobotPose));
+        } 
+        else 
+        {
             SmartDashboard.putBoolean("Using Back Vision", false);
         }
 
-        poseEstimator.update(getGyro(), getModulePositions());
-
         for (SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
-            ///SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
+            //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
             //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
         }
 
@@ -670,9 +612,4 @@ public class Swerve extends SubsystemBase
         SmartDashboard.putData("Field", m_field);
 
     }
-
-    public void simulationPeriodic() {
-        // resetEstimatedOdometry();
-    }
-
 }

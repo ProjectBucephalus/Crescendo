@@ -95,7 +95,7 @@ public final class SwerveConstants
         /** Meters per Second */
         public static final double maxSpeed = 80.0; // 2.5 TODO it was 8
         /** Radians per Second */
-        public static final double maxAngularVelocity = 150.0; // 5.0?? it was 15
+        public static final double maxAngularVelocity = 110.0; // 5.0?? it was 15
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;

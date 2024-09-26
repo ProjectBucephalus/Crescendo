@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.FieldConstants;
+import frc.robot.VisionCommands.aimToSpeaker;
 import frc.robot.commands.Intake.IntakeAndDeployPivot;
 import frc.robot.commands.Shooter.AutoPivotShootSequence;
 import frc.robot.subsystems.Swerve;
@@ -25,13 +26,16 @@ import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.Pivot;
 
 // Note this is a SequentialCommandGroup
-public class GetStageNote extends GetNote {
+public class GetStageNote extends GetNote 
+{
 
     public GetStageNote(Translation2d targetNote, Swerve s_Swerve, NoteVision noteVision,
-            Shooter s_Shooter, Pivot s_Pivot, Intake s_Intake) {
+            Shooter s_Shooter, Pivot s_Pivot, Intake s_Intake) 
+            {
         super(targetNote, s_Swerve, noteVision, s_Shooter, s_Intake);
 
-        if (FieldConstants.isCenterNote(targetNote)) {
+        if (FieldConstants.isCenterNote(targetNote)) 
+        {
             throw new IllegalArgumentException("target note param must be a stage note: S1 S2 S3");
         }
 
@@ -60,7 +64,6 @@ public class GetStageNote extends GetNote {
         //     )
         // );
 
-
         addCommands(
             new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
             new IntakeAndDeployPivot(s_Pivot, s_Intake, null),
@@ -78,6 +81,7 @@ public class GetStageNote extends GetNote {
                 (
                     new InstantCommand(() -> s_Shooter.setShooterPosition(ShootPosition.SPEAKER)),
                     new WaitCommand(0.1),
+                    new aimToSpeaker(s_Swerve, null, null, null, s_Pivot, s_Shooter),
                     new AutoPivotShootSequence(s_Pivot, s_Intake, s_Shooter, s_Swerve)
                 ),
                 () -> s_Intake.getBeamBreak()
@@ -86,7 +90,8 @@ public class GetStageNote extends GetNote {
             //new ShootSequence(s_Shooter, s_Intake, s_Swerve));
     }
 
-    private PathPlannerPath getInitialPath() {
+    private PathPlannerPath getInitialPath() 
+    {
         Pose2d pose = s_Swerve.getEstimatedPose();
         Pose2d poseBlue = FieldConstants.flipPose(pose);
         System.out.println("Starting getInitialPath " + poseBlue);

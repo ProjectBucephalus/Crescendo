@@ -16,7 +16,7 @@ public final class Constants
 {
     public static boolean useVision = true;
 
-    public static final double stickDeadband = 0.3;
+    public static final double stickDeadband = 0.2;
     public static final double hasNoteRumble = 1;
     public static final double isAlignedToNoteRumble = 0.3;
 
@@ -34,6 +34,7 @@ public final class Constants
         /* Offsets */
         // relative position of the camera on the robot to the robot center
         // pitch is the Y angle, and it is positive down
+        //+x front, +y left, +z up
         public static final Transform3d backCamToRobot = new Transform3d
         ( 
                 //-0.18, -0.18, 0.44, // This is the actuall coordinates of the camera on the robot
@@ -46,24 +47,25 @@ public final class Constants
         ( 
             // y direction is inverted from physical coordinates for some reason
                 0.275, 0.17, 0.19,
-                new Rotation3d(Units.degreesToRadians(90),Units.degreesToRadians(38), Units.degreesToRadians(0))
+                new Rotation3d(Units.degreesToRadians(-90),Units.degreesToRadians(38), Units.degreesToRadians(0))
         ); // Meters and Radians (roll, pitch, yaw)
 
         public static final Transform3d noteCamToRobot = new Transform3d
         (
+            
                 0.32, 0, 0.45,
                 new Rotation3d(0, Units.degreesToRadians(20), Units.degreesToRadians(0))
         ); // Meters and Radians (roll, pitch, yaw)
 
 
-        public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
-        public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
-        public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
-        public static final double NOISY_DISTANCE_METERS = 2.5;
-        public static final double DISTANCE_WEIGHT = 7;
-        public static final int TAG_PRESENCE_WEIGHT = 10;
+        public static final double aprilTagAmbiguityThreshold = 0.2;
+        public static final double poseAmbiguityShifter = 0.2;
+        public static final double poseAmbiguityMultilplier = 4;
+        public static final double noisyDistanceMeters = 2.5;
+        public static final double distanceWeight = 7;
+        public static final int tagPresenceWeight = 10;
 
-        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill
+        public static final Matrix<N3, N1> visionMeasurementStandardDeviations = MatBuilder.fill
         (Nat.N3(), Nat.N1(),
                 // if these numbers are less than one, multiplying will do bad things
                 1, // x
@@ -77,7 +79,7 @@ public final class Constants
          * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
          * radians.
          */
-        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), .1, .1, 1);
+        public static final Matrix<N3, N1> stateStandardDeviations = MatBuilder.fill(Nat.N3(), Nat.N1(), .1, .1, 1);
 
         public static final double noteTurnScalarGain = 10;
         public static final double noteTurnPowerGain = 3;
@@ -224,7 +226,8 @@ public final class Constants
         /* Lob values */
         public static final double bottomShooterLobSpeed = 0.3;
         public static final double topShooterLobSpeed = 0.3;
-        public static final double lobAngle = 45;
+        public static final double midWingLobAngle = 45;
+        public static final double farWingLobAngle = 60;
         public static final double lobVelocityTolerance = 35; //80 * topShooterLobSpeed;
 
         /** Maximum viable shot distance, Metres, past this lob notes to subwoofer for others to take */

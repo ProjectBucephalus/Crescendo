@@ -18,7 +18,8 @@ import frc.robot.subsystems.Shooter.ShooterState;
  */
 public class AutoPivotShootSequence extends SequentialCommandGroup{
     
-    public AutoPivotShootSequence(Pivot s_Pivot, Intake s_Intake, Shooter s_Shooter, Swerve s_Swerve) {
+    public AutoPivotShootSequence(Pivot s_Pivot, Intake s_Intake, Shooter s_Shooter, Swerve s_Swerve) 
+    {
         // addCommands(
         //     // If not done already
         //     new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
@@ -33,7 +34,8 @@ public class AutoPivotShootSequence extends SequentialCommandGroup{
         // );
 
         
-            addCommands(
+            addCommands
+            (
                 // If not done already
                 new InstantCommand(() -> s_Shooter.setShooterState(ShooterState.RUNNING)),
                 new InstantCommand(() -> s_Pivot.setPosition(PivotPosition.SPEAKER)),

@@ -8,22 +8,24 @@ import frc.robot.subsystems.Climber.BuddyClimbPosition;
  * Stop buddy climber command
  * @author 5985
  */
-public class StopBuddyClimber extends Command {
+public class StopBuddyClimber extends Command 
+{
     private Climber s_Climber;
 
-    public StopBuddyClimber(Climber s_Climber) {
+    public StopBuddyClimber(Climber s_Climber) 
+    {
         this.s_Climber = s_Climber;
     }
 
     @Override
-    public void execute() {
+    public void execute() 
+    {
         // Sets the buddyClimberPosition to the variable STOPPED
         s_Climber.setBuddyClimb(BuddyClimbPosition.STOPPED);
     }
 
-    public boolean isFinished() {
+    public boolean isFinished() 
+    {
         return true;
     }
-
-    
 }

@@ -8,7 +8,9 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
@@ -16,7 +18,8 @@ import edu.wpi.first.wpilibj2.command.Command;
  * teleop swerve command
  * @author 5985
  */
-public class TeleopSwerve extends Command {    
+public class TeleopSwerve extends Command 
+{    
     private Swerve s_Swerve;    
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
@@ -36,15 +39,32 @@ public class TeleopSwerve extends Command {
     }
 
     @Override
-    public void execute() {
-        /* Get Values, Deadband*/
-        double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
-        double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
+    public void execute() 
+    {   
+        double translationVal;
+        double strafeVal;
+        /* Using pythag, if total distance from stick to centre less than deadband, set values to 0, else set values to raw */
+        if (Math.sqrt(Math.pow(strafeSup.getAsDouble(), 2) + Math.pow(translationSup.getAsDouble(), 2)) < Constants.stickDeadband) 
+        {
+            translationVal = 0;
+            strafeVal = 0;
+        }
+        else
+        {
+            translationVal = translationSup.getAsDouble();
+            strafeVal = strafeSup.getAsDouble();
+        }
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
         double brakeVal = MathUtil.applyDeadband(brakeAxis.getAsDouble(), Constants.stickDeadband);
+        SmartDashboard.putNumber("BrakeValUnchanged", brakeVal);
+        if (SmartDashboard.getBoolean("Test Mode", false)) 
+        {
+            brakeVal = Math.max(brakeVal - 0.85, -1);
+        }
 
         /* Drive */
-        s_Swerve.drive(
+        s_Swerve.drive
+        (
             new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
             rotationVal * SwerveConstants.maxAngularVelocity, 
             !robotCentricSup.getAsBoolean(), 

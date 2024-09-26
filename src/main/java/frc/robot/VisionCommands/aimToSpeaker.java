@@ -111,7 +111,14 @@ public class aimToSpeaker extends Command {
         Translation2d aimTranslation;
         if ((FieldConstants.isRedAlliance() && pose.getX() < Constants.Shooter.outOfRedWingX) || (!FieldConstants.isRedAlliance() && pose.getX() > Constants.Shooter.outOfBlueWingX))
         {
-            aimTranslation = FieldConstants.LOB_TARGET;
+            if ((FieldConstants.isRedAlliance() && pose.getX() < Constants.Shooter.outOfBlueWingX) || (!FieldConstants.isRedAlliance() && pose.getX() > Constants.Shooter.outOfRedWingX))    
+            {
+                aimTranslation = FieldConstants.FAR_LOB_TARGET;
+            }
+            else 
+            {
+                aimTranslation = FieldConstants.MID_LOB_TARGET;
+            }
         }
         else
         {

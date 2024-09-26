@@ -14,7 +14,8 @@ import frc.robot.subsystems.Pivot.PivotPosition;
  * 
  * @author 5985
  */
-public class IntakeAndDeployPivot extends Command {
+public class IntakeAndDeployPivot extends Command 
+{
     public boolean isFinished = true;
     Pivot s_Pivot;
     Intake s_Intake;
@@ -26,27 +27,17 @@ public class IntakeAndDeployPivot extends Command {
         this.xbox = xbox;
     }
 
-    @Override
-    public void initialize() {
-        
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        
-
-    }
-
     // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {
+    public void execute() 
+    {
         s_Pivot.setPosition(PivotPosition.DEPLOYED);
         s_Intake.setIntakeStatus(IntakeStatus.IN_WITH_BEAM_BREAK);
-        s_Intake.rumbleWithNote(true);
-        
+        s_Intake.rumbleWithNote(true);    
     }
 
-    public boolean isFinished() {
+    public boolean isFinished() 
+    {
         //s_Intake.rumbleWithNote(false);
         return isFinished;
     }

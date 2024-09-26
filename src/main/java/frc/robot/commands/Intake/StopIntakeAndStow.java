@@ -10,36 +10,29 @@ import frc.robot.subsystems.Pivot.PivotPosition;
  * Intake stow command
  * @author 5985
  */
-public class StopIntakeAndStow extends Command {
-
+public class StopIntakeAndStow extends Command 
+{
     Pivot s_Pivot;
     Intake s_Intake;
     public boolean isFinished = false;
 
-    public StopIntakeAndStow(Pivot s_Pivot, Intake s_Intake) {
+    public StopIntakeAndStow(Pivot s_Pivot, Intake s_Intake) 
+    {
         this.s_Pivot = s_Pivot;
         this.s_Intake = s_Intake;
     }
 
-    public void initialize() {
-
-    }
-
     // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {
+    public void execute() 
+    {
         s_Pivot.setPosition(PivotPosition.STOWED);
         s_Intake.setIntakeStatus(IntakeStatus.STOPPED);
         s_Intake.rumbleWithNote(false);
     }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
-
-    }
-
-    public boolean isFinished() {
+    public boolean isFinished() 
+    {
         return true;
     }
 }

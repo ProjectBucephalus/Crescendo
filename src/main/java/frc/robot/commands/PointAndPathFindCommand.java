@@ -20,7 +20,8 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.VisionCommands.AlignToTrap;
 import frc.robot.subsystems.RumbleController.RumbleStates;
 
-public class PointAndPathFindCommand extends SequentialCommandGroup {
+public class PointAndPathFindCommand extends SequentialCommandGroup 
+{
     RumbleController s_RumbleController;
 
     /**
@@ -33,7 +34,8 @@ public class PointAndPathFindCommand extends SequentialCommandGroup {
      */
 
      
-    public PointAndPathFindCommand(Swerve s_Swerve, Transform2d targetLocation, PathPlannerPath path, RumbleController s_RumbleController) {
+    public PointAndPathFindCommand(Swerve s_Swerve, Transform2d targetLocation, PathPlannerPath path, RumbleController s_RumbleController) 
+    {
         this.s_RumbleController = s_RumbleController;
         // Create the constraints to use while pathfinding. The constraints defined in
         PathConstraints constraints = new PathConstraints(
