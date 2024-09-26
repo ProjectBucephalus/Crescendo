@@ -20,6 +20,8 @@ public class Shooter extends SubsystemBase
     // Sets the starting shooter aiming position to the speaker
     private ShootPosition shooterMode = ShootPosition.SPEAKER;
 
+    private double idleSpeed = Constants.Shooter.shooterIdleSpeed;
+
     /**
      * Enum representing the status of the shooter
      * 
@@ -77,9 +79,13 @@ public class Shooter extends SubsystemBase
                 break;
 
             case IDLE:
-                driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
+                if (SmartDashboard.getBoolean("Test Mode", false))
+                {
+                    idleSpeed = 0;
+                }
+                driveDutyCycle.Output = idleSpeed;
                 mBottomShooter.setControl(driveDutyCycle);
-                driveDutyCycle.Output = Constants.Shooter.shooterIdleSpeed;
+                driveDutyCycle.Output = idleSpeed;
                 mTopShooter.setControl(driveDutyCycle);
                 break;
 

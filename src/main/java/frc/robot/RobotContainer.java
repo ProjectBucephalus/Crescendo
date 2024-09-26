@@ -151,6 +151,8 @@ public class RobotContainer
         SmartDashboard.putData(m_Field);
         final var visionTab = Shuffleboard.getTab("Vision");
 
+        SmartDashboard.putBoolean("Test Mode", false);
+
     }
 
     /**
