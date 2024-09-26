@@ -538,7 +538,7 @@ public class Swerve extends SubsystemBase
     {   
         
 
-        if((gyro.getRoll().getValueAsDouble() < 10 && gyro.getRoll().getValueAsDouble() > -10) && (gyro.getPitch().getValueAsDouble() < 10 && gyro.getPitch().getValueAsDouble() > -10))
+        if((gyro.getRoll().getValueAsDouble() < 5 && gyro.getRoll().getValueAsDouble() > -5) && (gyro.getPitch().getValueAsDouble() < 5 && gyro.getPitch().getValueAsDouble() > -5))
         {
             
             if (trackTipped == true) 

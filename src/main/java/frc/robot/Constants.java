@@ -16,7 +16,7 @@ public final class Constants
 {
     public static boolean useVision = true;
 
-    public static final double stickDeadband = 0.3;
+    public static final double stickDeadband = 0.2;
     public static final double hasNoteRumble = 1;
     public static final double isAlignedToNoteRumble = 0.3;
 
@@ -47,7 +47,7 @@ public final class Constants
         ( 
             // y direction is inverted from physical coordinates for some reason
                 0.275, 0.17, 0.19,
-                new Rotation3d(Units.degreesToRadians(90),Units.degreesToRadians(38), Units.degreesToRadians(0))
+                new Rotation3d(Units.degreesToRadians(-90),Units.degreesToRadians(38), Units.degreesToRadians(0))
         ); // Meters and Radians (roll, pitch, yaw)
 
         public static final Transform3d noteCamToRobot = new Transform3d
