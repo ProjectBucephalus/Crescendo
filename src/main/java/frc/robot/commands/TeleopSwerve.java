@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,10 +40,20 @@ public class TeleopSwerve extends Command
 
     @Override
     public void execute() 
-    {
-        /* Get Values, Deadband*/
-        double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
-        double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
+    {   
+        double translationVal;
+        double strafeVal;
+        /* Using pythag, if total distance from stick to centre less than deadband, set values to 0, else set values to raw */
+        if (Math.sqrt(Math.pow(strafeSup.getAsDouble(), 2) + Math.pow(translationSup.getAsDouble(), 2)) < Constants.stickDeadband) 
+        {
+            translationVal = 0;
+            strafeVal = 0;
+        }
+        else
+        {
+            translationVal = translationSup.getAsDouble();
+            strafeVal = strafeSup.getAsDouble();
+        }
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
         double brakeVal = MathUtil.applyDeadband(brakeAxis.getAsDouble(), Constants.stickDeadband);
         SmartDashboard.putNumber("BrakeValUnchanged", brakeVal);
