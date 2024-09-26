@@ -12,8 +12,8 @@ public final class IDConstants
         public static final int leftSwitchID = 5;
         public static final int rightSwitchID = 6;
         
-        public static final int mStabiliserID = 15;
-        public static final int mBuddyClimbID = 16;
+                public static final int mStabiliserID = 15;
+public static final int mBuddyClimbID = 16;
     }
 
     public static final class Intooter 

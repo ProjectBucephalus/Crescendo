@@ -21,7 +21,7 @@ public class StabiliserBar extends Command
     @Override
     public void execute() 
     {
-        sIntake.setStabliserPos(pos);
+        //sIntake.setStabliserPos(pos);
     }
 
     @Override

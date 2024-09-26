@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase
     // Declarations of all the motor controllers
     public TalonFX mIntake = new TalonFX(IDConstants.Intooter.Intake.mIntakeID);
     public TalonFX mIndexer = new TalonFX(IDConstants.Intooter.Intake.mIndexerID);
-    public VictorSPX mStabilser = new VictorSPX(IDConstants.Climber.mStabiliserID);
+    //public VictorSPX mStabilser = new VictorSPX(IDConstants.Climber.mStabiliserID);
 
     // Declaration of the beam break digital input
     public DigitalInput BeamBreak = new DigitalInput(IDConstants.Intooter.Intake.beamBreakID);
@@ -192,7 +192,7 @@ public class Intake extends SubsystemBase
      * @param pos Enum value corresponding to Stabiliser status
      * @author 5985
      */
-    public void setStabliserPos(StabiliserPos pos) 
+    /*public void setStabliserPos(StabiliserPos pos) 
     {
         SmartDashboard.putString("Stabliser Status", pos.name());
         switch (pos) 
@@ -213,7 +213,7 @@ public class Intake extends SubsystemBase
                 break;
             
         }
-    }
+    }*/
 
     /** 
      * Gets the value of the Beam Break
@@ -278,7 +278,7 @@ public class Intake extends SubsystemBase
         {
             if (!StabilserLimit.get()) 
             {
-                setStabliserPos(StabiliserPos.STOPPED);
+                //setStabliserPos(StabiliserPos.STOPPED);
             }
         }
     }
